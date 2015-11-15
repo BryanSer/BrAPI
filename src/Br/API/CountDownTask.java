@@ -15,39 +15,61 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 public class CountDownTask extends BukkitRunnable {
 
-    private long time;
+    private long tick;
     private long ID;
     private Player P;
     private int type;
 
+    public long getTick() {
+        return this.tick;
+    }
+
+    public long getID() {
+        return this.ID;
+    }
+
+    public Player getPlayer() {
+        return this.P;
+    }
+
+    public boolean hasPlayer() {
+        if (this.P != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public CountDownTask(long id, Player p, long time) {
         this.ID = id;
         this.P = p;
-        this.time = time;
+        this.tick = time;
         this.type = 3;
     }
 
     public CountDownTask(long id, long time) {
         this.ID = id;
-        this.time = time;
+        this.tick = time;
         this.type = 2;
+        this.P = null;
     }
 
     public CountDownTask(Player p, long time) {
         this.P = p;
-        this.time = time;
+        this.tick = time;
         this.type = 1;
     }
 
     public CountDownTask(long time) {
         this.ID = new Date().getTime();
-        this.time = time;
+        this.tick = time;
         this.type = 2;
+        this.P = null;
     }
 
     @Override
     public void run() {
-        if (this.time < 1) {
+        if (this.tick < 1) {
             switch (this.type) {
                 case 1:
                     Bukkit.getPluginManager().callEvent(new CountDounEvent(this.P));
@@ -61,7 +83,6 @@ public class CountDownTask extends BukkitRunnable {
             }
             this.cancel();
         }
-        this.time--;
+        this.tick--;
     }
-
 }

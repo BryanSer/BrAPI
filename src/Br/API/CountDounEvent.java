@@ -16,8 +16,8 @@ import org.bukkit.event.HandlerList;
 public class CountDounEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private static long ID;
-    private static Player P;
+    private long ID;
+    private Player P;
 
     public CountDounEvent(Player p) {
         ID = new Date().getTime();
@@ -30,12 +30,16 @@ public class CountDounEvent extends Event {
     }
 
     public CountDounEvent(Player p, long id) {
-        ID = id;
-        P = p;
+        this.ID = id;
+        this.P = p;
     }
 
     public long getID() {
-        return ID;
+        return this.ID;
+    }
+
+    public Player getPlayer() {
+        return this.P;
     }
 
     @Override
