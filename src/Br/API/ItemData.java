@@ -15,7 +15,7 @@ public class ItemData {
     private ItemStack item;
     private int ID;
 
-    ItemData(ItemStack is, int ID) {
+    public ItemData(ItemStack is, int ID) {
         this.item = is;
         this.ID = ID;
     }
@@ -34,7 +34,7 @@ public class ItemData {
         }
         ItemStack is = i;
         is.setAmount(1);
-        if (this.getItem().equals(is)) {
+        if (this.getItem().isSimilar(is)) {
             return true;
         }
         return false;

@@ -1,5 +1,6 @@
 package Br.API;
 
+import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

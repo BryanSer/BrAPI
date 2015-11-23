@@ -35,12 +35,13 @@ public class PlayerUseItemEvent extends Event {
     }
 
     public void removeItem() {
-        if (this.getPlayer().getItemInHand().getAmount() <= 1) {
-            this.getPlayer().setItemInHand(null);
+        if (this.getPlayer().getItemInHand().getAmount() > 1) {
+            this.getPlayer().getItemInHand().setAmount(p.getItemInHand().getAmount() - 1);
         } else {
-            ItemStack s = this.getPlayer().getItemInHand();
-            s.setAmount(s.getAmount() - 1);
-            this.getPlayer().setItemInHand(s);
+            ItemStack is = new ItemStack(this.item);
+            is.setAmount(1);
+            this.getPlayer().getInventory().remove(is);
+            is=null;
         }
     }
 
@@ -48,12 +49,13 @@ public class PlayerUseItemEvent extends Event {
         if (i <= 0) {
             return;
         }
-        if (this.getPlayer().getItemInHand().getAmount() <= i) {
-            this.getPlayer().setItemInHand(null);
+        if (this.getPlayer().getItemInHand().getAmount() > i) {
+            this.getPlayer().getItemInHand().setAmount(p.getItemInHand().getAmount() - i);
         } else {
-            ItemStack s = this.getPlayer().getItemInHand();
-            s.setAmount(s.getAmount() - i);
-            this.getPlayer().setItemInHand(s);
+            ItemStack is = new ItemStack(this.item);
+            is.setAmount(i);
+            this.getPlayer().getInventory().remove(is);
+            is=null;
         }
     }
 
