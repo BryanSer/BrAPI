@@ -23,6 +23,7 @@ public class Main extends JavaPlugin {
         Data.plugin = this;
         Data.initialization();
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
+        if(Bukkit.getPluginManager)
     }
 
     @Override

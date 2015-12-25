@@ -1,2 +1,11 @@
-## YAML Template.
----
+name: BrAPI
+authors: ['Bryan_lzh']
+main: Br.API.Main
+version: 1.0
+
+commands:
+  BrAPI:
+    description: 主命令
+    usage: /<command>
+    permission-message: 你没有权限
+    permission: BrAPI.version
