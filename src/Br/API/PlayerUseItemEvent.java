@@ -33,7 +33,7 @@ public class PlayerUseItemEvent extends Event {
     public Player getPlayer() {
         return this.p;
     }
-
+//remove系列都有点问题 暂时弃用
     public void removeItem() {
         if (this.getPlayer().getItemInHand().getAmount() > 1) {
             this.getPlayer().getItemInHand().setAmount(p.getItemInHand().getAmount() - 1);
