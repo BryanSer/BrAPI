@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- *
+ * 暂时废弃该类
  * @author Bryan_lzh
  */
 public class BrRandom {
