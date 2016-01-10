@@ -168,8 +168,12 @@ public abstract class Utils {
         } catch (NumberFormatException e) {
             item = new ItemStack(Material.getMaterial(s.split(" ")[0]));
         }
-        int i = 1;
+        int i = 0;
         for (String data : s.split(" ")) {
+            if (i == 0) {
+                i++;
+                continue;
+            }
             if (i == 1) {
                 try {
                     item.setAmount(Integer.valueOf(data));
@@ -181,7 +185,7 @@ public abstract class Utils {
             }
             if (i == 2) {
                 try {
-                    item.setDurability(Short.valueOf(data));
+                       item.setDurability(Short.valueOf(data).shortValue());
                 } catch (NumberFormatException e) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l在读取物品: " + s + " 时出现错误"));
                 }
@@ -214,6 +218,7 @@ public abstract class Utils {
                 continue;
             }
         }
+        Bukkit.getConsoleSender().sendMessage(item.toString());
         return item;
     }
 
