@@ -1,6 +1,5 @@
 package Br.API;
 
-import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,12 +17,17 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class Main extends JavaPlugin {
 
+    /**
+     * @param args the command line arguments
+     */
+    /*    public static void main(String[] args) {
+     System.out.print("(123".replaceFirst("\\(", " ("));
+     }*/
     @Override
     public void onEnable() {
         Data.plugin = this;
         Data.initialization();
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
-        if(Bukkit.getPluginManager)
     }
 
     @Override

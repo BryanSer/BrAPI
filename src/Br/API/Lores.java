@@ -7,7 +7,7 @@ package Br.API;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -21,19 +21,19 @@ public abstract class Lores {
         if (is != null) {
             List<String> LoreList = new ArrayList<>();
             if (lore.indexOf("|") != -1) {
-                        String lores[] = lore.split("\\|");
-                        int o = 0;
-                        for (String os : lores) {
-                            lores[o] = lores[o].replaceAll("_", " ");
-                            lores[o] = org.bukkit.ChatColor.translateAlternateColorCodes('&', lores[o]);
-                            o++;
-                        }
-                        LoreList.addAll(Arrays.asList(lores));
-                    } else {
-                        lore = lore.replaceAll("_", " ");
-                        lore = org.bukkit.ChatColor.translateAlternateColorCodes('&', lore);
-                        LoreList.addAll(Arrays.asList(lore));
-                    }
+                String lores[] = lore.split("\\|");
+                int o = 0;
+                for (String os : lores) {
+                    lores[o] = lores[o].replaceAll("_", " ");
+                    lores[o] = ChatColor.translateAlternateColorCodes('&', lores[o]);
+                    o++;
+                }
+                LoreList.addAll(Arrays.asList(lores));
+            } else {
+                lore = lore.replaceAll("_", " ");
+                lore = ChatColor.translateAlternateColorCodes('&', lore);
+                LoreList.addAll(Arrays.asList(lore));
+            }
             ItemMeta im = is.getItemMeta();
             im.setLore(LoreList);
             is.setItemMeta(im);
@@ -74,7 +74,9 @@ public abstract class Lores {
                     l.addAll(Arrays.asList(s));
                     im.setLore(l);
                 } else {
-                    return is;
+                    List<String> l = new ArrayList<>();
+                    l.addAll(Arrays.asList(s));
+                    im.setLore(l);
                 }
             } else {
                 List<String> l = new ArrayList<>();
@@ -132,5 +134,22 @@ public abstract class Lores {
             return is;
         }
         return null;
+    }
+
+    public static ItemStack replaceLore(ItemStack is, String old, String newString) {
+        ItemMeta im = is.getItemMeta();
+        List<String> lore = im.getLore();
+        if (!lore.contains(old)) {
+            return is;
+        }
+        while (true) {
+            if (!lore.contains(old)) {
+                break;
+            }
+            lore.set(lore.indexOf(old), newString);
+        }
+        im.setLore(lore);
+        is.setItemMeta(im);
+        return is;
     }
 }
