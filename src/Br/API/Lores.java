@@ -17,6 +17,13 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public abstract class Lores {
 
+    /**
+     * 设置Lore 以|分割行,视_为空格
+     *
+     * @param is 需要设置的物品
+     * @param lore 以|分割行,视_为空格
+     * @return ItemStack
+     */
     public static ItemStack Lore(ItemStack is, String lore) {
         if (is != null) {
             List<String> LoreList = new ArrayList<>();
@@ -42,6 +49,13 @@ public abstract class Lores {
         return null;
     }
 
+    /**
+     * 设置Lore
+     *
+     * @param is 需要设置的物品
+     * @param s 按顺序添加至Lore
+     * @return ItemStack
+     */
     public static ItemStack Lore(ItemStack is, String[] s) {
         if (is != null) {
             int i = 0;
@@ -60,6 +74,14 @@ public abstract class Lores {
     }
 //                                                          强制替换
 
+    /**
+     * 设置Lore
+     *
+     * @param is 需要设置的物品
+     * @param s 按顺序添加至Lore
+     * @param b 是否强制替换
+     * @return
+     */
     public static ItemStack Lore(ItemStack is, String[] s, boolean b) {
         if (is != null) {
             int i = 0;
@@ -89,6 +111,12 @@ public abstract class Lores {
         return null;
     }
 
+    /**
+     * 添加Lore
+     * @param is 需要设置的物品
+     * @param s 待添加的String
+     * @return ItemStack
+     */
     public static ItemStack addLore(ItemStack is, String s) {
         if (is != null) {
             s = ChatColor.translateAlternateColorCodes('&', s);
@@ -102,6 +130,12 @@ public abstract class Lores {
         return null;
     }
 
+    /**
+     * 移除指定行的Lore
+     * @param is 需要移除的物品
+     * @param index 行数
+     * @return ItemStack
+     */
     public static ItemStack removeLore(ItemStack is, int index) {
         if (is != null) {
             ItemMeta im = is.getItemMeta();
@@ -114,6 +148,11 @@ public abstract class Lores {
         return null;
     }
 
+    /**
+     * 移除全部的Lore
+     * @param is 需要移除的物品
+     * @return ItemStack
+     */
     public static ItemStack removeAllLore(ItemStack is) {
         if (is != null) {
             ItemMeta im = is.getItemMeta();
@@ -124,6 +163,13 @@ public abstract class Lores {
         return null;
     }
 
+    /**
+     * 为指定行数设置Lore
+     * @param is 需要设置的物品
+     * @param index 指定的行数
+     * @param s 字符串
+     * @return ItemStack
+     */
     public static ItemStack setLore(ItemStack is, int index, String s) {
         if (is != null) {
             ItemMeta im = is.getItemMeta();
@@ -136,6 +182,13 @@ public abstract class Lores {
         return null;
     }
 
+    /**
+     * 替换指定的Lore
+     * @param is 需要替换的物品
+     * @param old 原Lore
+     * @param newString 新Lore
+     * @return ItemStack
+     */
     public static ItemStack replaceLore(ItemStack is, String old, String newString) {
         ItemMeta im = is.getItemMeta();
         List<String> lore = im.getLore();

@@ -20,18 +20,34 @@ public class CountDownTask extends BukkitRunnable {
     private Player P;
     private int type;
 
+    /**
+     * 返回总tick 
+     * @return 总tick 
+     */
     public long getTick() {
         return this.tick;
     }
 
+    /**
+     * 返回识别ID 
+     * @return 识别ID 
+     */
     public long getID() {
         return this.ID;
     }
 
+    /** 
+     * 返回玩家
+     * @return 玩家
+     */
     public Player getPlayer() {
         return this.P;
     }
 
+    /**
+     * 是否有玩家
+     * @return 布尔值
+     */
     public boolean hasPlayer() {
         if (this.P != null) {
             return true;

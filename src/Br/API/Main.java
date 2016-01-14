@@ -17,12 +17,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class Main extends JavaPlugin {
 
-    /**
-     * @param args the command line arguments
-     */
-    /*    public static void main(String[] args) {
-     System.out.print("(123".replaceFirst("\\(", " ("));
-     }*/
     @Override
     public void onEnable() {
         Data.plugin = this;
@@ -39,7 +33,7 @@ public class Main extends JavaPlugin {
         if (cmd.getName().equalsIgnoreCase("BrAPI")) {
             sender.sendMessage(new String[]{
                         ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------"),
-                        ChatColor.translateAlternateColorCodes('&', "&aBrAPI已安装 版本: 1.0"),
+                        ChatColor.translateAlternateColorCodes('&', "&aBrAPI已安装 版本: 1.1"),
                         ChatColor.translateAlternateColorCodes('&', "&aBrAPI has been installed, Version: 1.0"),
                         ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------"),});
             return true;

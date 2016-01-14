@@ -17,14 +17,31 @@ public abstract class PlayerInventorySave {
 
     protected static HashMap<String, PlayerInventory> PI = new HashMap<>();
 
+    /**
+     * 是否已经储存了这个玩家
+     * @param p 玩家
+     * @param pn 注册插件
+     * @return 布尔值
+     */
     public static boolean hasSaved(Player p, Plugin pn) {
         return PlayerInventorySave.PI.containsKey(pn.getName() + p.getName());
     }
 
+    /**
+     *保存一个玩家
+     * @param p 玩家
+     * @param pn 注册插件
+     */
     public static void SavePlayerInventory(Player p, Plugin pn) {
         PlayerInventorySave.PI.put(pn.getName() + p.getName(), p.getInventory());
     }
 
+    /**
+     * 返回已储存的一个玩家背包
+     * @param p 玩家
+     * @param pn 插件
+     * @return PlayerInventory
+     */
     public static PlayerInventory getPlayerInventory(Player p, Plugin pn) {
         if (PlayerInventorySave.hasSaved(p, pn)) {
             return PlayerInventorySave.PI.get(pn.getName() + p.getName());
@@ -33,10 +50,19 @@ public abstract class PlayerInventorySave {
         }
     }
     
+    /**
+     * 移除一个玩家的背包
+     * @param p 玩家
+     * @param pn 插件
+     */
     public static void remove(Player p, Plugin pn){
         PlayerInventorySave.PI.remove(pn.getName() + p.getName());
     }
 
+    /**
+     * 移除某个插件储存的所有背包
+     * @param pn 插件
+     */
     public static void removeAll(Plugin pn) {
         for (String n : PlayerInventorySave.PI.keySet()) {
             if (n.contains(pn.getName())) {
@@ -45,6 +71,9 @@ public abstract class PlayerInventorySave {
         }
     }
     
+    /**
+     * 移除全部
+     */
     public static void removeAll(){
         PlayerInventorySave.PI = new HashMap<>();
     }

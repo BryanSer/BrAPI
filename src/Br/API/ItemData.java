@@ -20,14 +20,27 @@ public class ItemData {
         this.ID = ID;
     }
 
+    /**
+     * 返回物品
+     * @return 物品
+     */
     public ItemStack getItem() {
         return this.item;
     }
 
+    /**
+     * 返回识别ID 
+     * @return 识别ID 
+     */
     public int getID() {
         return this.ID;
     }
 
+    /**
+     * 是否与另一个ItemStack相同(不考虑数量)
+     * @param i ItemStack
+     * @return 布尔值
+     */
     public boolean isSame(ItemStack i) {
         if (i == null) {
             return false;

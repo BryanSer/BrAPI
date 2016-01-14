@@ -33,6 +33,12 @@ public abstract class Utils {
      final public static int d9 = 512;*/
     //注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent
     //返回值ItemData用于判断调用事件是哪个物品
+    /**
+     * 注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent 返回值ItemData用于判断调用事件是哪个物品
+     *
+     * @param is 需要注册的物品
+     * @return ItemData 用于判断调用事件是哪个物品
+     */
     public static ItemData RegisterUseItemEvent(ItemStack is) {
         if (is == null) {
             return null;
@@ -45,6 +51,11 @@ public abstract class Utils {
     }
 
     //移除注册物品 利用注册时的返回值
+    /**
+     * 移除注册物品 利用注册时的返回值 ItemData
+     *
+     * @param ID 移除注册物品
+     */
     public static void UnregisterUseItemEvent(ItemData ID) {
         if (Data.ItemDatas.contains(ID)) {
             Data.ItemDatas.remove(ID);
@@ -53,6 +64,13 @@ public abstract class Utils {
 
     //创建一个以tick计时的时钟 将在(long tick)后调用事件 CountDounEvent
     //仅设置时间 20tick=1s 可通过返回值取消以及获取标识ID
+    /**
+     * 创建一个以tick计时的时钟 将在(long tick)后调用事件 CountDounEvent 仅设置时间 20tick=1s
+     * 可通过返回值取消以及获取标识ID
+     *
+     * @param tick 20tick=1s
+     * @return {@link CountDownTask}
+     */
     public static CountDownTask CreateCountDown(long tick) {
         CountDownTask cdt = new CountDownTask(tick);
         cdt.runTaskTimer(Data.plugin, 0l, tick);
@@ -60,6 +78,13 @@ public abstract class Utils {
     }
 
     //设置玩家与时间  事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
+    /**
+     * 设置玩家与时间 事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
+     *
+     * @param p 玩家
+     * @param tick 20tick=1s
+     * @return {@link CountDownTask}
+     */
     public static CountDownTask CreateCountDown(Player p, long tick) {
         CountDownTask cdt = new CountDownTask(p, tick);
         cdt.runTaskTimer(Data.plugin, 0l, tick);
@@ -67,6 +92,13 @@ public abstract class Utils {
     }
 
     //指定ID与时间   注意不要重复ID哦
+    /**
+     * 指定ID与时间 注意不要重复ID
+     *
+     * @param id ID
+     * @param tick 20tick=1s
+     * @return {@link CountDownTask}
+     */
     public static CountDownTask CreateCountDown(long id, long tick) {
         CountDownTask cdt = new CountDownTask(id, tick);
         cdt.runTaskTimer(Data.plugin, 0l, tick);
@@ -74,6 +106,14 @@ public abstract class Utils {
     }
     //指定ID,玩家,时间
 
+    /**
+     * 指定ID,玩家,时间
+     *
+     * @param id ID
+     * @param p 玩家
+     * @param tick 20tick=1s
+     * @return {@link CountDownTask}
+     */
     public static CountDownTask CreateCountDown(long id, Player p, long tick) {
         CountDownTask cdt = new CountDownTask(id, p, tick);
         cdt.runTaskTimer(Data.plugin, 0l, tick);
@@ -82,6 +122,14 @@ public abstract class Utils {
 
     /* 配置文件物品解析
      * 格式: - ID 数量 损伤值(Name:名字 Lore:Lore)
+     */
+    /**
+     * 配置文件物品解析 格式: ID 数量 损伤值(Name:名字 Lore:Lore)
+     *
+     * @param config 配置文件
+     * @param path 路径
+     * @return List<ItemStack> 按顺序读取的ItemStack
+     * @deprecated 已经不使用
      */
     @Deprecated
     public static List<ItemStack> AnalyticalItems(FileConfiguration config, String path) {
@@ -161,6 +209,12 @@ public abstract class Utils {
     /* 配置文件物品解析
      * 格式: - ID 数量 损伤值 Name:名字 Lore:Lore
      */
+    /**
+     * 配置文件物品解析
+     * 格式: ID 数量 损伤值 Name:名字 Lore:Lore
+     * @param s String 字符串
+     * @return ItemStack
+     */
     public static ItemStack AnalyticalItem_2(String s) {
         ItemStack item;
         try {
@@ -185,7 +239,7 @@ public abstract class Utils {
             }
             if (i == 2) {
                 try {
-                       item.setDurability(Short.valueOf(data).shortValue());
+                    item.setDurability(Short.valueOf(data).shortValue());
                 } catch (NumberFormatException e) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l在读取物品: " + s + " 时出现错误"));
                 }
@@ -222,6 +276,12 @@ public abstract class Utils {
         return item;
     }
 
+    /**
+     * 批量解析
+     * @param config 配置文件
+     * @param path 路径
+     * @return List<ItemStack> 按顺序读取的ItemStack
+     */
     public static List<ItemStack> AnalyticalItems_2(FileConfiguration config, String path) {
         if (!config.isList(path)) {
             return null;
@@ -237,6 +297,12 @@ public abstract class Utils {
         return ItemList;
     }
 
+    /**
+     * 单独解析
+     * @param s String字符串
+     * @return ItemStack
+     * @deprecated 已经不使用
+     */
     @Deprecated
     public static ItemStack AnalyticalItem(String s) {
         int index = s.indexOf(" ");

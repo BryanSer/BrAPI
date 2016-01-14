@@ -27,14 +27,25 @@ public class PlayerUseItemEvent extends Event {
         p.getInventory().getItem(0);
     }
 
+    /**
+     * 返回使用的物品
+     * @return
+     */
     public ItemStack getItem() {
         return this.item;
     }
 
+    /**
+     * 返回玩家
+     * @return
+     */
     public Player getPlayer() {
         return this.p;
     }
 
+    /**
+     * 移除一个物品
+     */
     public void removeItem() {
         if (this.getPlayer().getItemInHand().getAmount() > 1) {
             this.getPlayer().getItemInHand().setAmount(p.getItemInHand().getAmount() - 1);
@@ -46,6 +57,10 @@ public class PlayerUseItemEvent extends Event {
         }
     }
 
+    /**
+     * 移除指定数量的物品
+     * @param i 数量
+     */
     public void removeItem(int i) {
         if (i <= 0) {
             return;
@@ -60,6 +75,9 @@ public class PlayerUseItemEvent extends Event {
         }
     }
 
+    /**
+     * 移除所有这个物品
+     */
     public void removeAllItem() {
         this.getPlayer().setItemInHand(null);
     }

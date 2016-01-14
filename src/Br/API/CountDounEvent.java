@@ -34,10 +34,18 @@ public class CountDounEvent extends Event {
         this.P = p;
     }
 
+    /**
+     *返回识别ID
+     * @return 识别ID
+     */
     public long getID() {
         return this.ID;
     }
 
+    /**
+     * 返回玩家
+     * @return 玩家
+     */
     public Player getPlayer() {
         return this.P;
     }
