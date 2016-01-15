@@ -9,11 +9,16 @@ import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.material.Dye;
+import org.bukkit.material.Wool;
 
 /**
  *
@@ -34,7 +39,8 @@ public abstract class Utils {
     //注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent
     //返回值ItemData用于判断调用事件是哪个物品
     /**
-     * 注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent 返回值ItemData用于判断调用事件是哪个物品
+     * 注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent.
+     * 返回值ItemData用于判断调用事件是哪个物品.
      *
      * @param is 需要注册的物品
      * @return ItemData 用于判断调用事件是哪个物品
@@ -52,7 +58,8 @@ public abstract class Utils {
 
     //移除注册物品 利用注册时的返回值
     /**
-     * 移除注册物品 利用注册时的返回值 ItemData
+     * 移除注册物品.
+     * 利用注册时的返回值 ItemData .
      *
      * @param ID 移除注册物品
      */
@@ -62,11 +69,11 @@ public abstract class Utils {
         }
     }
 
-    //创建一个以tick计时的时钟 将在(long tick)后调用事件 CountDounEvent
-    //仅设置时间 20tick=1s 可通过返回值取消以及获取标识ID
+    //创建一个以tick计时的时钟 将在(long tick)后调用事件 CountDounEvent.
+    //仅设置时间 20tick=1s 可通过返回值取消以及获取标识ID.
     /**
-     * 创建一个以tick计时的时钟 将在(long tick)后调用事件 CountDounEvent 仅设置时间 20tick=1s
-     * 可通过返回值取消以及获取标识ID
+     * 创建一个以tick计时的时钟 将在(long tick)后调用事件 CountDounEvent 仅设置时间 20tick=1s.
+     * 可通过返回值取消以及获取标识ID.
      *
      * @param tick 20tick=1s
      * @return {@link CountDownTask}
@@ -79,7 +86,8 @@ public abstract class Utils {
 
     //设置玩家与时间  事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
     /**
-     * 设置玩家与时间 事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
+     * 设置玩家与时间.
+     * 事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
      *
      * @param p 玩家
      * @param tick 20tick=1s
@@ -124,7 +132,7 @@ public abstract class Utils {
      * 格式: - ID 数量 损伤值(Name:名字 Lore:Lore)
      */
     /**
-     * 配置文件物品解析 格式: ID 数量 损伤值(Name:名字 Lore:Lore)
+     * 配置文件物品解析. 格式: ID 数量 损伤值(Name:名字 Lore:Lore)
      *
      * @param config 配置文件
      * @param path 路径
@@ -210,8 +218,10 @@ public abstract class Utils {
      * 格式: - ID 数量 损伤值 Name:名字 Lore:Lore
      */
     /**
-     * 配置文件物品解析
-     * 格式: ID 数量 损伤值 Name:名字 Lore:Lore
+     * 配置文件物品解析.<p>
+     * 格式: ID 数量 损伤值
+     * <p>
+     * 可选: Name:名字 Lore:Lore Color:RED(用于染料羊毛) 或 Color:RGB(用于皮革)
      * @param s String 字符串
      * @return ItemStack
      */
@@ -270,6 +280,27 @@ public abstract class Utils {
                 im.setLore(LoreList);
                 item.setItemMeta(im);
                 continue;
+            }
+            if(data.toLowerCase().contains("color:")){
+                data = data.substring(data.indexOf(":") + 1);
+                if(item.getData() instanceof Dye){
+                    Dye d = (Dye) item.getData();
+                    d.setColor(DyeColor.valueOf(data));
+                    item.setData(d);
+                    continue;
+                }
+                if(item.getData() instanceof Wool){
+                    Wool w = (Wool) item.getData();
+                    w.setColor(DyeColor.valueOf(data));
+                    item.setData(w);
+                    continue;
+                }
+                if(item.getItemMeta() instanceof LeatherArmorMeta){
+                    LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
+                    lam.setColor(Color.fromRGB(Integer.valueOf(data).intValue()));
+                    item.setItemMeta(lam);
+                    continue;
+                }
             }
         }
         Bukkit.getConsoleSender().sendMessage(item.toString());
