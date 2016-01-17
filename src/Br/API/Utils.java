@@ -25,17 +25,6 @@ import org.bukkit.material.Wool;
  * @author Bryan_lzh
  */
 public abstract class Utils {
-
-    /*  final public static int d0 = 1;
-     final public static int d1 = 2;
-     final public static int d2 = 4;
-     final public static int d3 = 8;
-     final public static int d4 = 16;
-     final public static int d5 = 32;
-     final public static int d6 = 64;
-     final public static int d7 = 128;
-     final public static int d8 = 256;
-     final public static int d9 = 512;*/
     //注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent
     //返回值ItemData用于判断调用事件是哪个物品
     /**
