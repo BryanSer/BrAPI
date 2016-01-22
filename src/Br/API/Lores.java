@@ -96,9 +96,7 @@ public abstract class Lores {
                     l.addAll(Arrays.asList(s));
                     im.setLore(l);
                 } else {
-                    List<String> l = new ArrayList<>();
-                    l.addAll(Arrays.asList(s));
-                    im.setLore(l);
+                    return is;
                 }
             } else {
                 List<String> l = new ArrayList<>();
