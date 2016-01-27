@@ -14,12 +14,9 @@ import org.bukkit.inventory.ItemStack;
  */
 public abstract class Data {
 
-    public static List<ItemData> ItemDatas;
+    public static List<ItemData> ItemDatas= new ArrayList<>();
     public static Main plugin;
     
-    public static void initialization(){
-        Data.ItemDatas = new ArrayList<>();
-    }
     
     public static ItemData Traversal(ItemStack is) {
         if (is == null) {
