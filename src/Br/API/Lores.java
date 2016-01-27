@@ -111,6 +111,7 @@ public abstract class Lores {
 
     /**
      * 添加Lore
+     *
      * @param is 需要设置的物品
      * @param s 待添加的String
      * @return ItemStack
@@ -119,7 +120,14 @@ public abstract class Lores {
         if (is != null) {
             s = ChatColor.translateAlternateColorCodes('&', s);
             ItemMeta im = is.getItemMeta();
-            List<String> l = im.getLore();
+            if (im.hasLore()) {
+                List<String> l = im.getLore();
+                l.add(s);
+                im.setLore(l);
+                is.setItemMeta(im);
+                return is;
+            }
+            List<String> l = new ArrayList<>();
             l.add(s);
             im.setLore(l);
             is.setItemMeta(im);
@@ -130,6 +138,7 @@ public abstract class Lores {
 
     /**
      * 移除指定行的Lore
+     *
      * @param is 需要移除的物品
      * @param index 行数
      * @return ItemStack
@@ -148,6 +157,7 @@ public abstract class Lores {
 
     /**
      * 移除全部的Lore
+     *
      * @param is 需要移除的物品
      * @return ItemStack
      */
@@ -163,6 +173,7 @@ public abstract class Lores {
 
     /**
      * 为指定行数设置Lore
+     *
      * @param is 需要设置的物品
      * @param index 指定的行数
      * @param s 字符串
@@ -182,6 +193,7 @@ public abstract class Lores {
 
     /**
      * 替换指定的Lore
+     *
      * @param is 需要替换的物品
      * @param old 原Lore
      * @param newString 新Lore

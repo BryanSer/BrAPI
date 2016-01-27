@@ -33,8 +33,8 @@ public class Main extends JavaPlugin {
         if (cmd.getName().equalsIgnoreCase("BrAPI")) {
             sender.sendMessage(new String[]{
                         ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------"),
-                        ChatColor.translateAlternateColorCodes('&', "&aBrAPI已安装 版本: 1.1"),
-                        ChatColor.translateAlternateColorCodes('&', "&aBrAPI has been installed, Version: 1.1"),
+                        ChatColor.translateAlternateColorCodes('&', "&aBrAPI已安装 版本: "+this.getDescription().getVersion()),
+                        ChatColor.translateAlternateColorCodes('&', "&aBrAPI has been installed, Version: "+this.getDescription().getVersion()),
                         ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------"),});
             return true;
         }
