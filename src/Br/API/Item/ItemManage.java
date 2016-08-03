@@ -24,7 +24,7 @@ import org.yaml.snakeyaml.DumperOptions;
  *
  * @author Bryan_lzh
  */
-public class ItemManage {
+public abstract class ItemManage {
 
     protected static Map<String, ItemData> ItemDatas = new HashMap<>();
 
@@ -32,10 +32,10 @@ public class ItemManage {
     public static File saveFolder;
 
     public static ItemData createItem(ItemStack is) {
-        if (hasData(is)) {
+        if (ItemManage.hasData(is)) {
             return ItemManage.getItemByItemStack(is);
         }
-        ItemData id = new ItemData(ItemManage.createName(is), is);
+        ItemData id = new ItemData(ItemManage.createName(is), is.clone());
         ItemManage.ItemDatas.put(id.getUniqueID(), id);
         return id;
     }

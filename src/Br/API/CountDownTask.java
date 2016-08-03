@@ -21,23 +21,26 @@ public class CountDownTask extends BukkitRunnable {
     private int type;
 
     /**
-     * 返回总tick 
-     * @return 总tick 
+     * 返回总tick
+     *
+     * @return 总tick
      */
     public long getTick() {
         return this.tick;
     }
 
     /**
-     * 返回识别ID 
-     * @return 识别ID 
+     * 返回识别ID
+     *
+     * @return 识别ID
      */
     public long getID() {
         return this.ID;
     }
 
-    /** 
+    /**
      * 返回玩家
+     *
      * @return 玩家
      */
     public Player getPlayer() {
@@ -46,6 +49,7 @@ public class CountDownTask extends BukkitRunnable {
 
     /**
      * 是否有玩家
+     *
      * @return 布尔值
      */
     public boolean hasPlayer() {
@@ -85,20 +89,17 @@ public class CountDownTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (this.tick < 1) {
-            switch (this.type) {
-                case 1:
-                    Bukkit.getPluginManager().callEvent(new CountDounEvent(this.P));
-                    break;
-                case 2:
-                    Bukkit.getPluginManager().callEvent(new CountDounEvent(this.ID));
-                    break;
-                case 3:
-                    Bukkit.getPluginManager().callEvent(new CountDounEvent(this.P, this.ID));
-                    break;
-            }
-            this.cancel();
+        switch (this.type) {
+            case 1:
+                Bukkit.getPluginManager().callEvent(new CountDounEvent(this.P));
+                break;
+            case 2:
+                Bukkit.getPluginManager().callEvent(new CountDounEvent(this.ID));
+                break;
+            case 3:
+                Bukkit.getPluginManager().callEvent(new CountDounEvent(this.P, this.ID));
+                break;
         }
-        this.tick--;
+        this.cancel();
     }
 }

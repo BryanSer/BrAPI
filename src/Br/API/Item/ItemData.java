@@ -37,7 +37,7 @@ public class ItemData {
     }
 
     public ItemStack getItemStack() {
-        return this.ItemStack;
+        return this.ItemStack.clone();
     }
 
     @Override

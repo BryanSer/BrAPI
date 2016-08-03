@@ -75,6 +75,6 @@ public abstract class PlayerInventorySave {
      * 移除全部
      */
     public static void removeAll(){
-        PlayerInventorySave.PI = new HashMap<>();
+        PlayerInventorySave.PI.clear();
     }
 }

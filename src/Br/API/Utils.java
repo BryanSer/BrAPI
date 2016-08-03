@@ -26,21 +26,77 @@ import org.bukkit.material.Wool;
  */
 public abstract class Utils {
 
-    /*  final public static int d0 = 1;
-     final public static int d1 = 2;
-     final public static int d2 = 4;
-     final public static int d3 = 8;
-     final public static int d4 = 16;
-     final public static int d5 = 32;
-     final public static int d6 = 64;
-     final public static int d7 = 128;
-     final public static int d8 = 256;
-     final public static int d9 = 512;*/
+    /**
+     * 安全的添加物品到玩家背包,如果玩家背包满了,会将物品丢弃到地上
+     *
+     * @param pPlayer 玩家
+     * @param pItem 物品
+     */
+    public static void safeGiveItem(Player pPlayer, ItemStack pItem) {
+        if (pPlayer == null || pItem == null) {
+            return;
+        }
+        if (pPlayer.getInventory().firstEmpty() == -1) { // 背包满了
+            if (pItem.getMaxStackSize() == 1) {
+                Utils.safeDropItem(pPlayer, pItem);
+                return;
+            }
+        }
+        int allowCount = 0;
+        for (ItemStack sInvItem : pPlayer.getInventory().getContents()) {
+            if (sInvItem != null && sInvItem.getType() != Material.AIR) {
+                if (sInvItem.isSimilar(pItem)) {
+                    allowCount += sInvItem.getMaxStackSize() - sInvItem.getAmount();
+                }
+            } else {
+                allowCount += pItem.getMaxStackSize();
+            }
+            if (allowCount >= pItem.getAmount()) {
+                break;
+            }
+        }
+        if (allowCount < pItem.getAmount()) {
+            ItemStack dropItems = pItem.clone();
+            dropItems.setAmount(pItem.getAmount() - allowCount);
+            pItem.setAmount(allowCount);
+            Utils.safeDropItem(pPlayer, dropItems);
+        }
+
+        for (int i = 0; i < pItem.getAmount() / pItem.getMaxStackSize(); i++) {
+            ItemStack giveItem = pItem.clone();
+            giveItem.setAmount(giveItem.getMaxStackSize());
+            pPlayer.getInventory().addItem(giveItem);
+        }
+        if (pItem.getMaxStackSize() > 1) {
+            int leftItemCount = pItem.getAmount() % pItem.getMaxStackSize();
+            if (leftItemCount != 0) {
+                ItemStack giveItem = pItem.clone();
+                giveItem.setAmount(leftItemCount);
+                pPlayer.getInventory().addItem(giveItem);
+            }
+        }
+    }
+
+    public static void safeDropItem(Player pPlayer, ItemStack pItem) {
+        for (int i = 0; i < pItem.getAmount() / pItem.getMaxStackSize(); i++) {
+            ItemStack dropItem = pItem.clone();
+            dropItem.setAmount(dropItem.getMaxStackSize());
+            pPlayer.getWorld().dropItem(pPlayer.getLocation(), dropItem);
+        }
+        if (pItem.getMaxStackSize() > 1) {
+            int leftItemCount = pItem.getAmount() % pItem.getMaxStackSize();
+            if (leftItemCount != 0) {
+                ItemStack dropItem = pItem.clone();
+                dropItem.setAmount(leftItemCount);
+                pPlayer.getWorld().dropItem(pPlayer.getLocation(), dropItem);
+            }
+        }
+    }
+
     //注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent
     //返回值ItemData用于判断调用事件是哪个物品
     /**
-     * 注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent.
-     * 返回值ItemData用于判断调用事件是哪个物品.
+     * 注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent. 返回值ItemData用于判断调用事件是哪个物品.
      *
      * @param is 需要注册的物品
      * @return ItemData 用于判断调用事件是哪个物品
@@ -58,8 +114,7 @@ public abstract class Utils {
 
     //移除注册物品 利用注册时的返回值
     /**
-     * 移除注册物品.
-     * 利用注册时的返回值 ItemData .
+     * 移除注册物品. 利用注册时的返回值 ItemData .
      *
      * @param ID 移除注册物品
      */
@@ -80,14 +135,13 @@ public abstract class Utils {
      */
     public static CountDownTask CreateCountDown(long tick) {
         CountDownTask cdt = new CountDownTask(tick);
-        cdt.runTaskTimer(Data.plugin, 0l, tick);
+        cdt.runTaskLater(Data.plugin, tick);
         return cdt;
     }
 
     //设置玩家与时间  事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
     /**
-     * 设置玩家与时间.
-     * 事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
+     * 设置玩家与时间. 事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
      *
      * @param p 玩家
      * @param tick 20tick=1s
@@ -95,7 +149,7 @@ public abstract class Utils {
      */
     public static CountDownTask CreateCountDown(Player p, long tick) {
         CountDownTask cdt = new CountDownTask(p, tick);
-        cdt.runTaskTimer(Data.plugin, 0l, tick);
+        cdt.runTaskLater(Data.plugin, tick);
         return cdt;
     }
 
@@ -109,7 +163,7 @@ public abstract class Utils {
      */
     public static CountDownTask CreateCountDown(long id, long tick) {
         CountDownTask cdt = new CountDownTask(id, tick);
-        cdt.runTaskTimer(Data.plugin, 0l, tick);
+        cdt.runTaskLater(Data.plugin, tick);
         return cdt;
     }
     //指定ID,玩家,时间
@@ -124,7 +178,7 @@ public abstract class Utils {
      */
     public static CountDownTask CreateCountDown(long id, Player p, long tick) {
         CountDownTask cdt = new CountDownTask(id, p, tick);
-        cdt.runTaskTimer(Data.plugin, 0l, tick);
+        cdt.runTaskLater(Data.plugin, tick);
         return cdt;
     }
 
@@ -222,6 +276,7 @@ public abstract class Utils {
      * 格式: ID 数量 损伤值
      * <p>
      * 可选: Name:名字 Lore:Lore Color:RED(用于染料羊毛) 或 Color:RGB(用于皮革)
+     *
      * @param s String 字符串
      * @return ItemStack
      */
@@ -249,7 +304,7 @@ public abstract class Utils {
             }
             if (i == 2) {
                 try {
-                    item.setDurability(Short.valueOf(data).shortValue());
+                    item.setDurability(Short.valueOf(data));
                 } catch (NumberFormatException e) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l在读取物品: " + s + " 时出现错误"));
                 }
@@ -281,23 +336,23 @@ public abstract class Utils {
                 item.setItemMeta(im);
                 continue;
             }
-            if(data.toLowerCase().contains("color:")){
+            if (data.toLowerCase().contains("color:")) {
                 data = data.substring(data.indexOf(":") + 1);
-                if(item.getData() instanceof Dye){
+                if (item.getData() instanceof Dye) {
                     Dye d = (Dye) item.getData();
                     d.setColor(DyeColor.valueOf(data));
                     item.setData(d);
                     continue;
                 }
-                if(item.getData() instanceof Wool){
+                if (item.getData() instanceof Wool) {
                     Wool w = (Wool) item.getData();
                     w.setColor(DyeColor.valueOf(data));
                     item.setData(w);
                     continue;
                 }
-                if(item.getItemMeta() instanceof LeatherArmorMeta){
+                if (item.getItemMeta() instanceof LeatherArmorMeta) {
                     LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
-                    lam.setColor(Color.fromRGB(Integer.valueOf(data).intValue()));
+                    lam.setColor(Color.fromRGB(Integer.valueOf(data)));
                     item.setItemMeta(lam);
                     continue;
                 }
@@ -309,6 +364,7 @@ public abstract class Utils {
 
     /**
      * 批量解析
+     *
      * @param config 配置文件
      * @param path 路径
      * @return List<ItemStack> 按顺序读取的ItemStack
@@ -330,6 +386,7 @@ public abstract class Utils {
 
     /**
      * 单独解析
+     *
      * @param s String字符串
      * @return ItemStack
      * @deprecated 已经不使用
@@ -370,7 +427,7 @@ public abstract class Utils {
                 }
                 String lore = s.substring($lore1 + 5, $lore2);
                 List<String> LoreList = new ArrayList<>();
-                if (lore.indexOf("|") != -1) {
+                if (lore.contains("|")) {
                     String lores[] = lore.split("\\|");
                     int o = 0;
                     for (String os : lores) {
@@ -394,5 +451,13 @@ public abstract class Utils {
             i.setDurability((short) durability);
             return i;
         }
+    }
+
+    public static String getItemName(ItemStack re) {
+        return ((re.hasItemMeta())
+                ? ((re.getItemMeta().hasDisplayName())
+                        ? re.getItemMeta().getDisplayName()
+                        : "物品ID为 " + re.getTypeId() + " 的物品")
+                : "物品ID为 " + re.getTypeId() + " 的物品");
     }
 }

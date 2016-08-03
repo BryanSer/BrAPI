@@ -45,7 +45,7 @@ public class ItemData {
         if (i == null) {
             return false;
         }
-        ItemStack is = i;
+        ItemStack is = i.clone();
         is.setAmount(1);
         if (this.getItem().isSimilar(is)) {
             return true;

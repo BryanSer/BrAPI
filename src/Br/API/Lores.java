@@ -46,7 +46,7 @@ public abstract class Lores {
             is.setItemMeta(im);
             return is;
         }
-        return null;
+        throw new NullPointerException();
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class Lores {
             is.setItemMeta(im);
             return is;
         }
-        return null;
+        throw new NullPointerException();
     }
 //                                                          强制替换
 
@@ -106,7 +106,7 @@ public abstract class Lores {
             is.setItemMeta(im);
             return is;
         }
-        return null;
+        throw new NullPointerException();
     }
 
     /**
@@ -133,7 +133,7 @@ public abstract class Lores {
             is.setItemMeta(im);
             return is;
         }
-        return null;
+        throw new NullPointerException();
     }
 
     /**
@@ -168,7 +168,7 @@ public abstract class Lores {
             is.setItemMeta(im);
             return is;
         }
-        return null;
+        throw new NullPointerException();
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class Lores {
             is.setItemMeta(im);
             return is;
         }
-        return null;
+        throw new NullPointerException();
     }
 
     /**
@@ -200,6 +200,9 @@ public abstract class Lores {
      * @return ItemStack
      */
     public static ItemStack replaceLore(ItemStack is, String old, String newString) {
+        if (is == null) {
+            throw new NullPointerException();
+        }
         ItemMeta im = is.getItemMeta();
         List<String> lore = im.getLore();
         if (!lore.contains(old)) {
