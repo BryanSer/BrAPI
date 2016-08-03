@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * 可排序的Map
  * @author Bryan_lzh
  */
 public class SortableMap<K, V extends Integer> implements Map {
