@@ -29,19 +29,32 @@ public class ItemData {
                 }
             }
         }*/
-      //  ItemManage.ItemDatas.put(u, this);
+        //  ItemManage.ItemDatas.put(u, this);
     }
 
+    /**
+     * 返回唯一值
+     *
+     * @return
+     */
     public String getUniqueID() {
         return this.UniqueID;
     }
 
+    /**
+     * 返回物品堆叠
+     *
+     * @return
+     */
     public ItemStack getItemStack() {
         return this.ItemStack.clone();
     }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (!(o instanceof ItemData)) {
             return false;
         }

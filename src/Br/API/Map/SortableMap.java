@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 可排序的Map
- * @author Bryan_lzh
+ *
+ * @author Administrator
  */
 public class SortableMap<K, V extends Integer> implements Map {
 
@@ -84,6 +84,10 @@ public class SortableMap<K, V extends Integer> implements Map {
         return map.entrySet();
     }
 
+    /**
+     * 返回排序的结果
+     * @return
+     */
     public Map<K, Integer> sortMapByValue() {
         Map<K, Integer> sortedMap = new LinkedHashMap<>();
         List<Map.Entry<K, Integer>> entryList = new ArrayList<>();

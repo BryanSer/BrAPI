@@ -1,6 +1,6 @@
 package Br.API;
 
-import Br.API.Item.ItemManage;
+import Br.API.Item.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,12 +18,12 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         Data.plugin = this;
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
-        ItemManage.loadConfig();
+        ItemManager.loadConfig();
     }
 
     @Override
     public void onDisable() {
-        ItemManage.saveData();
+        ItemManager.saveData();
         HandlerList.unregisterAll(this);
     }
 

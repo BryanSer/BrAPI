@@ -4,14 +4,17 @@
  */
 package Br.API;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,6 +39,7 @@ public abstract class Utils {
         if (pPlayer == null || pItem == null) {
             return;
         }
+        pItem = pItem.clone();
         if (pPlayer.getInventory().firstEmpty() == -1) { // 背包满了
             if (pItem.getMaxStackSize() == 1) {
                 Utils.safeDropItem(pPlayer, pItem);
@@ -61,11 +65,12 @@ public abstract class Utils {
             pItem.setAmount(allowCount);
             Utils.safeDropItem(pPlayer, dropItems);
         }
-
-        for (int i = 0; i < pItem.getAmount() / pItem.getMaxStackSize(); i++) {
-            ItemStack giveItem = pItem.clone();
-            giveItem.setAmount(giveItem.getMaxStackSize());
-            pPlayer.getInventory().addItem(giveItem);
+        if (pItem.getMaxStackSize() != 0) {
+            for (int i = 0; i < pItem.getAmount() / pItem.getMaxStackSize(); i++) {
+                ItemStack giveItem = pItem.clone();
+                giveItem.setAmount(giveItem.getMaxStackSize());
+                pPlayer.getInventory().addItem(giveItem);
+            }
         }
         if (pItem.getMaxStackSize() > 1) {
             int leftItemCount = pItem.getAmount() % pItem.getMaxStackSize();
@@ -77,20 +82,18 @@ public abstract class Utils {
         }
     }
 
-    public static void safeDropItem(Player pPlayer, ItemStack pItem) {
-        for (int i = 0; i < pItem.getAmount() / pItem.getMaxStackSize(); i++) {
-            ItemStack dropItem = pItem.clone();
-            dropItem.setAmount(dropItem.getMaxStackSize());
-            pPlayer.getWorld().dropItem(pPlayer.getLocation(), dropItem);
+    public static void safeDropItem(Player p, ItemStack is) {
+        if (is.getAmount() > 64) {
+            do {
+                ItemStack s = is.clone();
+                s.setAmount(64);
+                p.getWorld().dropItem(p.getLocation(), s);
+                is.setAmount(is.getAmount() - 64);
+            } while (is.getAmount() <= 64);
+            p.getWorld().dropItem(p.getLocation(), is);
+            return;
         }
-        if (pItem.getMaxStackSize() > 1) {
-            int leftItemCount = pItem.getAmount() % pItem.getMaxStackSize();
-            if (leftItemCount != 0) {
-                ItemStack dropItem = pItem.clone();
-                dropItem.setAmount(leftItemCount);
-                pPlayer.getWorld().dropItem(pPlayer.getLocation(), dropItem);
-            }
-        }
+        p.getWorld().dropItem(p.getLocation(), is);
     }
 
     //注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent
@@ -238,7 +241,7 @@ public abstract class Utils {
                     }
                     String lore = s.substring($lore1 + 5, $lore2);
                     List<String> LoreList = new ArrayList<>();
-                    if (lore.indexOf("|") != -1) {
+                    if (lore.contains("|")) {
                         String lores[] = lore.split("\\|");
                         int o = 0;
                         for (String os : lores) {
@@ -256,13 +259,11 @@ public abstract class Utils {
                 }
                 i.setItemMeta(IM);
                 ItemList.add(i);
-                continue;
             } else {
                 ItemStack i = new ItemStack(Material.getMaterial(id));
                 i.setAmount(amount);
                 i.setDurability((short) durability);
                 ItemList.add(i);
-                continue;
             }
         }
         return ItemList;
@@ -459,5 +460,23 @@ public abstract class Utils {
                         ? re.getItemMeta().getDisplayName()
                         : "物品ID为 " + re.getTypeId() + " 的物品")
                 : "物品ID为 " + re.getTypeId() + " 的物品");
+    }
+
+    /**
+     * 合理的获取在线玩家~
+     *
+     * @return
+     */
+    public static Collection<Player> getOnlinePlayers() {
+        try {
+            Method onlinePlayerMethod = Server.class.getMethod("getOnlinePlayers");
+            if (onlinePlayerMethod.getReturnType().equals(Collection.class)) {
+                return (Collection<Player>) onlinePlayerMethod.invoke(Bukkit.getServer());
+            } else {
+                return Arrays.asList((Player[]) onlinePlayerMethod.invoke(Bukkit.getServer()));
+            }
+        } catch (Exception ex) {
+        }
+        return new ArrayList<>();
     }
 }

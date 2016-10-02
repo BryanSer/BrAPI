@@ -1,9 +1,10 @@
 name: BrAPI
 authors: ['Bryan_lzh']
 main: Br.API.Main
-version: 1.4.2
+version: 1.6
 
 commands:
   BrAPI:
+    aliases: [bra]
     description: 主命令
     usage: /<command>

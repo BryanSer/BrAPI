@@ -44,6 +44,11 @@ public class TowwayMap<K, V> implements Map {
         return this.KtoV.get((K) key);
     }
 
+    /**
+     * 通过V找K
+     * @param value
+     * @return
+     */
     public K getKey(Object value) {
         return this.VtoK.get((V) value);
     }

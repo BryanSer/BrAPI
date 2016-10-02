@@ -27,19 +27,17 @@ public abstract class Lores {
     public static ItemStack Lore(ItemStack is, String lore) {
         if (is != null) {
             List<String> LoreList = new ArrayList<>();
-            if (lore.indexOf("|") != -1) {
+            if (lore.contains("|")) {
                 String lores[] = lore.split("\\|");
-                int o = 0;
                 for (String os : lores) {
-                    lores[o] = lores[o].replaceAll("_", " ");
-                    lores[o] = ChatColor.translateAlternateColorCodes('&', lores[o]);
-                    o++;
+                    os = os.replaceAll("_", " ");
+                    os = ChatColor.translateAlternateColorCodes('&', os);
+                    LoreList.add(os);
                 }
-                LoreList.addAll(Arrays.asList(lores));
             } else {
                 lore = lore.replaceAll("_", " ");
                 lore = ChatColor.translateAlternateColorCodes('&', lore);
-                LoreList.addAll(Arrays.asList(lore));
+                LoreList.add(lore);
             }
             ItemMeta im = is.getItemMeta();
             im.setLore(LoreList);
