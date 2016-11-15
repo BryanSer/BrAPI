@@ -109,9 +109,9 @@ public abstract class Utils {
             return null;
         }
         is.setAmount(1);
-        int size = Data.ItemDatas.size();
+        int size = PluginData.ItemDatas.size();
         ItemData ID = new ItemData(is, size + 1);
-        Data.ItemDatas.add(ID);
+        PluginData.ItemDatas.add(ID);
         return ID;
     }
 
@@ -122,8 +122,8 @@ public abstract class Utils {
      * @param ID 移除注册物品
      */
     public static void UnregisterUseItemEvent(ItemData ID) {
-        if (Data.ItemDatas.contains(ID)) {
-            Data.ItemDatas.remove(ID);
+        if (PluginData.ItemDatas.contains(ID)) {
+            PluginData.ItemDatas.remove(ID);
         }
     }
 
@@ -138,7 +138,7 @@ public abstract class Utils {
      */
     public static CountDownTask CreateCountDown(long tick) {
         CountDownTask cdt = new CountDownTask(tick);
-        cdt.runTaskLater(Data.plugin, tick);
+        cdt.runTaskLater(PluginData.plugin, tick);
         return cdt;
     }
 
@@ -152,7 +152,7 @@ public abstract class Utils {
      */
     public static CountDownTask CreateCountDown(Player p, long tick) {
         CountDownTask cdt = new CountDownTask(p, tick);
-        cdt.runTaskLater(Data.plugin, tick);
+        cdt.runTaskLater(PluginData.plugin, tick);
         return cdt;
     }
 
@@ -166,7 +166,7 @@ public abstract class Utils {
      */
     public static CountDownTask CreateCountDown(long id, long tick) {
         CountDownTask cdt = new CountDownTask(id, tick);
-        cdt.runTaskLater(Data.plugin, tick);
+        cdt.runTaskLater(PluginData.plugin, tick);
         return cdt;
     }
     //指定ID,玩家,时间
@@ -181,7 +181,7 @@ public abstract class Utils {
      */
     public static CountDownTask CreateCountDown(long id, Player p, long tick) {
         CountDownTask cdt = new CountDownTask(id, p, tick);
-        cdt.runTaskLater(Data.plugin, tick);
+        cdt.runTaskLater(PluginData.plugin, tick);
         return cdt;
     }
 

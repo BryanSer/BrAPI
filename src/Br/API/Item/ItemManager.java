@@ -118,7 +118,7 @@ public abstract class ItemManager {
 
     public static void loadConfig() {
         try {
-            File dataFolder = Br.API.Data.plugin.getDataFolder();
+            File dataFolder = Br.API.PluginData.plugin.getDataFolder();
             if (!dataFolder.exists()) {
                 dataFolder.mkdirs();
             }

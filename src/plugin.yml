@@ -1,7 +1,7 @@
 name: BrAPI
 authors: ['Bryan_lzh']
 main: Br.API.Main
-version: 1.6
+version: Release-2.0
 
 commands:
   BrAPI:
