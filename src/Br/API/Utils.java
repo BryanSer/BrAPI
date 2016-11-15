@@ -17,6 +17,9 @@ import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -96,6 +99,8 @@ public abstract class Utils {
         p.getWorld().dropItem(p.getLocation(), is);
     }
 
+    private static boolean registered = false;
+
     //注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent
     //返回值ItemData用于判断调用事件是哪个物品
     /**
@@ -105,6 +110,24 @@ public abstract class Utils {
      * @return ItemData 用于判断调用事件是哪个物品
      */
     public static ItemData RegisterUseItemEvent(ItemStack is) {
+        if (!registered) {
+            Bukkit.getPluginManager().registerEvents(
+                    new Listener() {
+                @EventHandler
+                public void UseItemEvent(PlayerInteractEvent evt) {
+                    if (!evt.hasItem()) {
+                        return;
+                    }
+                    ItemStack is = evt.getItem();
+                    ItemData ID = PluginData.Traversal(is);
+                    if (ID == null) {
+                        return;
+                    }
+                    PlayerUseItemEvent PUIE = new PlayerUseItemEvent(ID, evt.getPlayer());
+                    Bukkit.getPluginManager().callEvent(PUIE);
+                }
+            }, PluginData.plugin);
+        }
         if (is == null) {
             return null;
         }
