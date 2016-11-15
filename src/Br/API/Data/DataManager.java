@@ -21,7 +21,7 @@ import org.yaml.snakeyaml.DumperOptions;
 
 /**
  *
- * @author Administrator
+ * @author Bryan_lzh
  */
 public abstract class DataManager {
 
@@ -169,7 +169,13 @@ public abstract class DataManager {
         return ds;
     }
 
-    private static FileConfiguration toSafe(FileConfiguration config) {
+    /**
+     *
+     * @param config
+     * @author andylizi
+     * @return
+     */
+    public static FileConfiguration toSafe(FileConfiguration config) {
         DumperOptions yamlOptions = null;
         try {
             Field f = YamlConfiguration.class.getDeclaredField("yamlOptions");   //获取类YamlConfiguration里的匿名yamlOptions字段
