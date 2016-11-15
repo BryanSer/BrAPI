@@ -73,7 +73,8 @@ public class Main extends JavaPlugin {
                 ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------"),
                 ChatColor.translateAlternateColorCodes('&', "&aBrAPI已安装 版本: " + getDescription().getVersion()),
                 "§b当前依赖的插件数:" + PluginsAmount,
-                plugins, ChatColor.translateAlternateColorCodes('&', "&aBrAPI has been installed, Version: " + getDescription().getVersion()),
+                plugins,
+                ChatColor.translateAlternateColorCodes('&', "&aBrAPI has been installed, Version: " + getDescription().getVersion()),
                 ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------")
             });
 
