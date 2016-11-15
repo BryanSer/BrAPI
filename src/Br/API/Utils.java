@@ -127,6 +127,7 @@ public abstract class Utils {
                     Bukkit.getPluginManager().callEvent(PUIE);
                 }
             }, PluginData.plugin);
+            registered = true;
         }
         if (is == null) {
             return null;
