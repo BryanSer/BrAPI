@@ -109,17 +109,16 @@ public abstract class Utils {
      * @param is 需要注册的物品
      * @return ItemData 用于判断调用事件是哪个物品
      */
-    public static ItemData RegisterUseItemEvent(ItemStack is) {
+    public static ItemInfo RegisterUseItemEvent(ItemStack is) {
         if (!registered) {
-            Bukkit.getPluginManager().registerEvents(
-                    new Listener() {
+            Bukkit.getPluginManager().registerEvents(new Listener() {
                 @EventHandler
                 public void UseItemEvent(PlayerInteractEvent evt) {
                     if (!evt.hasItem()) {
                         return;
                     }
                     ItemStack is = evt.getItem();
-                    ItemData ID = PluginData.Traversal(is);
+                    ItemInfo ID = PluginData.Traversal(is);
                     if (ID == null) {
                         return;
                     }
@@ -134,7 +133,7 @@ public abstract class Utils {
         }
         is.setAmount(1);
         int size = PluginData.ItemDatas.size();
-        ItemData ID = new ItemData(is, size + 1);
+        ItemInfo ID = new ItemInfo(is, size + 1);
         PluginData.ItemDatas.add(ID);
         return ID;
     }
@@ -145,7 +144,7 @@ public abstract class Utils {
      *
      * @param ID 移除注册物品
      */
-    public static void UnregisterUseItemEvent(ItemData ID) {
+    public static void UnregisterUseItemEvent(ItemInfo ID) {
         if (PluginData.ItemDatas.contains(ID)) {
             PluginData.ItemDatas.remove(ID);
         }

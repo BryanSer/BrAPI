@@ -20,7 +20,7 @@ public class PlayerUseItemEvent extends Event {
     private Player p;
     private int ID;
 
-    public PlayerUseItemEvent(ItemData ID, Player p) {
+    public PlayerUseItemEvent(ItemInfo ID, Player p) {
         this.item = ID.getItem();
         this.p = p;
         this.ID = ID.getID();

@@ -15,14 +15,14 @@ import org.bukkit.inventory.ItemStack;
 public abstract class PluginData {
     
 
-    public static List<ItemData> ItemDatas = new ArrayList<>();
+    public static List<ItemInfo> ItemDatas = new ArrayList<>();
     public static Main plugin;
     
-    public static ItemData Traversal(ItemStack is) {
+    public static ItemInfo Traversal(ItemStack is) {
         if (is == null) {
             return null;
         }
-        for (ItemData id : PluginData.ItemDatas) {
+        for (ItemInfo id : PluginData.ItemDatas) {
             if (id.isSame(is)) {
                 return id;
             }
