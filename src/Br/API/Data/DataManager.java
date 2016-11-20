@@ -27,11 +27,20 @@ public abstract class DataManager {
 
     private static Map<String, DataService> Datas = new HashMap<>();
 
+    /**
+     * 注册插件数据<p>
+     * 将会覆盖原注册数据
+     *
+     * @param ds 数据
+     * @param p 插件
+     */
     public static void RegisterData(DataService ds, Plugin p) {
         DataManager.Datas.put(p.getName(), ds);
     }
 
     /**
+     * 注册插件数据<p>
+     * 将会覆盖原注册数据
      *
      * @param ds 储存的数据
      * @param p 插件或文件名
@@ -40,6 +49,12 @@ public abstract class DataManager {
         DataManager.Datas.put(p, ds);
     }
 
+    /**
+     * 按指定字符串返回储存的数据(不会读取硬盘里的)
+     *
+     * @param s
+     * @return DataService
+     */
     public static DataService getData(String s) {
         if (!DataManager.Datas.containsKey(s)) {
             return null;
@@ -47,13 +62,27 @@ public abstract class DataManager {
         return DataManager.Datas.get(s);
     }
 
-    public static DataService getData(Plugin s) {
-        if (!DataManager.Datas.containsKey(s.getName())) {
+    /**
+     * 按指定插件返回储存的数据(不会读取硬盘里的)
+     * <p>
+     * 与getData(p.getName())相同意义
+     *
+     * @param p
+     * @return DataService
+     */
+    public static DataService getData(Plugin p) {
+        if (!DataManager.Datas.containsKey(p.getName())) {
             return null;
         }
-        return DataManager.Datas.get(s.getName());
+        return DataManager.Datas.get(p.getName());
     }
 
+    /**
+     * 强制储存一个数据
+     *
+     * @param s 插件名或数据名
+     * @throws IOException
+     */
     public static void ForciblySave(String s) throws IOException {
         File dataFolder = PluginData.plugin.getDataFolder();
         if (!dataFolder.exists()) {

@@ -48,6 +48,7 @@ public class Main extends JavaPlugin {
                     return this.va;
                 }
             });
+            metrics.addGraph(g);
             metrics.start();
         } catch (IOException e) {
         }

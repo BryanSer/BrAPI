@@ -5,6 +5,7 @@
  */
 package Br.API.Item;
 
+import Br.API.Data.DataManager;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -127,27 +128,8 @@ public abstract class ItemManager {
                 dataFile.createNewFile();
             }
             Data = YamlConfiguration.loadConfiguration(dataFile);
-            DumperOptions yamlOptions = null;
-
-            Field f = YamlConfiguration.class.getDeclaredField("yamlOptions");
-            f.setAccessible(true);
-
-            yamlOptions = new DumperOptions() {
-                private TimeZone timeZone = TimeZone.getDefault();
-
-                @Override
-                public void setAllowUnicode(boolean allowUnicode) {
-                    super.setAllowUnicode(false);
-                }
-
-                @Override
-                public void setLineBreak(DumperOptions.LineBreak lineBreak) {
-                    super.setLineBreak(DumperOptions.LineBreak.getPlatformLineBreak());
-                }
-            };
-
-            yamlOptions.setLineBreak(DumperOptions.LineBreak.getPlatformLineBreak());
-            f.set(Data, yamlOptions);
+            Data = DataManager.toSafe(Data);
+            
             ItemManager.saveFolder = dataFile;
 
             if (Data.contains("Data")) {
@@ -156,7 +138,7 @@ public abstract class ItemManager {
                     ItemManager.ItemDatas.put(s, new ItemData(s, CS.getItemStack(s)));
                 }
             }
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | IOException ex) {
+        } catch (IllegalArgumentException | SecurityException | IOException ex) {
             Logger.getLogger(ItemManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

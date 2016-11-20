@@ -217,7 +217,7 @@ public abstract class Utils {
      * @param config 配置文件
      * @param path 路径
      * @return List<ItemStack> 按顺序读取的ItemStack
-     * @deprecated 已经不使用
+     * @deprecated 已经不使用 太SB了
      */
     @Deprecated
     public static List<ItemStack> AnalyticalItems(FileConfiguration config, String path) {
@@ -477,12 +477,18 @@ public abstract class Utils {
         }
     }
 
+    /**
+     * 获取方便表达的物品名称
+     *
+     * @param re
+     * @return
+     */
     public static String getItemName(ItemStack re) {
         return ((re.hasItemMeta())
                 ? ((re.getItemMeta().hasDisplayName())
-                        ? re.getItemMeta().getDisplayName()
-                        : "物品ID为 " + re.getTypeId() + " 的物品")
-                : "物品ID为 " + re.getTypeId() + " 的物品");
+                        ? re.getItemMeta().getDisplayName() + ":" + re.getDurability()
+                        : "物品ID为 " + re.getTypeId() + ":" + re.getDurability() + " 的物品")
+                : "物品ID为 " + re.getTypeId() + ":" + re.getDurability() + " 的物品");
     }
 
     /**

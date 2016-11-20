@@ -8,7 +8,7 @@ package Br.API.Item;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * 之前类名写错了
+ * @Deprecated 之前类名写错了
  * @author Administrator
  */
 @Deprecated
