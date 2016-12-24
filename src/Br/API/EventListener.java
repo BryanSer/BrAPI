@@ -22,10 +22,10 @@ public class EventListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent evt) {
         if (Reg) {
-            Main.RegisterMetrics();
             Reg = false;
+            Main.RegisterMetrics();
+
         }
     }
 
-    
 }
