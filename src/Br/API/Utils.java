@@ -110,6 +110,9 @@ public abstract class Utils {
      * @return ItemData 用于判断调用事件是哪个物品
      */
     public static ItemInfo RegisterUseItemEvent(ItemStack is) {
+        if (is == null) {
+            throw new NullPointerException();
+        }
         if (!registered) {
             Bukkit.getPluginManager().registerEvents(new Listener() {
                 @EventHandler
@@ -127,9 +130,6 @@ public abstract class Utils {
                 }
             }, PluginData.plugin);
             registered = true;
-        }
-        if (is == null) {
-            return null;
         }
         is.setAmount(1);
         int size = PluginData.ItemDatas.size();

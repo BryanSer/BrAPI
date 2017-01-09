@@ -5,6 +5,7 @@
 package Br.API;
 
 import Br.API.Item.ItemManager;
+import java.util.Objects;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -60,4 +61,25 @@ public class ItemInfo {
     public Br.API.Item.ItemData toItemData() {
         return ItemManager.createItem(item);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ItemInfo)) {
+            return false;
+        }
+        ItemInfo ii = (ItemInfo) obj;
+        if (obj.hashCode() == this.hashCode() && ii.ID == this.ID) {
+            return true;
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.item);
+        hash = 79 * hash + this.ID;
+        return hash;
+    }
+
 }

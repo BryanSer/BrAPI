@@ -18,17 +18,21 @@ public class PlayerUseItemEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private ItemStack item;
     private Player p;
-    private int ID;
+    private ItemInfo II;
 
     public PlayerUseItemEvent(ItemInfo ID, Player p) {
         this.item = ID.getItem();
         this.p = p;
-        this.ID = ID.getID();
-        p.getInventory().getItem(0);
+        this.II = ID;
+    }
+
+    public ItemInfo getItemInfo() {
+        return this.II;
     }
 
     /**
      * 返回使用的物品
+     *
      * @return
      */
     public ItemStack getItem() {
@@ -37,6 +41,7 @@ public class PlayerUseItemEvent extends Event {
 
     /**
      * 返回玩家
+     *
      * @return
      */
     public Player getPlayer() {
@@ -53,12 +58,13 @@ public class PlayerUseItemEvent extends Event {
             ItemStack is = new ItemStack(this.item);
             is.setAmount(1);
             this.getPlayer().getInventory().remove(is);
-            is=null;
+            is = null;
         }
     }
 
     /**
      * 移除指定数量的物品
+     *
      * @param i 数量
      */
     public void removeItem(int i) {
@@ -71,7 +77,7 @@ public class PlayerUseItemEvent extends Event {
             ItemStack is = new ItemStack(this.item);
             is.setAmount(i);
             this.getPlayer().getInventory().remove(is);
-            is=null;
+            is = null;
         }
     }
 

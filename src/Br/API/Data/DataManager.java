@@ -50,15 +50,22 @@ public abstract class DataManager {
     }
 
     /**
-     * 按指定字符串返回储存的数据(不会读取硬盘里的)
+     * 按指定字符串返回储存的数据(找不到将尝试读取)
      *
      * @param s
      * @return DataService
      */
     public static DataService getData(String s) {
         if (!DataManager.Datas.containsKey(s)) {
-            return null;
+            try {
+                LoadData(s, true);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(DataManager.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+            }
+            return DataManager.Datas.get(s);
         }
+
         return DataManager.Datas.get(s);
     }
 
@@ -71,10 +78,7 @@ public abstract class DataManager {
      * @return DataService
      */
     public static DataService getData(Plugin p) {
-        if (!DataManager.Datas.containsKey(p.getName())) {
-            return null;
-        }
-        return DataManager.Datas.get(p.getName());
+        return DataManager.getData(p.getName());
     }
 
     /**
@@ -207,10 +211,10 @@ public abstract class DataManager {
     public static FileConfiguration toSafe(FileConfiguration config) {
         DumperOptions yamlOptions = null;
         try {
-            Field f = YamlConfiguration.class.getDeclaredField("yamlOptions");   //获取类YamlConfiguration里的匿名yamlOptions字段
+            Field f = YamlConfiguration.class.getDeclaredField("yamlOptions");
             f.setAccessible(true);
 
-            yamlOptions = new DumperOptions() {  //将yamlOptions字段替换为一个DumperOptions的匿名内部类，里面替换了setAllowUnicode方法让其永远无法设置为true
+            yamlOptions = new DumperOptions() {
                 @Override
                 public void setAllowUnicode(boolean allowUnicode) {
                     super.setAllowUnicode(false);
@@ -223,7 +227,7 @@ public abstract class DataManager {
             };
 
             yamlOptions.setLineBreak(DumperOptions.LineBreak.getPlatformLineBreak());
-            f.set(config, yamlOptions); //把新的yamlOptions偷梁换柱回去
+            f.set(config, yamlOptions);
         } catch (ReflectiveOperationException ex) {
         }
         return config;
