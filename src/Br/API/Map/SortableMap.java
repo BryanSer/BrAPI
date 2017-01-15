@@ -19,10 +19,12 @@ import java.util.Set;
 /**
  *
  * @author Administrator
+ * @param <K>
+ * @param <V>
  */
-public class SortableMap<K, V extends Integer> implements Map {
+public class SortableMap<K, V extends Comparable> implements Map {
 
-    Map<K, Integer> map = new HashMap<>();
+    Map<K, V> map = new HashMap<>();
 
     @Override
     public int size() {
@@ -45,13 +47,13 @@ public class SortableMap<K, V extends Integer> implements Map {
     }
 
     @Override
-    public Integer get(Object key) {
+    public Comparable get(Object key) {
         return map.get(key);
     }
 
     @Override
     public Object put(Object key, Object value) {
-        return map.put((K) key, (Integer) value);
+        return map.put((K) key, (V) value);
     }
 
     @Override
@@ -80,23 +82,24 @@ public class SortableMap<K, V extends Integer> implements Map {
     }
 
     @Override
-    public Set<Entry<K, Integer>> entrySet() {
+    public Set<Entry<K, V>> entrySet() {
         return map.entrySet();
     }
 
     /**
      * 返回排序的结果
+     *
      * @return
      */
-    public Map<K, Integer> sortMapByValue() {
-        Map<K, Integer> sortedMap = new LinkedHashMap<>();
-        List<Map.Entry<K, Integer>> entryList = new ArrayList<>();
-        for (Entry<K, Integer> E : this.entrySet()) {
+    public Map<K, V> sortMapByValue() {
+        Map<K, V> sortedMap = new LinkedHashMap<>();
+        List<Map.Entry<K, V>> entryList = new ArrayList<>();
+        for (Entry<K, V> E : this.entrySet()) {
             entryList.add(E);
         }
         Collections.sort(entryList, new MapValueComparator());
-        Iterator<Map.Entry<K, Integer>> iter = entryList.iterator();
-        Map.Entry<K, Integer> tmpEntry = null;
+        Iterator<Map.Entry<K, V>> iter = entryList.iterator();
+        Map.Entry<K, V> tmpEntry = null;
         while (iter.hasNext()) {
             tmpEntry = iter.next();
             sortedMap.put(tmpEntry.getKey(), tmpEntry.getValue());
@@ -105,10 +108,10 @@ public class SortableMap<K, V extends Integer> implements Map {
     }
 }
 
-class MapValueComparator<K, V extends Integer> implements Comparator<Map.Entry<K, V>> {
+class MapValueComparator<K, V extends Comparable> implements Comparator<Map.Entry<K, V>> {
 
     @Override
     public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-        return o2.getValue() - o1.getValue();
+        return o2.getValue().compareTo(o1.getValue());
     }
 }

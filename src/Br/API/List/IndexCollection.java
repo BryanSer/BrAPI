@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * 用于按序号储存的容器
  * @author Administrator
  * @param <T>
  */
