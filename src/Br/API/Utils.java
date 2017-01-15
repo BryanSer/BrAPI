@@ -33,7 +33,8 @@ import org.bukkit.material.Wool;
 public abstract class Utils {
 
     /**
-     * 安全的添加物品到玩家背包,如果玩家背包满了,会将物品丢弃到地上
+     * 安全的添加物品到玩家背包,如果玩家背包满了.
+     * 会将物品丢弃到地上
      *
      * @param pPlayer 玩家
      * @param pItem 物品
