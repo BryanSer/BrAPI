@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * 用于按序号储存的容器
+ *
  * @author Administrator
  * @param <T>
  */
@@ -26,6 +27,7 @@ public class IndexCollection<T extends Indexable> implements Collection {
 
     /**
      * 请勿利用此返回值进行除读取外的数据操作
+     *
      * @return
      */
     public Map<Integer, T> getData() {
@@ -79,7 +81,11 @@ public class IndexCollection<T extends Indexable> implements Collection {
     }
 
     public T get(int i) {
-        return this.Data.get(i);
+        if (this.Data.containsKey(i)) {
+            return this.Data.get(i);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -101,7 +107,7 @@ public class IndexCollection<T extends Indexable> implements Collection {
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         return this.Data.values().iterator();
     }
 

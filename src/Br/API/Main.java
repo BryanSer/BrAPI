@@ -2,6 +2,7 @@ package Br.API;
 
 import Br.API.Data.DataManager;
 import Br.API.Item.ItemManager;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +21,15 @@ public class Main extends JavaPlugin {
 
     public void onEnable() {
         PluginData.plugin = this;
-        DataManager.LoadAll(true);
+        File dataFolder = PluginData.plugin.getDataFolder();
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+        dataFolder = new File(dataFolder, "\\Datas\\");
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+        //DataManager.LoadAll(true);
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
     }

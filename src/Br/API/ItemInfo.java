@@ -52,10 +52,7 @@ public class ItemInfo {
         }
         ItemStack is = i.clone();
         is.setAmount(1);
-        if (this.getItem().isSimilar(is)) {
-            return true;
-        }
-        return false;
+        return this.getItem().isSimilar(is);
     }
 
     public Br.API.Item.ItemData toItemData() {

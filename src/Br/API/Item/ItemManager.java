@@ -8,18 +8,15 @@ package Br.API.Item;
 import Br.API.Data.DataManager;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.yaml.snakeyaml.DumperOptions;
 
 /**
  *
@@ -35,12 +32,14 @@ public abstract class ItemManager {
     /**
      * 创建一个新的ItemData<P>
      * 若已存在相同的ItemData将直接返回
+     *
      * @param is 传入的物品堆叠
      * @return ItemData
      */
     public static ItemData createItem(ItemStack is) {
-        if (ItemManager.hasData(is)) {
-            return ItemManager.getItemByItemStack(is);
+        ItemData i = ItemManager.getItemByItemStack(is);
+        if (i != null) {
+            return i;
         }
         ItemData id = new ItemData(ItemManager.createName(is), is.clone());
         ItemManager.ItemDatas.put(id.getUniqueID(), id);
@@ -49,6 +48,7 @@ public abstract class ItemManager {
 
     /**
      * 通过唯一值来移除某ItemData
+     *
      * @param name 唯一值
      */
     public static void removeDataByName(String name) {
@@ -59,6 +59,7 @@ public abstract class ItemManager {
 
     /**
      * 通过物品堆叠来删除ItemData
+     *
      * @param is ItemStack
      */
     public static void removeDataByItem(ItemStack is) {
@@ -70,12 +71,16 @@ public abstract class ItemManager {
     }
 
     private static String createName(ItemStack is) {
+        if(is == null){
+            return "";
+        }
         String name = "" + is.getType().name() + "$" + is.hashCode();
         return name;
     }
 
     /**
      * 该物品是否储存过
+     *
      * @param s
      * @return
      */
@@ -92,6 +97,7 @@ public abstract class ItemManager {
 
     /**
      * 通过唯一值寻找ItemData
+     *
      * @param u
      * @return
      */
@@ -105,6 +111,7 @@ public abstract class ItemManager {
 
     /**
      * 通过物品堆叠寻找ItemData
+     *
      * @param is
      * @return
      */
@@ -129,7 +136,7 @@ public abstract class ItemManager {
             }
             Data = YamlConfiguration.loadConfiguration(dataFile);
             Data = DataManager.toSafe(Data);
-            
+
             ItemManager.saveFolder = dataFile;
 
             if (Data.contains("Data")) {

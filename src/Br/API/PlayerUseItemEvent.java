@@ -52,13 +52,12 @@ public class PlayerUseItemEvent extends Event {
      * 移除一个物品
      */
     public void removeItem() {
-        if (this.getPlayer().getItemInHand().getAmount() > 1) {
-            this.getPlayer().getItemInHand().setAmount(p.getItemInHand().getAmount() - 1);
+        ItemStack is = this.getPlayer().getItemInHand().clone();
+        if (is.getAmount() == 0) {
+            this.getPlayer().setItemInHand(null);
         } else {
-            ItemStack is = new ItemStack(this.item);
-            is.setAmount(1);
-            this.getPlayer().getInventory().remove(is);
-            is = null;
+            is.setAmount(is.getAmount() - 1);
+            this.getPlayer().setItemInHand(is);
         }
     }
 
@@ -68,16 +67,12 @@ public class PlayerUseItemEvent extends Event {
      * @param i 数量
      */
     public void removeItem(int i) {
-        if (i <= 0) {
-            return;
-        }
-        if (this.getPlayer().getItemInHand().getAmount() > i) {
-            this.getPlayer().getItemInHand().setAmount(p.getItemInHand().getAmount() - i);
+        ItemStack is = this.getPlayer().getItemInHand().clone();
+        if (is.getAmount() <= i) {
+            this.getPlayer().setItemInHand(null);
         } else {
-            ItemStack is = new ItemStack(this.item);
-            is.setAmount(i);
-            this.getPlayer().getInventory().remove(is);
-            is = null;
+            is.setAmount(is.getAmount() - i);
+            this.getPlayer().setItemInHand(is);
         }
     }
 

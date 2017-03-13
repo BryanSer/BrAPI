@@ -155,7 +155,7 @@ public abstract class DataManager {
         }
         File dataFile = new File(dataFolder, plugin + ".yml");
         if (!dataFile.exists()) {
-            throw (new FileNotFoundException(dataFile.getAbsolutePath() + "没有被找到 请检查文件名拼写"));
+            throw (new FileNotFoundException(dataFile.getAbsolutePath() + "没有被找到 正在尝试生成 请无视本报错"));
         }
         DataService ds = Load(dataFile);
         if (!DataManager.Datas.containsKey(ds.getPluginName())) {
@@ -195,7 +195,7 @@ public abstract class DataManager {
         if (name.contains(".yml")) {
             name = name.replaceAll(".yml", "");
         }
-        DataService ds = new EasyData(name);
+        DataService ds = new EasyData(name,config);
         for (String key : config.getKeys(true)) {
             ds.set(key, config.get(key));
         }

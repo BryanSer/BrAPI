@@ -1,0 +1,8 @@
+MYSQL:
+    Host:
+        URL: localhost
+        Port: 3366
+    User:
+        UserName: root
+#如有密码请取消注释后填写   
+        #Password:

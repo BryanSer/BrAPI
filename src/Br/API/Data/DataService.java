@@ -6,6 +6,7 @@
 package Br.API.Data;
 
 import java.util.Set;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  *
@@ -22,6 +23,9 @@ public interface DataService {
     public boolean containsType(String path, Class<?> c);
 
     public void set(String path, Object o);
-    
+
     public Set<String> getKeySet();
+
+    @Deprecated
+    public YamlConfiguration getConfig();
 }

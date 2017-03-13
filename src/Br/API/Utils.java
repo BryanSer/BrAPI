@@ -33,8 +33,7 @@ import org.bukkit.material.Wool;
 public abstract class Utils {
 
     /**
-     * 安全的添加物品到玩家背包,如果玩家背包满了.
-     * 会将物品丢弃到地上
+     * 安全的添加物品到玩家背包,如果玩家背包满了. 会将物品丢弃到地上
      *
      * @param pPlayer 玩家
      * @param pItem 物品
@@ -122,7 +121,7 @@ public abstract class Utils {
                         return;
                     }
                     ItemStack is = evt.getItem();
-                    ItemInfo ID = PluginData.Traversal(is);
+                    ItemInfo ID = PluginData.Traversal(is.clone());
                     if (ID == null) {
                         return;
                     }
@@ -131,7 +130,7 @@ public abstract class Utils {
                 }
             }, PluginData.plugin);
             registered = true;
-        }
+        } 
         is.setAmount(1);
         int size = PluginData.ItemDatas.size();
         ItemInfo ID = new ItemInfo(is, size + 1);
