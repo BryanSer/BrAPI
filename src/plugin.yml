@@ -2,7 +2,7 @@ name: BrAPI
 authors: ['Bryan_lzh']
 main: Br.API.Main
 softdepend: [EasyScoreboards]
-version: Release-2.22
+version: Release-2.3
 
 commands:
   BrAPI:
