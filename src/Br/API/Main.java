@@ -6,12 +6,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -32,8 +34,22 @@ public class Main extends JavaPlugin {
         //DataManager.LoadAll(true);
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
+        Utils.econ = this.setupEconomy();
     }
 
+    private Economy setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return null;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return null;
+        }
+        Economy econ = rsp.getProvider();
+        return econ;
+    }
+
+    @Deprecated
     public static void RegisterMetrics() {
         int vaule = 0;
         for (Plugin p : Bukkit.getPluginManager().getPlugins()) {
@@ -69,7 +85,7 @@ public class Main extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("BrAPI")) {
             if (EventListener.Reg) {
-                RegisterMetrics();
+                //RegisterMetrics();
                 EventListener.Reg = false;
             }
             String plugins = "§a";

@@ -4,11 +4,16 @@
  */
 package Br.API;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -25,12 +30,64 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
 import org.bukkit.material.Wool;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
  * @author Bryan_lzh
  */
 public abstract class Utils {
+
+    static Economy econ = null;
+
+    /**
+     * 返回Vault经济控制类
+     *
+     * @return
+     */
+    public static Economy getEconomy() {
+        if (econ == null) {
+            throw new NullPointerException("找不到Vault");
+        }
+        return econ;
+    }
+
+    /**
+     * 数据插件jar里的文件
+     *
+     * @param p 插件
+     * @param res 资源文件名 如config.yml
+     * @param fold 目标文件夹 若为null则默认插件配置文件夹
+     * @throws IOException
+     */
+    public static void OutputFile(Plugin p, String res, File fold) throws IOException {
+        InputStream is = p.getResource(res);
+        if (is == null) {
+            return;
+        }
+
+        if (fold == null) {
+            fold = p.getDataFolder();
+            if (!fold.exists()) {
+                fold.mkdirs();
+            }
+        }
+        File f = new File(fold, res);
+
+        if (!f.exists()) {
+            f.createNewFile();
+        }
+        FileOutputStream fos = new FileOutputStream(f);
+        while (true) {
+            int i = is.read();
+            if (i == -1) {
+                break;
+            }
+            fos.write(i);
+        }
+        fos.close();
+        is.close();
+    }
 
     /**
      * 安全的添加物品到玩家背包,如果玩家背包满了. 会将物品丢弃到地上
@@ -120,17 +177,27 @@ public abstract class Utils {
                     if (!evt.hasItem()) {
                         return;
                     }
+
                     ItemStack is = evt.getItem();
                     ItemInfo ID = PluginData.Traversal(is.clone());
                     if (ID == null) {
                         return;
+                    }
+                    try {
+                        if (evt.getPlayer().getInventory().getItemInOffHand() != null
+                                && evt.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR
+                                && evt.getPlayer().getInventory().getItemInOffHand().getAmount() != 0) {
+                            evt.getPlayer().sendMessage("§c不允许在副手上有东西是右键这个物品");
+                            return;
+                        }
+                    } catch (Exception e) {
                     }
                     PlayerUseItemEvent PUIE = new PlayerUseItemEvent(ID, evt.getPlayer());
                     Bukkit.getPluginManager().callEvent(PUIE);
                 }
             }, PluginData.plugin);
             registered = true;
-        } 
+        }
         is.setAmount(1);
         int size = PluginData.ItemDatas.size();
         ItemInfo ID = new ItemInfo(is, size + 1);

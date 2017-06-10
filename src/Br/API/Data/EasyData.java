@@ -32,13 +32,25 @@ public class EasyData implements DataService {
     public EasyData(Plugin p) {
         this.Datas = new HashMap<>();
         this.PluginName = p.getName();
-        LoadFile();
+       // LoadFile();
     }
 
+    @Deprecated
     public EasyData(String name) {
         this.Datas = new HashMap<>();
         this.PluginName = name;
-        LoadFile();
+        // LoadFile();
+    }
+
+    public EasyData(String name, boolean load) {
+        if (!load) {
+            this.Datas = new HashMap<>();
+            this.PluginName = name;
+        } else {
+            this.Datas = new HashMap<>();
+            this.PluginName = name;
+            LoadFile();
+        }
     }
 
     EasyData(String name, YamlConfiguration config) {

@@ -155,7 +155,7 @@ public abstract class DataManager {
         }
         File dataFile = new File(dataFolder, plugin + ".yml");
         if (!dataFile.exists()) {
-            throw (new FileNotFoundException(dataFile.getAbsolutePath() + "没有被找到 正在尝试生成 请无视本报错"));
+            throw (new FileNotFoundException(dataFile.getAbsolutePath() + "没有被找到 将会尝试生成 请无视本报错"));
         }
         DataService ds = Load(dataFile);
         if (!DataManager.Datas.containsKey(ds.getPluginName())) {

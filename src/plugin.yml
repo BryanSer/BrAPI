@@ -1,8 +1,9 @@
 name: BrAPI
 authors: ['Bryan_lzh']
 main: Br.API.Main
-softdepend: [EasyScoreboards]
-version: Release-2.3
+description: '开发者QQ:390807154'
+softdepend: [Vault]
+version: Release-2.4
 
 commands:
   BrAPI:
