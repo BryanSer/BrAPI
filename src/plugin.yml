@@ -3,7 +3,7 @@ authors: ['Bryan_lzh']
 main: Br.API.Main
 description: '开发者QQ:390807154'
 softdepend: [Vault]
-version: Release-2.4.1
+version: Release-2.4.2
 
 commands:
   BrAPI:
