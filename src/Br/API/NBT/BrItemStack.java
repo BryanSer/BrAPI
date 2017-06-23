@@ -34,8 +34,7 @@ public class BrItemStack {
         try {
             c = Utils.getNMSClass("ItemStack");
             Class<?> cis = Utils.getBukkitClass("inventory.CraftItemStack");
-            Method method = cis.getDeclaredMethod("asNMSCopy", ItemStack.class);
-            method.setAccessible(true);
+            Method method = cis.getMethod("asNMSCopy", ItemStack.class);
             this.obj = method.invoke(null, is);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrItemStack.class.getName()).log(Level.SEVERE, null, ex);

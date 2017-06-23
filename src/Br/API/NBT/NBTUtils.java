@@ -83,7 +83,7 @@ public class NBTUtils {
 
     public static BrNBTTagCompound getTag(ItemStack is) {
         try {
-            Class<?> cis = Utils.getNMSClass("inventory.CraftItemStack");
+            Class<?> cis = Utils.getBukkitClass("inventory.CraftItemStack");
             Method method = cis.getMethod("asNMSCopy", ItemStack.class);
             BrItemStack bris = new BrItemStack(method.invoke(null, is));
             Object obj = ((boolean) bris.c.getMethod("hasTag", (Class<?>[]) null).invoke(bris.obj, (Object[]) null)) ? bris.c.getMethod("getTag", (Class<?>[]) null).invoke(bris.obj, (Object[]) null) : new BrNBTTagCompound().c.newInstance();
