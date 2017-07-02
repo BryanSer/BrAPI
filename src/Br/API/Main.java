@@ -22,6 +22,7 @@ public class Main extends JavaPlugin {
     public static Set<String> Plugins = new HashSet();
 
     public void onEnable() {
+        
         PluginData.plugin = this;
         File dataFolder = PluginData.plugin.getDataFolder();
         if (!dataFolder.exists()) {
