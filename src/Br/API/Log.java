@@ -153,3 +153,32 @@ public class Log {
         return dateString;
     }
 }
+class OneFileLog extends Log {
+
+    public OneFileLog(Plugin p, int cachelength) {
+        super(p, -1, cachelength);
+    }
+
+    @Override
+    public void Save() {
+        File fold = super.plugin.getDataFolder();
+        File log = new File(fold, "log.log");
+        if (!log.exists()) {
+            try {
+                log.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        try (final FileWriter fw = new FileWriter(log, true)) {
+            for (String s : super.LogCache) {
+                fw.write(s + "\n");
+            }
+            fw.close();
+            super.LogCache.clear();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+}
