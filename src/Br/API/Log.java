@@ -27,10 +27,24 @@ import org.bukkit.plugin.Plugin;
  */
 public class Log {
 
+    /**
+     * 创建一个单独文件作为log的对象
+     *
+     * @param p 插件主类
+     * @param c 缓存空间
+     * @return
+     */
     public static Log getOneFileLog(Plugin p, int c) {
         return new OneFileLog(p, c);
     }
 
+    /**
+     * 将旧的.\\Log\\文件夹里的全部xxx.log合并到.\Log.log中 并且创建一个单独文件作为log的对象
+     *
+     * @param p 插件主类
+     * @param c 缓存空间
+     * @return
+     */
     public static Log CombineOldLog(Plugin p, int c) {
         Log log = new OneFileLog(p, c);
         File fold = p.getDataFolder();
@@ -40,8 +54,8 @@ public class Log {
                 try {
                     FileReader fr = new FileReader(f);
                     BufferedReader br = new BufferedReader(fr);
-                    while(br.ready()){
-                        log._Log(br.readLine());
+                    while (br.ready()) {
+                        log.LogRaw(br.readLine());
                     }
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
@@ -79,13 +93,10 @@ public class Log {
     }
 
     public void Log(String s) {
-        LogCache.add("[" + this.getTime() + "] " + s);
-        if (LogCache.size() >= CacheLength) {
-            this.Save();
-        }
+        this.LogRaw("[" + this.getTime() + "] " + s);
     }
 
-    private void _Log(String s) {
+    public void LogRaw(String s) {
         LogCache.add(s);
         if (LogCache.size() >= CacheLength) {
             this.Save();
@@ -153,10 +164,16 @@ public class Log {
         return dateString;
     }
 }
+
 class OneFileLog extends Log {
 
     public OneFileLog(Plugin p, int cachelength) {
         super(p, -1, cachelength);
+    }
+
+    @Override
+    public void Log(String s) {
+        super.LogRaw("[" + super.getDate() + " " + super.getTime() + "] " + s);;
     }
 
     @Override

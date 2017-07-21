@@ -190,7 +190,7 @@ public abstract class Utils {
                             evt.getPlayer().sendMessage("§c不允许在副手上有东西是右键这个物品");
                             return;
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                     }
                     PlayerUseItemEvent PUIE = new PlayerUseItemEvent(ID, evt.getPlayer());
                     Bukkit.getPluginManager().callEvent(PUIE);
@@ -595,4 +595,5 @@ public abstract class Utils {
         }
         return null;
     }
+
 }

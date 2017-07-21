@@ -122,9 +122,7 @@ public abstract class DataManager {
             try {
                 File dataFile = new File(dataFolder, E.getValue().getPluginName() + ".yml");
                 if (!dataFile.exists()) {
-
                     dataFile.createNewFile();
-
                 }
                 FileConfiguration config = YamlConfiguration.loadConfiguration(dataFile);
                 config = toSafe(config);
@@ -195,7 +193,7 @@ public abstract class DataManager {
         if (name.contains(".yml")) {
             name = name.replaceAll(".yml", "");
         }
-        DataService ds = new EasyData(name,config);
+        DataService ds = new EasyData(name, config);
         for (String key : config.getKeys(true)) {
             ds.set(key, config.get(key));
         }
