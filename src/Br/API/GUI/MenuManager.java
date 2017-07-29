@@ -37,6 +37,9 @@ public class MenuManager {
         if (m != null) {
             inv.clear();
             for (int i = 0; i < 9 * m.getSize(); i++) {
+                if (i == m.Contains.size()) {
+                    break;
+                }
                 Item item = m.Contains.get(i);
                 if (item != null) {
                     inv.setItem(i, item.getDisplay(p));
@@ -116,6 +119,7 @@ public class MenuManager {
                     if (!i.isKeepopen()) {
                         evt.getWhoClicked().closeInventory();
                     }
+                    MenuManager.UpdateMenu(p);
                 }
             }
 

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author 
+ * @author yeongpin99
  */
 public class TitleUtils {
 

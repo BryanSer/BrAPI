@@ -3,8 +3,8 @@ authors: ['Bryan_lzh']
 main: Br.API.Main
 description: '开发者QQ:390807154  部分代码来源yeongpin99'
 softdepend: [Vault]
-version: Release-2.6
-#ResourcePackAPI
+version: Release-2.6.1
+
 commands:
     BrAPI:
         aliases: [bra]

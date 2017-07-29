@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public class SortableMap<K, V extends Comparable> implements Map {
 
-    Map<K, V> map = new HashMap<>();
+    LinkedHashMap<K, V> map = new LinkedHashMap<>();
 
     @Override
     public int size() {
@@ -47,7 +47,7 @@ public class SortableMap<K, V extends Comparable> implements Map {
     }
 
     @Override
-    public Comparable get(Object key) {
+    public V get(Object key) {
         return map.get(key);
     }
 
@@ -82,7 +82,7 @@ public class SortableMap<K, V extends Comparable> implements Map {
     }
 
     @Override
-    public Set<Entry<K, V>> entrySet() {
+    public Set<Map.Entry<K, V>> entrySet() {
         return map.entrySet();
     }
 
@@ -92,18 +92,19 @@ public class SortableMap<K, V extends Comparable> implements Map {
      * @return
      */
     public Map<K, V> sortMapByValue() {
-        Map<K, V> sortedMap = new LinkedHashMap<>();
+        LinkedHashMap<K, V> sortedMap = new LinkedHashMap<>();
         List<Map.Entry<K, V>> entryList = new ArrayList<>();
-        for (Entry<K, V> E : this.entrySet()) {
+        for (Map.Entry<K, V> E : this.entrySet()) {
             entryList.add(E);
         }
-        Collections.sort(entryList, new MapValueComparator());
+        Collections.sort(entryList, new MapValueComparator<>());
         Iterator<Map.Entry<K, V>> iter = entryList.iterator();
         Map.Entry<K, V> tmpEntry = null;
         while (iter.hasNext()) {
             tmpEntry = iter.next();
             sortedMap.put(tmpEntry.getKey(), tmpEntry.getValue());
         }
+        this.map = sortedMap;
         return sortedMap;
     }
 }

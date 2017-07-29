@@ -151,17 +151,15 @@ public class Log {
     }
 
     public String getDate() {
-        Date currentTime = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = formatter.format(currentTime);
-        return dateString;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        return df.format(date);
     }
 
     public String getTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        Date currentTime = new Date();
-        String dateString = formatter.format(currentTime);
-        return dateString;
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        return df.format(date);
     }
 }
 

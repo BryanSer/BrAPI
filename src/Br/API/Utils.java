@@ -553,8 +553,8 @@ public abstract class Utils {
     public static String getItemName(ItemStack re) {
         return ((re.hasItemMeta())
                 ? ((re.getItemMeta().hasDisplayName())
-                        ? re.getItemMeta().getDisplayName() + ":" + re.getDurability()
-                        : "物品ID为 " + re.getTypeId() + ":" + re.getDurability() + " 的物品")
+                ? re.getItemMeta().getDisplayName() + ":" + re.getDurability()
+                : "物品ID为 " + re.getTypeId() + ":" + re.getDurability() + " 的物品")
                 : "物品ID为 " + re.getTypeId() + ":" + re.getDurability() + " 的物品");
     }
 
@@ -585,7 +585,7 @@ public abstract class Utils {
         }
         return null;
     }
-    
+
     public static Class<?> getBukkitClass(String name) {
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
         try {

@@ -43,6 +43,9 @@ public class Menu {
     public Inventory getInv(Player p) {
         Inventory inv = Bukkit.createInventory(p, 9 * this.Size, this.DisplayName + SplCode + MenuManager.toCode(this.Name));
         for (int i = 0; i < 9 * this.Size; i++) {
+            if(i == this.Contains.size()){
+                break;
+            }
             Item item = this.Contains.get(i);
             if (item != null) {
                 inv.setItem(i, item.getDisplay(p));
