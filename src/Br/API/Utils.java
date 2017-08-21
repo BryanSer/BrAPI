@@ -72,6 +72,9 @@ public abstract class Utils {
                 fold.mkdirs();
             }
         }
+        if (!fold.exists()) {
+            fold.mkdirs();
+        }
         File f = new File(fold, res);
 
         if (!f.exists()) {
@@ -299,11 +302,11 @@ public abstract class Utils {
         for (String s : StringList) {
             int index = s.indexOf(" ");
             int index2;
-            int id = Integer.valueOf(s.substring(0, index));
+            int id = Integer.parseInt(s.substring(0, index));
             index2 = s.indexOf(" ", index + 1);
-            int amount = Integer.valueOf(s.substring(index + 1, index2));
+            int amount = Integer.parseInt(s.substring(index + 1, index2));
             index = s.indexOf(" ", index + 1);
-            int durability = Integer.valueOf(s.substring(index2 + 1, s.indexOf("(")));
+            int durability = Integer.parseInt(s.substring(index2 + 1, s.indexOf("(")));
             if (!s.contains("()")) {
                 ItemStack i = new ItemStack(Material.getMaterial(id));
                 i.setAmount(amount);
@@ -374,7 +377,7 @@ public abstract class Utils {
     public static ItemStack AnalyticalItem_2(String s) {
         ItemStack item;
         try {
-            item = new ItemStack(Material.getMaterial(Integer.valueOf(s.split(" ")[0])));
+            item = new ItemStack(Material.getMaterial(Integer.parseInt(s.split(" ")[0])));
         } catch (NumberFormatException e) {
             item = new ItemStack(Material.getMaterial(s.split(" ")[0]));
         }
@@ -386,7 +389,7 @@ public abstract class Utils {
             }
             if (i == 1) {
                 try {
-                    item.setAmount(Integer.valueOf(data));
+                    item.setAmount(Integer.parseInt(data));
                 } catch (NumberFormatException e) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l在读取物品: " + s + " 时出现错误"));
                 }
@@ -395,7 +398,7 @@ public abstract class Utils {
             }
             if (i == 2) {
                 try {
-                    item.setDurability(Short.valueOf(data));
+                    item.setDurability(Short.parseShort(data));
                 } catch (NumberFormatException e) {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&l在读取物品: " + s + " 时出现错误"));
                 }
@@ -443,7 +446,7 @@ public abstract class Utils {
                 }
                 if (item.getItemMeta() instanceof LeatherArmorMeta) {
                     LeatherArmorMeta lam = (LeatherArmorMeta) item.getItemMeta();
-                    lam.setColor(Color.fromRGB(Integer.valueOf(data)));
+                    lam.setColor(Color.fromRGB(Integer.parseInt(data)));
                     item.setItemMeta(lam);
                     continue;
                 }

@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -18,6 +19,26 @@ import org.bukkit.inventory.ItemStack;
  * @author Bryan_lzh
  */
 public class NBTUtils {
+    
+    public static Object getNMSWorld(World w){
+        Class<?> cw = Utils.getBukkitClass("CraftWorld");
+        Object o1 = null;
+        try {
+            Method m = cw.getMethod("getHandle", (Class<?>[]) null);
+            o1 = m.invoke(w, (Object[]) null);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(NBTUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(NBTUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(NBTUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(NBTUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(NBTUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return o1;
+    }
 
     public static ItemStack getItemStack(BrItemStack bi) {
         try {

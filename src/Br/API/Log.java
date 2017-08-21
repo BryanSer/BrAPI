@@ -48,7 +48,7 @@ public class Log {
     public static Log CombineOldLog(Plugin p, int c) {
         Log log = new OneFileLog(p, c);
         File fold = p.getDataFolder();
-        fold = new File(fold, "\\Logs\\");
+        fold = new File(fold, File.separator + "Logs" + File.separator);
         if (fold.exists()) {
             for (File f : fold.listFiles()) {
                 try {

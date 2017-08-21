@@ -19,6 +19,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
  * 用于快捷实现ConfigurationSerializable
+ *
  * @author Bryan_lzh
  */
 public interface BrConfigurationSerializable extends ConfigurationSerializable {
@@ -32,13 +33,15 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
 
         /**
          * 用于指定序列号后在TAML中的相对位置 默认为变量名
+         *
          * @return
          */
-        String Path() default "";
+        public String Path() default "";
     }
 
     /**
      * 自动反序列号静态方法
+     *
      * @param <T> 需要反序列话的类
      * @param args Bukkit传入的Map
      * @param t 需要反序列化的对象
