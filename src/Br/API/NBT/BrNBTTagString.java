@@ -19,9 +19,9 @@ import java.util.logging.Logger;
 public class BrNBTTagString extends BrNBTBase{
 
     public BrNBTTagString() {
-        c = Utils.getNMSClass("NBTTagString");
+        cls = Utils.getNMSClass("NBTTagString");
         try {
-            super.obj = c.newInstance();
+            super.obj = cls.newInstance();
         } catch (InstantiationException ex) {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
@@ -30,14 +30,14 @@ public class BrNBTTagString extends BrNBTBase{
     }
 
     public BrNBTTagString(Object o) {
-        c = Utils.getNMSClass("NBTTagString");
+        cls = Utils.getNMSClass("NBTTagString");
         obj = o;
     }
 
     public BrNBTTagString(String s) {
         try {
-            c = Utils.getNMSClass("NBTTagString");
-            Constructor<?> cs = c.getConstructor(String.class);
+            cls = Utils.getNMSClass("NBTTagString");
+            Constructor<?> cs = cls.getConstructor(String.class);
             obj = cs.newInstance(s);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTTagString.class.getName()).log(Level.SEVERE, null, ex);

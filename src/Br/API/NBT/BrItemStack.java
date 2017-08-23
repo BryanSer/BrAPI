@@ -18,21 +18,21 @@ import org.bukkit.inventory.ItemStack;
  * @author Bryan_lzh
  */
 public class BrItemStack {
-    public Class<?> c;
-    public Object obj;
+    private Class<?> cls;
+    private Object obj;
     
     public BrItemStack(){
-        c = Utils.getNMSClass("ItemStack");
+        cls = Utils.getNMSClass("ItemStack");
     }
     
     public BrItemStack(Object o){
-        c = Utils.getNMSClass("ItemStack");
+        cls = Utils.getNMSClass("ItemStack");
         obj = o;
     }
     
     public BrItemStack(ItemStack is){
         try {
-            c = Utils.getNMSClass("ItemStack");
+            cls = Utils.getNMSClass("ItemStack");
             Class<?> cis = Utils.getBukkitClass("inventory.CraftItemStack");
             Method method = cis.getMethod("asNMSCopy", ItemStack.class);
             this.obj = method.invoke(null, is);
@@ -51,7 +51,7 @@ public class BrItemStack {
     
     public BrNBTTagCompound getTag(){
         try {
-            Method method = c.getMethod("getTag");
+            Method method = cls.getMethod("getTag");
             return new BrNBTTagCompound(method.invoke(obj));
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrItemStack.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,7 +69,7 @@ public class BrItemStack {
     
     public boolean hasTag(){
         try {
-            Method method = c.getMethod("hasTag");
+            Method method = cls.getMethod("hasTag");
             return (boolean) method.invoke(this.obj);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrItemStack.class.getName()).log(Level.SEVERE, null, ex);
@@ -87,7 +87,7 @@ public class BrItemStack {
     
     public void setTag(BrNBTTagCompound nbt){
         try {
-            Method method = c.getMethod("setTag", Utils.getNMSClass("NBTTagCompound"));
+            Method method = cls.getMethod("setTag", Utils.getNMSClass("NBTTagCompound"));
             method.invoke(this.obj, nbt.obj);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrItemStack.class.getName()).log(Level.SEVERE, null, ex);
@@ -101,4 +101,14 @@ public class BrItemStack {
             Logger.getLogger(BrItemStack.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public Class<?> getCls() {
+        return cls;
+    }
+
+    public Object getObject() {
+        return obj;
+    }
+    
+    
 }

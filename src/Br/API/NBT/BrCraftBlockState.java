@@ -23,24 +23,26 @@ import org.bukkit.block.Block;
  */
 public class BrCraftBlockState {
 
-    public Class<?> c;
-    public Object obj;
+    private Class<?> cls;
+    private Object obj;
 
-    int x;
-    int y;
-    int z;
+    private int x;
+    private int y;
+    private int z;
+    
+    
 
     public BrCraftBlockState() {
-        c = Utils.getBukkitClass("block.CraftBlockState");
+        cls = Utils.getBukkitClass("block.CraftBlockState");
     }
 
     public BrCraftBlockState(Block b) {
-        c = Utils.getBukkitClass("block.CraftBlockState");
+        cls = Utils.getBukkitClass("block.CraftBlockState");
         this.x = b.getLocation().getBlockX();
         this.y = b.getLocation().getBlockY();
         this.z = b.getLocation().getBlockZ();
         try {
-            Method m = c.getMethod("getBlockState", Utils.getNMSClass("World"), int.class, int.class, int.class);
+            Method m = cls.getMethod("getBlockState", Utils.getNMSClass("World"), int.class, int.class, int.class);
             Location loc = b.getLocation();
             obj = m.invoke(null, NBTUtils.getNMSWorld(loc.getWorld()), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         } catch (NoSuchMethodException ex) {
@@ -59,7 +61,7 @@ public class BrCraftBlockState {
     public Object getTileEntity() {
         Class<?> wl = Utils.getBukkitClass("CraftWorld");
         try {
-            Field f = this.c.getDeclaredField("world");
+            Field f = this.cls.getDeclaredField("world");
             f.setAccessible(true);
             Object o = f.get(this.obj);//CraftWorld
             Field f2 = wl.getDeclaredField("world");
@@ -87,5 +89,25 @@ public class BrCraftBlockState {
             Logger.getLogger(BrCraftBlockState.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public Class<?> getCls() {
+        return cls;
+    }
+
+    public Object getObject() {
+        return obj;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
     }
 }

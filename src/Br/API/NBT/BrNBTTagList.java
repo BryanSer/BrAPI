@@ -19,9 +19,9 @@ import java.util.logging.Logger;
 public class BrNBTTagList extends BrNBTBase{
     
     public BrNBTTagList() {
-        c = Utils.getNMSClass("NBTTagList");
+        cls = Utils.getNMSClass("NBTTagList");
         try {
-            super.obj = c.newInstance();
+            super.obj = cls.newInstance();
         } catch (InstantiationException ex) {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
@@ -30,13 +30,13 @@ public class BrNBTTagList extends BrNBTBase{
     }
 
     public BrNBTTagList(Object o) {
-        c = Utils.getNMSClass("NBTTagList");
+        cls = Utils.getNMSClass("NBTTagList");
         obj = o;
     }
     
     public void add(BrNBTBase bn){
         try {
-            Method method = c.getMethod("add", Utils.getNMSClass("NBTBase"));
+            Method method = cls.getMethod("add", Utils.getNMSClass("NBTBase"));
             method.invoke(this.obj, bn.obj);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTTagList.class.getName()).log(Level.SEVERE, null, ex);

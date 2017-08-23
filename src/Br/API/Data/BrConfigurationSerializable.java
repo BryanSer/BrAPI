@@ -11,6 +11,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -48,7 +50,8 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
      */
     public static <T extends BrConfigurationSerializable> void deserialize(Map<String, Object> args, T t) {
         Class<? extends BrConfigurationSerializable> c = t.getClass();
-        for (Field f : c.getFields()) {
+        for (Field f : c.getDeclaredFields()) {
+            f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
                 Config co = f.getAnnotation(Config.class);
                 String path;
@@ -58,10 +61,22 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                     path = co.Path();
                 }
                 try {
-                    f.set(t, f.getType().cast(args.get(path)));
+                    if (f.getType().isEnum()) {
+                        Method m = f.getType().getMethod("valueOf", String.class);
+                        Object re = m.invoke(null, args.get(path));
+                        f.set(t, re);
+                    } else {
+                        f.set(t, args.get(path));
+                    }
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
+                    Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NoSuchMethodException ex) {
+                    Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SecurityException ex) {
+                    Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvocationTargetException ex) {
                     Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -71,7 +86,8 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
     @Override
     public default Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
-        for (Field f : this.getClass().getFields()) {
+        for (Field f : this.getClass().getDeclaredFields()) {
+            f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
                 Config c = f.getAnnotation(Config.class);
                 String path;
@@ -81,10 +97,23 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                     path = c.Path();
                 }
                 try {
-                    map.put(path, f.get(this));
+                    if (f.getType().isEnum()) {
+                        Object obj = f.get(this);
+                        Method m = obj.getClass().getMethod("name", (Class<?>[]) null);
+                        String re = (String) m.invoke(obj, (Object[]) null);
+                        map.put(path, re);
+                    } else {
+                        map.put(path, f.get(this));
+                    }
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
+                    Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NoSuchMethodException ex) {
+                    Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SecurityException ex) {
+                    Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvocationTargetException ex) {
                     Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

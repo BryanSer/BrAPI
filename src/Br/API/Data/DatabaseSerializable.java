@@ -76,7 +76,8 @@ public abstract class DatabaseSerializable {
         if (this.isExists()) {
             sql = "UPDATE " + this.getTableName() + " set ";
             boolean first = true;
-            for (Field f : this.getClass().getFields()) {
+            for (Field f : this.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
                 if (f.isAnnotationPresent(Config.class)) {
                     Config c = f.getAnnotation(Config.class);
                     if (!first) {
@@ -131,7 +132,8 @@ public abstract class DatabaseSerializable {
     }
 
     public String getKeyName() throws NullKeyException {
-        for (Field f : this.getClass().getFields()) {
+        for (Field f : this.getClass().getDeclaredFields()) {
+            f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
                 Config c = f.getAnnotation(Config.class);
                 if (c.Key()) {
@@ -144,7 +146,8 @@ public abstract class DatabaseSerializable {
     }
 
     public Field getKey() throws NullKeyException {
-        for (Field f : this.getClass().getFields()) {
+        for (Field f : this.getClass().getDeclaredFields()) {
+            f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
                 Config c = f.getAnnotation(Config.class);
                 if (c.Key()) {
@@ -170,7 +173,8 @@ public abstract class DatabaseSerializable {
         String sql = "CREATE TABLE IF NOT EXISTS " + tablename + " (";
         boolean first = true;
         Field key = null;
-        for (Field f : cls.getFields()) {
+        for (Field f : cls.getDeclaredFields()) {
+            f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
                 Config c = f.getAnnotation(Config.class);
                 String temp = c.Name().isEmpty() ? f.getName() : c.Name();

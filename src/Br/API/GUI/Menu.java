@@ -26,14 +26,24 @@ public class Menu {
     protected short OpenItem_Dam;
     protected List<Item> Contains = new ArrayList<>();
     protected int Size;
-    public static final String SplCode = "§c§a§p§i§b§r§s§p§r";
+    public static final String SplCode = "§c§a§p§r";
 
-    public Menu(String name, String displayname,String permission, Material openitem, short openitemdam) {
+    @Deprecated
+    public Menu(String name, String displayname, String permission, Material openitem, short openitemdam) {
         this.Name = name;
         this.DisplayName = displayname;
         this.OpenItem_Mate = openitem;
         this.OpenItem_Dam = openitemdam;
         this.Permission = permission;
+    }
+
+    public Menu(String name, String displayname, String permission, Material openitem, short openitemdam, int size) {
+        this.Name = name;
+        this.DisplayName = displayname;
+        this.OpenItem_Mate = openitem;
+        this.OpenItem_Dam = openitemdam;
+        this.Permission = permission;
+        this.Size = size;
     }
 
     public Item getClick(int index) {
@@ -43,7 +53,7 @@ public class Menu {
     public Inventory getInv(Player p) {
         Inventory inv = Bukkit.createInventory(p, 9 * this.Size, this.DisplayName + SplCode + MenuManager.toCode(this.Name));
         for (int i = 0; i < 9 * this.Size; i++) {
-            if(i == this.Contains.size()){
+            if (i == this.Contains.size()) {
                 break;
             }
             Item item = this.Contains.get(i);
@@ -53,7 +63,7 @@ public class Menu {
         }
         return inv;
     }
-    
+
     public boolean canOpen(Player p) {
         if (p.isOp()) {
             return true;
@@ -97,6 +107,5 @@ public class Menu {
     public static String getSplCode() {
         return SplCode;
     }
-
 
 }

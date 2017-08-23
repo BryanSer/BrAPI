@@ -20,7 +20,7 @@ public abstract class Item {
     /**
      * 显示的物品
      */
-    protected ItemStack display;
+    protected ItemStack display = null;
 
     /**
      * 玩家点击之后是否保持开启界面
@@ -32,6 +32,13 @@ public abstract class Item {
      */
     protected int Colddown = -1;
     protected Map<String, Long> LastUseTime = new HashMap<>();
+
+    public Item() {
+    }
+
+    public Item(boolean keep) {
+        keepopen = keep;
+    }
 
     /**
      * 检查一个玩家是否可用这个物品
@@ -70,11 +77,19 @@ public abstract class Item {
     }
 
     /**
-     * 当一个玩家点击之后触发本方法
+     * 当一个玩家左键点击之后触发本方法
      *
      * @param p
      * @return 是否成功(true时将会进入CD)
      */
     public abstract boolean Use(Player p);
+
+    public boolean Use_Right(Player p) {
+        return this.Use(p);
+    }
+    
+    public boolean Use_Shift(Player p) {
+        return this.Use(p);
+    }
 
 }

@@ -62,6 +62,20 @@ public class MenuManager {
         }
     }
 
+    public static void OpenMenuDelay(Player p, String menu) {
+        Menu m = Menus.get(menu);
+        if (m != null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    p.closeInventory();
+                    Inventory inv = m.getInv(p);
+                    p.openInventory(inv);
+                }
+            }.runTaskLater(PluginData.plugin, 1);
+        }
+    }
+
     public static void RegisterMenu(Menu m) {
         if (!registered) {
             registerListener();
@@ -93,12 +107,6 @@ public class MenuManager {
                 Inventory inv = evt.getWhoClicked().getOpenInventory().getTopInventory();
                 Menu m = MenuManager.getMenu(inv);
                 if (m == null) {
-                    if (evt.getClickedInventory() instanceof PlayerInventory) {
-                        PlayerInventory pi = (PlayerInventory) evt.getClickedInventory();
-                        if (evt.getSlot() == 8) {
-                            evt.setCancelled(true);
-                        }
-                    }
                     return;
                 }
                 evt.setCancelled(true);
@@ -113,8 +121,18 @@ public class MenuManager {
                         p.sendMessage("§c你还不能使用这个项目 请稍等后重试");
                         return;
                     }
-                    if (i.Use(p)) {
-                        i.CD(p);
+                    if (evt.isLeftClick()) {
+                        if (i.Use(p)) {
+                            i.CD(p);
+                        }
+                    } else if (evt.isRightClick()) {
+                        if (i.Use_Right(p)) {
+                            i.CD(p);
+                        }
+                    } else {
+                        if (i.Use_Shift(p)) {
+                            i.CD(p);
+                        }
                     }
                     if (!i.isKeepopen()) {
                         evt.getWhoClicked().closeInventory();
