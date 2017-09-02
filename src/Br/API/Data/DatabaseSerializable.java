@@ -17,8 +17,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +29,7 @@ import java.util.logging.Logger;
  *
  * @author Bryan_lzh
  */
-public abstract class DatabaseSerializable {
+public interface DatabaseSerializable {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
@@ -47,10 +50,10 @@ public abstract class DatabaseSerializable {
     @Target(ElementType.TYPE)
     public @interface Database {
 
-        public String DatabaseName();
+        public String TableName();
     }
 
-    private static Map<Class<? extends DatabaseSerializable>, Statement> Statements = new HashMap<>();
+    static Map<Class<? extends DatabaseSerializable>, Statement> Statements = new HashMap<>();
 
     public static void Register(Class<? extends DatabaseSerializable> cls, String url)
             throws InstantiationException, ClassNotFoundException, IllegalAccessException,
@@ -60,7 +63,7 @@ public abstract class DatabaseSerializable {
                 throw new NullDatabaseNameException(cls);
             }
             Database db = cls.getAnnotation(Database.class);
-            if (db.DatabaseName() == null || db.DatabaseName().isEmpty()) {
+            if (db.TableName() == null || db.TableName().isEmpty()) {
                 throw new NullDatabaseNameException(cls);
             }
         }
@@ -71,7 +74,7 @@ public abstract class DatabaseSerializable {
         CreateTables(cls);
     }
 
-    public void Save() throws IllegalArgumentException, IllegalAccessException, NullKeyException {
+    public default void Save() throws IllegalArgumentException, IllegalAccessException, NullKeyException, SQLException {
         String sql = null;
         if (this.isExists()) {
             sql = "UPDATE " + this.getTableName() + " set ";
@@ -90,12 +93,33 @@ public abstract class DatabaseSerializable {
             Field f = this.getKey();
             Config c = f.getAnnotation(Config.class);
             sql += "where " + this.getKeyName() + " = '" + c.ValueType().cast(f.get(this).toString()) + "'";
-        }else {
-            sql = "INSERT INTO "+this.getTableName()+" VALUES ";
+        } else {
+            sql = "INSERT INTO " + this.getTableName() + " ";
+            String key = "(";
+            String value = "(";
+            boolean first = true;
+            for (Field f : this.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                if (f.isAnnotationPresent(Config.class)) {
+                    Config c = f.getAnnotation(Config.class);
+                    if (!first) {
+                        key += ",";
+                        value += ",";
+                    }
+                    first = false;
+                    key += c.Name().isEmpty() ? f.getName() : c.Name();
+                    value += "'" + c.ValueType().cast(f.get(this)).toString() + "'";
+                }
+            }
+            key += ")";
+            value += ")";
+            sql += key + " VALUES " + value;
         }
+        System.out.println(sql);
+        Statements.get(this.getClass()).execute(sql);
     }
 
-    private boolean isExists() throws IllegalArgumentException, IllegalAccessException {
+    public default boolean isExists() throws IllegalArgumentException, IllegalAccessException {
         try {
             Field f = this.getKey();
             Config c = f.getAnnotation(Config.class);
@@ -103,7 +127,7 @@ public abstract class DatabaseSerializable {
             if (c.ValueType() == String.class) {
                 sql = "select * from " + this.getTableName() + " where " + this.getKeyName() + " = '" + ((String) this.getKey().get(this)) + "'";
             } else if (Number.class == c.ValueType()) {
-                sql = "select * from " + this.getTableName() + " where " + this.getKeyName() + " = " + ((Number) this.getKey().get(this)).doubleValue();
+                sql = "select * from " + this.getTableName() + " where " + this.getKeyName() + " = " + ((Number) this.getKey().get(this));
             } else {
                 sql = "select * from " + this.getTableName() + " where " + this.getKeyName() + " = '" + (this.getKey().get(this)) + "'";
             }
@@ -117,12 +141,12 @@ public abstract class DatabaseSerializable {
         return false;
     }
 
-    public String getTableName() {
+    public default String getTableName() {
         String tablename = null;
         if (this.getClass().isAnnotationPresent(Database.class)) {
             Database db = this.getClass().getAnnotation(Database.class);
-            if (db.DatabaseName() != null && !db.DatabaseName().isEmpty()) {
-                tablename = db.DatabaseName();
+            if (db.TableName() != null && !db.TableName().isEmpty()) {
+                tablename = db.TableName();
             }
         }
         if (tablename == null) {
@@ -131,7 +155,7 @@ public abstract class DatabaseSerializable {
         return tablename;
     }
 
-    public String getKeyName() throws NullKeyException {
+    public default String getKeyName() throws NullKeyException {
         for (Field f : this.getClass().getDeclaredFields()) {
             f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
@@ -145,7 +169,7 @@ public abstract class DatabaseSerializable {
         throw new NullKeyException(this.getClass());
     }
 
-    public Field getKey() throws NullKeyException {
+    public default Field getKey() throws NullKeyException {
         for (Field f : this.getClass().getDeclaredFields()) {
             f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
@@ -158,13 +182,26 @@ public abstract class DatabaseSerializable {
         throw new NullKeyException(this.getClass());
     }
 
-    private static void CreateTables(Class<? extends DatabaseSerializable> cls) throws TooMuchKeyException, SQLException, NullKeyException {
+    public static <T extends DatabaseSerializable> Field getKey(Class<? extends DatabaseSerializable> cls) throws NullKeyException {
+        for (Field f : cls.getDeclaredFields()) {
+            f.setAccessible(true);
+            if (f.isAnnotationPresent(Config.class)) {
+                Config c = f.getAnnotation(Config.class);
+                if (c.Key()) {
+                    return f;
+                }
+            }
+        }
+        throw new NullKeyException(cls);
+    }
+
+    static void CreateTables(Class<? extends DatabaseSerializable> cls) throws TooMuchKeyException, SQLException, NullKeyException {
         Statement SQL = Statements.get(cls);
         String tablename = null;
         if (cls.isAnnotationPresent(Database.class)) {
             Database db = cls.getAnnotation(Database.class);
-            if (db.DatabaseName() != null && !db.DatabaseName().isEmpty()) {
-                tablename = db.DatabaseName();
+            if (db.TableName() != null && !db.TableName().isEmpty()) {
+                tablename = db.TableName();
             }
         }
         if (tablename == null) {
@@ -180,7 +217,7 @@ public abstract class DatabaseSerializable {
                 String temp = c.Name().isEmpty() ? f.getName() : c.Name();
                 temp = temp + " " + c.DataType();
                 if (c.NotNull()) {
-                    temp += " " + "NOT NULL";
+                    temp += " " + "NOT NULL ";
                 }
                 if (!first) {
                     temp = "," + temp;
@@ -197,13 +234,157 @@ public abstract class DatabaseSerializable {
         }
         if (key != null) {
             Config c = key.getAnnotation(Config.class);
-            sql += "PRIMARY KEY(`" + (c.Name().isEmpty() ? key.getName() : c.Name())
+            sql += ",PRIMARY KEY(`" + (c.Name().isEmpty() ? key.getName() : c.Name())
                     + "`)";
         } else {
             throw new NullKeyException(cls);
         }
         sql += ")";
+        System.out.println(sql);
         SQL.execute(sql);
     }
 
+    public static <T extends DatabaseSerializable> List<T> DeSerializeAll(Class<? extends T> cls) throws SQLException, InstantiationException, IllegalAccessException {
+        String tn;
+        if (cls.isAnnotationPresent(Database.class)) {
+            Database db = cls.getAnnotation(Database.class);
+            tn = db.TableName();
+        } else {
+            tn = cls.getSimpleName();
+        }
+        String sql = "select * from " + tn;
+        ResultSet sr = DatabaseSerializable.Statements.get(cls).executeQuery(sql);
+        List<T> list = new ArrayList<>();
+        while (sr.next()) {
+            T t = cls.newInstance();
+            for (Field f : t.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                if (f.isAnnotationPresent(Config.class)) {
+                    Config c = f.getAnnotation(Config.class);
+                    String s = c.Name().isEmpty() ? f.getName() : c.Name();
+                    Object obj = sr.getObject(s);
+                    try {
+                        f.set(t, obj);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            list.add(t);
+        }
+        return list;
+    }
+
+    public static <T extends DatabaseSerializable> Optional<T> DeSerialize(Object key, T t) {
+        try {
+            Field f0 = t.getKey();
+            Config c0 = f0.getAnnotation(Config.class);
+            String sql;
+            if (c0.ValueType() == String.class) {
+                sql = "select * from " + t.getTableName() + " where " + t.getKeyName() + " = '" + key + "'";
+            } else if (Number.class == c0.ValueType()) {
+                sql = "select * from " + t.getTableName() + " where " + t.getKeyName() + " = " + ((Number) key);
+            } else {
+                sql = "select * from " + t.getTableName() + " where " + t.getKeyName() + " = '" + (key) + "'";
+            }
+            ResultSet sr = Statements.get(t.getClass()).executeQuery(sql);
+            if (!sr.next()) {
+                return Optional.empty();
+            }
+            for (Field f : t.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                if (f.isAnnotationPresent(Config.class)) {
+                    Config c = f.getAnnotation(Config.class);
+                    String s = c.Name().isEmpty() ? f.getName() : c.Name();
+                    Object obj = sr.getObject(s);
+                    try {
+                        f.set(t, obj);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+
+        } catch (NullKeyException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Optional.of(t);
+    }
+
+    default void Delete() {
+        try {
+            String sql = "DELETE FROM " + this.getTableName() + " where " + this.getKeyName() + " = '" + this.getKey().get(this) + "'";
+            DatabaseSerializable.Statements.get(this.getClass()).execute(sql);
+        } catch (NullKeyException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+//    class Test implements DatabaseSerializable {
+//
+//        public Test() {
+//        }
+//
+//        public Test(String s, int i) {
+//            this.Name = s;
+//            this.ID = i;
+//        }
+//
+//        @Config(Key = true, DataType = "varchar(255)", ValueType = String.class, NotNull = true)
+//        private String Name;
+//        @Config(DataType = "int", ValueType = Integer.class, NotNull = true)
+//        private int ID;
+//
+//        @Override
+//        public String toString() {
+//            return "Test{" + "Name=" + Name + ", ID=" + ID + '}';
+//
+//        }
+//
+//    }
+//
+//    public static void main(String args[]) {
+//        try {
+//            DatabaseSerializable.Register(Test.class, "jdbc:mysql://127.0.0.1:3306/Password?user=root&password=123456&useUnicode=true&characterEncoding=utf8&autoReconnect=true");
+//        } catch (InstantiationException ex) {
+//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ClassNotFoundException ex) {
+//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NullDatabaseNameException ex) {
+//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (TooMuchKeyException ex) {
+//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NullKeyException ex) {
+//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+////        Test t1 = new Test("Bryan_lzh", 1);
+////        try {
+////            t1.Save();
+////        } catch (IllegalArgumentException ex) {
+////            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+////        } catch (IllegalAccessException ex) {
+////            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+////        } catch (NullKeyException ex) {
+////            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+////        } catch (SQLException ex) {
+////            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+////        }
+//
+//    }
 }

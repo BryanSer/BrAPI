@@ -190,7 +190,7 @@ public abstract class Utils {
                         if (evt.getPlayer().getInventory().getItemInOffHand() != null
                                 && evt.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR
                                 && evt.getPlayer().getInventory().getItemInOffHand().getAmount() != 0) {
-                            evt.getPlayer().sendMessage("§c不允许在副手上有东西是右键这个物品");
+                            evt.getPlayer().sendMessage("§c不允许在副手上有东西时右键这个物品");
                             return;
                         }
                     } catch (Throwable e) {

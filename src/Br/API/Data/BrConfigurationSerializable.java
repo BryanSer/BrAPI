@@ -13,7 +13,10 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,11 +30,12 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 public interface BrConfigurationSerializable extends ConfigurationSerializable {
 
     /**
-     * 带有该注释的局域变量将会自动被序列化
+     * 带有该注释的局域变量将会自动被序列化<p>
+     * 如果注释的是Map请确保key的泛型为String
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public @interface Config {
+    public static @interface Config {
 
         /**
          * 用于指定序列号后在TAML中的相对位置 默认为变量名
@@ -40,6 +44,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
          */
         public String Path() default "";
     }
+    
 
     /**
      * 自动反序列号静态方法
@@ -61,7 +66,14 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                     path = co.Path();
                 }
                 try {
-                    if (f.getType().isEnum()) {
+                    if (f.getType().isAssignableFrom(Map.class)) {
+                        List<String> keys = (List<String>) args.get(path + "Keys");
+                        Map m = new HashMap<>();
+                        for (String s : keys) {
+                            m.put(s, args.get(path + "." + s));
+                        }
+                        f.set(t, m);
+                    } else if (f.getType().isEnum()) {
                         Method m = f.getType().getMethod("valueOf", String.class);
                         Object re = m.invoke(null, args.get(path));
                         f.set(t, re);
@@ -97,7 +109,19 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                     path = c.Path();
                 }
                 try {
-                    if (f.getType().isEnum()) {
+                    if (f.getType().isAssignableFrom(Map.class)) {
+                        try {
+                            Map<String, Object> m = (Map<String, Object>) f.get(this);
+                            List<String> keys = new ArrayList<>();
+                            for (Map.Entry<String, Object> e : m.entrySet()) {
+                                map.put(path + "." + e.getKey(), e.getValue());
+                                keys.add(e.getKey());
+                            }
+                            map.put(path + "Keys", keys);
+                        } catch (Exception ex) {
+                            Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else if (f.getType().isEnum()) {
                         Object obj = f.get(this);
                         Method m = obj.getClass().getMethod("name", (Class<?>[]) null);
                         String re = (String) m.invoke(obj, (Object[]) null);
@@ -120,5 +144,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
         }
         return map;
     }
+    
+    
 
 }

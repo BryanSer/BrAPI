@@ -22,11 +22,76 @@ public class Menu {
     protected String Name;
     protected String DisplayName;
     protected Material OpenItem_Mate;
-    protected String Permission;
+    protected String Permission = "";
     protected short OpenItem_Dam;
     protected List<Item> Contains = new ArrayList<>();
-    protected int Size;
+    protected int Size = 0;
     public static final String SplCode = "§c§a§p§r";
+
+    public static class MenuBuilder extends Menu {
+
+        protected MenuBuilder() {
+        }
+
+        public MenuBuilder addItem(Item i) {
+            super.Contains.add(i);
+            return this;
+        }
+
+        public MenuBuilder fillItem(Item im, int i) {
+            for (int j = 0; j < i; j++) {
+                super.Contains.add(im.clone());
+            }
+            return this;
+        }
+
+        public MenuBuilder setSize(int i) {
+            super.Size = i;
+            return this;
+        }
+
+        public MenuBuilder setPermission(String s) {
+            super.Permission = s;
+            return this;
+        }
+
+        public MenuBuilder setOpenItem_Damage(short s) {
+            super.OpenItem_Dam = s;
+            return this;
+        }
+
+        public MenuBuilder setOpenItem_Mate(Material m) {
+            super.OpenItem_Mate = m;
+            return this;
+        }
+
+        public MenuBuilder setName(String s) {
+            super.Name = s;
+            return this;
+        }
+
+        public MenuBuilder setDisplayname(String s) {
+            super.DisplayName = s;
+            return this;
+        }
+
+        public Menu build() {
+            if (super.DisplayName == null || super.Name == null || super.Size == 0) {
+                throw new NullPointerException("在MenuBuilder没有对该赋值的属性赋值");
+            }
+            return this;
+        }
+    }
+
+    private Menu() {
+    }
+
+    public static MenuBuilder getBuilder() {
+        MenuBuilder mb = new MenuBuilder();
+        mb.OpenItem_Mate = null;
+        mb.OpenItem_Dam = (short) 0;
+        return mb;
+    }
 
     @Deprecated
     public Menu(String name, String displayname, String permission, Material openitem, short openitemdam) {
