@@ -44,7 +44,6 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
          */
         public String Path() default "";
     }
-    
 
     /**
      * 自动反序列号静态方法
@@ -144,7 +143,5 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
         }
         return map;
     }
-    
-    
 
 }
