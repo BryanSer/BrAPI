@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +33,25 @@ import java.util.logging.Logger;
 
 /**
  * 使用该接口，可以超快捷实现对象在数据库中的序列化与反序列化
+ *
  * @author Bryan_lzh
  */
 public interface DatabaseSerializable {
+//    private long last = 0;
+//
+//    @Override
+//    public long getLastLoad() {
+//        return last;
+//    }
+//
+//    @Override
+//    public void setLastLoad(long l) {
+//        this.last = l;
+//    } 请确保此处按这样编写方法
+
+    long getLastLoad();
+
+    void setLastLoad(long l);
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
@@ -55,7 +70,37 @@ public interface DatabaseSerializable {
     @Target(ElementType.TYPE)
     public @interface Database {
 
-        public String TableName();
+        public String TableName() default "";
+
+        public boolean UpdateCheck() default false;
+    }
+
+    default void DeleteTable() {
+        Statement s = Statements.get(this.getClass());
+        try {
+            s.execute("drop table " + this.getTableName());
+            if (this.getClass().isAnnotationPresent(Database.class)) {
+                Database db = this.getClass().getAnnotation(Database.class);
+                if (db.UpdateCheck()) {
+                    s.execute("drop table " + this.getTableName() + "_Update");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    default void RecrateTable() {
+        this.DeleteTable();
+        try {
+            DatabaseSerializable.CreateTables(this.getClass());
+        } catch (TooMuchKeyException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullKeyException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     static Map<Class<? extends DatabaseSerializable>, Connection> Connections = new HashMap<>();
@@ -81,8 +126,43 @@ public interface DatabaseSerializable {
         Statements.put(cls, s);
         CreateTables(cls);
     }
-    
-    public default void UpdateData(){
+
+    static Map<Class<? extends DatabaseSerializable>, PreparedStatement> UpdateCheckPreparedStatements = new HashMap<>();
+
+    public default void UpdateData() {
+        if (this.getClass().isAnnotationPresent(Database.class)) {
+            Database db = this.getClass().getAnnotation(Database.class);
+            if (db.UpdateCheck()) {
+                if (!UpdateCheckPreparedStatements.containsKey(this.getClass())) {
+                    try {
+                        PreparedStatement ps = Connections.get(this.getClass()).prepareStatement("select Time from " + this.getTableName() + "_Update where KeyValue = ?");
+                        UpdateCheckPreparedStatements.put(this.getClass(), ps);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                PreparedStatement ps = UpdateCheckPreparedStatements.get(this.getClass());
+                try {
+                    ps.setObject(1, this.getKey().get(this));
+                    ResultSet sr = ps.executeQuery();
+                    if (sr.next()) {
+                        long time = sr.getLong(1);
+                        if (this.getLastLoad() >= time) {
+                            return;
+                        }
+                        this.setLastLoad(time);
+                    }
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NullKeyException ex) {
+                    Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
         DatabaseSerializable t = this;
         if (!DataPreparedStatements.containsKey(t.getClass())) {
             try {
@@ -140,6 +220,8 @@ public interface DatabaseSerializable {
 
     static Map<Class<? extends DatabaseSerializable>, PreparedStatement> UpdatePreparedStatements = new HashMap<>();
     static Map<Class<? extends DatabaseSerializable>, PreparedStatement> InsertPreparedStatements = new HashMap<>();
+    static Map<Class<? extends DatabaseSerializable>, PreparedStatement> UpdateTimePreparedStatements = new HashMap<>();
+    static Map<Class<? extends DatabaseSerializable>, PreparedStatement> InsertTimePreparedStatements = new HashMap<>();
 
     /**
      * 储存对象 现已使用PreparedStatement
@@ -189,8 +271,21 @@ public interface DatabaseSerializable {
                 ps.setObject(i++, f.get(this));
             }
             ps.setObject(i, this.getKey().get(this));
-            if (ps.execute()) {
-                return;
+            ps.execute();
+
+            if (this.getClass().isAnnotationPresent(Database.class)) {
+                Database db = this.getClass().getAnnotation(Database.class);
+                if (db.UpdateCheck()) {
+                    if (!UpdateTimePreparedStatements.containsKey(this.getClass())) {
+                        Connection conn = Connections.get(this.getClass());
+                        PreparedStatement ps2 = conn.prepareStatement("UPDATE " + this.getTableName() + "_Update set Time = ? where KeyValue = ?");
+                        UpdateTimePreparedStatements.put(this.getClass(), ps2);
+                    }
+                    PreparedStatement ps2 = UpdateTimePreparedStatements.get(this.getClass());
+                    ps2.setLong(1, System.currentTimeMillis());
+                    ps2.setObject(2, this.getKey().get(this));
+                    ps2.execute();
+                }
             }
 
         } else {
@@ -238,8 +333,19 @@ public interface DatabaseSerializable {
                 }
                 ps.setObject(i++, f.get(this));
             }
-            if (ps.execute()) {
-                return;
+            ps.execute();
+            if (this.getClass().isAnnotationPresent(Database.class)) {
+                Database db = this.getClass().getAnnotation(Database.class);
+                if (db.UpdateCheck()) {
+                    if (!InsertTimePreparedStatements.containsKey(this.getClass())) {
+                        PreparedStatement ps2 = Connections.get(this.getClass()).prepareStatement("INSERT INTO " + this.getTableName() + "_Update VALUES (?,?)");
+                        InsertTimePreparedStatements.put(this.getClass(), ps2);
+                    }
+                    PreparedStatement ps2 = InsertTimePreparedStatements.get(this.getClass());
+                    ps2.setObject(1, this.getKey().get(this));
+                    ps2.setLong(2, System.currentTimeMillis());
+                    ps2.execute();
+                }
             }
         }
     }
@@ -298,17 +404,27 @@ public interface DatabaseSerializable {
         throw new NullKeyException(this.getClass());
     }
 
+    static Map<Class<? extends DatabaseSerializable>, Field> Keys = new HashMap<>();
+
     public default Field getKey() throws NullKeyException {
-        for (Field f : this.getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            if (f.isAnnotationPresent(Config.class)) {
-                Config c = f.getAnnotation(Config.class);
-                if (c.Key()) {
-                    return f;
+        if (!Keys.containsKey(this.getClass())) {
+            boolean b = true;
+            for (Field f : this.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                if (f.isAnnotationPresent(Config.class)) {
+                    Config c = f.getAnnotation(Config.class);
+                    if (c.Key()) {
+                        Keys.put(this.getClass(), f);
+                        b = false;
+                        break;
+                    }
                 }
             }
+            if (b) {
+                throw new NullKeyException(this.getClass());
+            }
         }
-        throw new NullKeyException(this.getClass());
+        return Keys.get(this.getClass());
     }
 
     public static <T extends DatabaseSerializable> Field getKey(Class<? extends DatabaseSerializable> cls) throws NullKeyException {
@@ -327,11 +443,13 @@ public interface DatabaseSerializable {
     static void CreateTables(Class<? extends DatabaseSerializable> cls) throws TooMuchKeyException, SQLException, NullKeyException {
         Statement SQL = Statements.get(cls);
         String tablename = null;
+        boolean UpdateCheck = false;
         if (cls.isAnnotationPresent(Database.class)) {
             Database db = cls.getAnnotation(Database.class);
             if (db.TableName() != null && !db.TableName().isEmpty()) {
                 tablename = db.TableName();
             }
+            UpdateCheck = db.UpdateCheck();
         }
         if (tablename == null) {
             tablename = cls.getSimpleName();
@@ -346,7 +464,7 @@ public interface DatabaseSerializable {
                 String temp = c.Name().isEmpty() ? f.getName() : c.Name();
                 temp = temp + " " + c.DataType();
                 if (c.NotNull()) {
-                    temp += " " + "NOT NULL ";
+                    temp += " NOT NULL ";
                 }
                 if (!first) {
                     temp = "," + temp;
@@ -369,27 +487,42 @@ public interface DatabaseSerializable {
             throw new NullKeyException(cls);
         }
         sql += ")";
-        System.out.println(sql);
         SQL.execute(sql);
+        if (UpdateCheck) {
+            Config c = key.getAnnotation(Config.class);
+            sql = "CREATE TABLE IF NOT EXISTS " + tablename + "_Update (KeyValue "
+                    + c.DataType() + " NOT NULL ,Time BIGINT ,PRIMARY KEY(`KeyValue`))";
+            SQL.execute(sql);
+        }
     }
 
     static Map<Class< ? extends DatabaseSerializable>, PreparedStatement> PreparedStatementPreparedStatement = new HashMap<>();
+    static Map<Class< ? extends DatabaseSerializable>, PreparedStatement> PreparedTimeStatementPreparedStatement = new HashMap<>();
 
     public static <T extends DatabaseSerializable> List<T> DeserializeAll(Class<? extends T> cls) throws SQLException, InstantiationException, IllegalAccessException {
         String tn;
         if (cls.isAnnotationPresent(Database.class)) {
             Database db = cls.getAnnotation(Database.class);
-            tn = db.TableName();
+            tn = db.TableName().isEmpty() ? cls.getSimpleName() : db.TableName();
         } else {
             tn = cls.getSimpleName();
         }
         if (!PreparedStatementPreparedStatement.containsKey(cls)) {
             PreparedStatementPreparedStatement.put(cls, Connections.get(cls).prepareStatement("select * from " + tn));
         }
+        if (!PreparedTimeStatementPreparedStatement.containsKey(cls)) {
+            PreparedTimeStatementPreparedStatement.put(cls, Connections.get(cls).prepareStatement("select Time from " + tn + "_Update where KeyValue = ?"));
+        }
         PreparedStatement ps = PreparedStatementPreparedStatement.get(cls);
         ResultSet sr = ps.executeQuery();
+        PreparedStatement ps2 = PreparedTimeStatementPreparedStatement.get(cls);
 
         List<T> list = new ArrayList<>();
+        boolean up = false;
+        if (cls.isAnnotationPresent(Database.class)) {
+            Database db = cls.getAnnotation(Database.class);
+            up = db.UpdateCheck();
+        }
         while (sr.next()) {
             T t = cls.newInstance();
             for (Field f : t.getClass().getDeclaredFields()) {
@@ -418,12 +551,30 @@ public interface DatabaseSerializable {
                     }
                 }
             }
+            if (up) {
+                try {
+                    ps2.setObject(1, t.getKey().get(t));
+                    ResultSet sr2 = ps2.executeQuery();
+                    if (sr2.next()) {
+                        t.setLastLoad(sr2.getLong(1));
+                    }
+                } catch (NullKeyException ex) {
+                    Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             list.add(t);
         }
         return list;
     }
 
-    public static <T extends DatabaseSerializable> Optional<T> Deserialize(Object key, T t) {
+    public static <T extends DatabaseSerializable> Optional<T> Deserialize(Object key, Class<T> cls) {
+        T t;
+        try {
+            t = cls.newInstance();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+            return Optional.empty();
+        }
         if (!DataPreparedStatements.containsKey(t.getClass())) {
             try {
                 PreparedStatement ps = Connections.get(t.getClass()).prepareCall("select * from " + t.getTableName()
@@ -436,7 +587,15 @@ public interface DatabaseSerializable {
                 Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        if (!PreparedTimeStatementPreparedStatement.containsKey(cls)) {
+            try {
+                PreparedTimeStatementPreparedStatement.put(cls, Connections.get(cls).prepareStatement("select Time from " + t.getTableName() + "_Update where KeyValue = ?"));
+            } catch (SQLException ex) {
+                Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         PreparedStatement ps = DataPreparedStatements.get(t.getClass());
+        PreparedStatement ps2 = DataPreparedStatements.get(cls);
         try {
             ps.setObject(1, t.getKey().get(t));
             ResultSet sr = ps.executeQuery();
@@ -462,6 +621,81 @@ public interface DatabaseSerializable {
                         Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+            }
+            ps2.setObject(1, t.getKey().get(t));
+            ResultSet sr2 = ps2.executeQuery();
+            if (sr2.next()) {
+                t.setLastLoad(sr2.getLong(1));
+            }
+        } catch (NullKeyException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Optional.of(t);
+    }
+
+    @Deprecated
+    public static <T extends DatabaseSerializable> Optional<T> Deserialize(Object key, T t) {
+        if (!DataPreparedStatements.containsKey(t.getClass())) {
+            try {
+                PreparedStatement ps = Connections.get(t.getClass()).prepareCall("select * from " + t.getTableName()
+                        + " where " + t.getKeyName()
+                        + " = ?");
+                DataPreparedStatements.put(t.getClass(), ps);
+            } catch (SQLException ex) {
+                Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NullKeyException ex) {
+                Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (!PreparedTimeStatementPreparedStatement.containsKey(t.getClass())) {
+            try {
+                PreparedTimeStatementPreparedStatement.put(t.getClass(), Connections.get(t.getClass()).prepareStatement("select Time from " + t.getTableName() + "_Update where KeyValue = ?"));
+            } catch (SQLException ex) {
+                Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        PreparedStatement ps = DataPreparedStatements.get(t.getClass());
+        PreparedStatement ps2 = DataPreparedStatements.get(t.getClass());
+        try {
+            ps.setObject(1, t.getKey().get(t));
+            ResultSet sr = ps.executeQuery();
+            if (!sr.next()) {
+                return Optional.empty();
+            }
+            for (Field f : t.getClass().getDeclaredFields()) {
+                f.setAccessible(true);
+                if (f.isAnnotationPresent(Config.class)) {
+                    Config c = f.getAnnotation(Config.class);
+                    if (c.DataType().toUpperCase().contains("BLOB")) {
+                        String s = c.Name().isEmpty() ? f.getName() : c.Name();
+                        f.set(t, Bytes2Object(sr.getBytes(s), f.getType()));
+                        continue;
+                    }
+                    String s = c.Name().isEmpty() ? f.getName() : c.Name();
+                    Object obj = sr.getObject(s);
+                    try {
+                        f.set(t, obj);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            ps2.setObject(1, t.getKey().get(t));
+            ResultSet sr2 = ps2.executeQuery();
+            if (sr2.next()) {
+                t.setLastLoad(sr2.getLong(1));
             }
         } catch (NullKeyException ex) {
             Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
@@ -509,11 +743,12 @@ public interface DatabaseSerializable {
         Object obj = ois.readObject();
         return cls.cast(obj);
     }
-    
-//    enum TA{
+//
+//    enum TA {
 //        A;
 //    }
 //
+//    @Database(UpdateCheck = true)
 //    class Test implements DatabaseSerializable {
 //
 //        public Test() {
@@ -536,9 +771,21 @@ public interface DatabaseSerializable {
 //
 //        @Override
 //        public String toString() {
-//            return "Test{" + "Name=" + Name + ", ID=" + ID + ", test=" + test + ", test2=" + test2 + '}';
+//            return "Test{" + "Name=" + Name + ", ID=" + ID + ", test=" + test + ", test2=" + test2 + ", l=" + l + '}';
 //        }
 //
+//
+//        private long l = 0;
+//
+//        @Override
+//        public long getLastLoad() {
+//            return l;
+//        }
+//
+//        @Override
+//        public void setLastLoad(long l) {
+//            this.l = l;
+//        }
 //
 //    }
 //
@@ -558,21 +805,6 @@ public interface DatabaseSerializable {
 //        } catch (TooMuchKeyException ex) {
 //            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
 //        } catch (NullKeyException ex) {
-//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        Test t1 = new Test("Bryan_lzh1", 1);
-//        t1.test.add("test1");
-//        t1.test.add("gfafg32q");
-//        t1.test2.put(TA.A, 1);
-//        try {
-//            t1.Save();
-//        } catch (IllegalArgumentException ex) {
-//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (NullKeyException ex) {
-//            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (SQLException ex) {
 //            Logger.getLogger(DatabaseSerializable.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //        try {
