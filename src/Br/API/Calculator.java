@@ -16,18 +16,15 @@ public class Calculator {
     private int[] operatPriority = new int[]{0, 3, 2, 1, -1, 1, 0, 2};// 运用运算符ASCII码-40做索引的运算符优先级
 
     public static double conversion(String expression) {
-        expression = expression.replaceAll(" ", "");
+        expression = expression.replaceAll(" ", "").replaceAll("random()", Math.random() + "");
         double result = 0;
         Calculator cal = new Calculator();
         try {
             expression = transform(expression);
             result = cal.calculate(expression);
         } catch (Exception e) {
-            // e.printStackTrace();
-            // 运算错误返回NaN
             return 0.0 / 0.0;
         }
-        // return new String().valueOf(result);
         return result;
     }
 

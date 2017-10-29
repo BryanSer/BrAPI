@@ -2,10 +2,13 @@ package Br.API;
 
 import Br.API.Data.DataManager;
 import Br.API.Item.ItemManager;
+import Br.API.LangUtils.Lang;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -66,7 +69,6 @@ public class Main extends JavaPlugin {
             Metrics.Graph g = metrics.createGraph("SubPlugin");
             g.addPlotter(new Metrics.Plotter() {
                 final int va = v;
-
                 public int getValue() {
                     return this.va;
                 }
@@ -81,6 +83,13 @@ public class Main extends JavaPlugin {
         DataManager.SaveAll();
         ItemManager.saveData();
         HandlerList.unregisterAll(this);
+        Lang.LangDatas.forEach((l) -> {
+            try {
+                l.Save();
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

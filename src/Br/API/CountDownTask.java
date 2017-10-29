@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  *
  * @author Bryan_lzh
  */
+@Deprecated
 public class CountDownTask extends BukkitRunnable {
 
     private long tick;

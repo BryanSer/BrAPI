@@ -50,4 +50,22 @@ public class BrNBTTagCompound extends BrNBTBase {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public boolean hasValue(String key) {
+        try {
+            Method m = super.cls.getMethod("hasKey", String.class);
+            return (boolean) m.invoke(super.obj, key);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }

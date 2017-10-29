@@ -126,4 +126,10 @@ public class NBTUtils {
         }
         return null;
     }
+    
+    public static boolean hasAttribute(ItemStack is){
+        BrItemStack bi = new BrItemStack(is);
+        BrNBTTagCompound basetag = bi.hasTag() ? bi.getTag() : new BrNBTTagCompound();
+        return basetag.hasValue("AttributeModifiers");
+    }
 }

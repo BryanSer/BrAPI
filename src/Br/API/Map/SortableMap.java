@@ -22,7 +22,7 @@ import java.util.Set;
  * @param <K>
  * @param <V>
  */
-public class SortableMap<K, V extends Comparable> implements Map {
+public class SortableMap<K, V extends Comparable> implements Map<K,V> {
 
     LinkedHashMap<K, V> map = new LinkedHashMap<>();
 
@@ -51,13 +51,13 @@ public class SortableMap<K, V extends Comparable> implements Map {
         return map.get(key);
     }
 
-    @Override
-    public Object put(Object key, Object value) {
-        return map.put((K) key, (V) value);
+    
+    public V put(K key, V value) {
+        return map.put( key,  value);
     }
 
     @Override
-    public Object remove(Object key) {
+    public V remove(Object key) {
         return map.remove(key);
     }
 

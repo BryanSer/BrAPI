@@ -58,6 +58,11 @@ public abstract class Item implements Cloneable {
             tar_Shift = p;
             return this;
         }
+        
+         public ItemBuilder setUpdate(boolean p) {
+             super.update = p;
+            return this;
+        }
 
         @Override
         public boolean Use_Right(Player p) {
@@ -89,7 +94,7 @@ public abstract class Item implements Cloneable {
             if (tar != null) {
                 return tar.Use(p);
             }
-            throw new UnsupportedOperationException("未指定Use方法");
+            return true;
         }
 
         public ItemBuilder setKeepOpen(boolean b) {
@@ -122,6 +127,11 @@ public abstract class Item implements Cloneable {
      * 玩家点击之后是否保持开启界面
      */
     protected boolean keepopen = true;
+    
+    /**
+     * 玩家点击之后是更新 前提是keepopen == true
+     */
+    protected boolean update = true;
 
     /**
      * 物品的冷却时间 单位秒
@@ -135,6 +145,12 @@ public abstract class Item implements Cloneable {
     public Item(boolean keep) {
         keepopen = keep;
     }
+
+    public boolean isNeedUpdate() {
+        return update;
+    }
+    
+    
 
     /**
      * 检查一个玩家是否可用这个物品

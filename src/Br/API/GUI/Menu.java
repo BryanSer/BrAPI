@@ -8,6 +8,8 @@ package Br.API.GUI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +19,7 @@ import org.bukkit.inventory.Inventory;
  *
  * @author Bryan_lzh
  */
-public class Menu {
+public class Menu implements Cloneable {
 
     protected String Name;
     protected String DisplayName;
@@ -33,6 +35,19 @@ public class Menu {
         protected MenuBuilder() {
         }
 
+        public MenuBuilder setItem(Item i, int index) {
+            if (index >= super.Contains.size()) {
+                while (true) {
+                    this.addItem(null);
+                    if (super.Contains.size() == index + 1) {
+                        break;
+                    }
+                }
+            }
+            super.Contains.set(index, i);
+            return this;
+        }
+
         public MenuBuilder addItem(Item i) {
             super.Contains.add(i);
             return this;
@@ -45,8 +60,23 @@ public class Menu {
             return this;
         }
 
+        /**
+         *
+         * @param i 菜单的行数
+         * @return
+         */
         public MenuBuilder setSize(int i) {
             super.Size = i;
+            return this;
+        }
+
+        public MenuBuilder fillAllWithEmpty() {
+            while (true) {
+                this.addItem(null);
+                if (super.Contains.size() >= super.getSize() * 9) {
+                    break;
+                }
+            }
             return this;
         }
 
@@ -171,6 +201,18 @@ public class Menu {
 
     public static String getSplCode() {
         return SplCode;
+    }
+
+    @Override
+    public Object clone() {
+        Menu m = this;
+        try {
+            m = (Menu)super.clone();
+            m.Contains = new ArrayList<>(m.Contains);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return m;
     }
 
 }

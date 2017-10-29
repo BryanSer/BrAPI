@@ -20,7 +20,7 @@ public class EventListener implements Listener {
     public void onJoin(PlayerJoinEvent evt) {
         if (Reg) {
             Reg = false;
-            Main.RegisterMetrics();
+        //    Main.RegisterMetrics();
 
         }
     }

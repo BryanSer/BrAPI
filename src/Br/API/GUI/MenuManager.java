@@ -18,7 +18,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -136,8 +135,9 @@ public class MenuManager {
                     }
                     if (!i.isKeepopen()) {
                         evt.getWhoClicked().closeInventory();
+                    } else if (i.isNeedUpdate()) {
+                        MenuManager.UpdateMenu(p);
                     }
-                    MenuManager.UpdateMenu(p);
                 }
             }
 

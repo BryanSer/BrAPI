@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -45,6 +47,65 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
         public String Path() default "";
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public static @interface MapTarget {
+
+        public enum KeyTypes {
+            String((s) -> s, (o) -> (String) o),
+            Int(Integer::parseInt, (o) -> o + ""),
+            Float(java.lang.Float::parseFloat, (o) -> o + ""),
+            Double(java.lang.Double::parseDouble, (o) -> o + ""),
+            Long(java.lang.Long::parseLong, (o) -> o + ""),
+            Short(java.lang.Short::parseShort, (o) -> o + ""),
+            Byte(java.lang.Byte::parseByte, (o) -> o + ""),
+            Custom(null, null);
+            Function<String, Object> O;
+            Function<Object, String> S;
+
+            private KeyTypes(Function<String, Object> toO, Function<Object, String> toS) {
+                this.O = toO;
+                this.S = toS;
+            }
+
+            public String toString(Object o) {
+                return S.apply(o);
+            }
+
+            public Object toObject(String s) {
+                return O.apply(s);
+            }
+        }
+
+        public KeyTypes KeyType();
+
+        /**
+         * 若KeyType == Custom 将需要定义<p>
+         * Key的类
+         * @return
+         */
+        public Class<?> KeyClass() default String.class;
+
+        /**
+         * 若KeyType == Custom 将需要定义<p>
+         * 从字符串变为Key对象的<b>public</b>静态方法名<br>
+         * 该静态方法必须存在于 @see KeyClass() 类中
+         * 
+         * 如 public static Object toObject(String s)
+         * @return
+         */
+        public String toObject() default "";
+
+        /**
+         * 若KeyType == Custom 将需要定义<p>
+         * 从对象变为字符串的<b>public</b>静态方法名<br>
+         * 该静态方法必须存在于 @see KeyClass() 类中
+         * 如 public static String toString(Object obj)
+         * @return
+         */
+        public String toStringMethod() default "toString";
+    }
+
     /**
      * 自动反序列号静态方法
      *
@@ -68,8 +129,31 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                     if (f.getType().isAssignableFrom(Map.class)) {
                         List<String> keys = (List<String>) args.get(path + "Keys");
                         Map m = new HashMap<>();
-                        for (String s : keys) {
-                            m.put(s, args.get(path + "." + s));
+                        if (f.isAnnotationPresent(MapTarget.class)) {
+                            MapTarget mt = f.getAnnotation(MapTarget.class);
+                            if (mt.KeyType() != MapTarget.KeyTypes.Custom) {
+                                MapTarget.KeyTypes kt = mt.KeyType();
+                                keys.forEach((s) -> {
+                                    m.put(kt.toObject(s), args.get(path + "." + s));
+                                });
+                            } else {
+                                Method method = mt.KeyClass().getMethod(mt.toObject(), (Class<?>[]) null);
+                                keys.forEach((s) ->{
+                                    try {
+                                        m.put(method.invoke(null, s), args.get(path + "." + s));
+                                    } catch (IllegalAccessException ex) {
+                                        Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (IllegalArgumentException ex) {
+                                        Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (InvocationTargetException ex) {
+                                        Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                });
+                            }
+                        } else {
+                            for (String s : keys) {
+                                m.put(s, args.get(path + "." + s));
+                            }
                         }
                         f.set(t, m);
                     } else if (f.getType().isEnum()) {
@@ -110,11 +194,27 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                 try {
                     if (f.getType().isAssignableFrom(Map.class)) {
                         try {
-                            Map<String, Object> m = (Map<String, Object>) f.get(this);
                             List<String> keys = new ArrayList<>();
-                            for (Map.Entry<String, Object> e : m.entrySet()) {
-                                map.put(path + "." + e.getKey(), e.getValue());
-                                keys.add(e.getKey());
+                            if (f.isAnnotationPresent(MapTarget.class)) {
+                                Map m = (Map) f.get(this);
+                                MapTarget mt = f.getAnnotation(MapTarget.class);
+                                if (mt.KeyType() != MapTarget.KeyTypes.Custom) {
+                                    MapTarget.KeyTypes kt = mt.KeyType();
+                                    ((Set<Map.Entry>) m.entrySet()).forEach((e) -> {
+                                        map.put(kt.toString(e.getKey()), e.getValue());
+                                    });
+                                } else {
+                                    Method method = mt.KeyClass().getMethod(mt.toStringMethod(), Object.class);
+                                    for (Map.Entry e : (Set<Map.Entry>) m.entrySet()) {
+                                        map.put((String) method.invoke(null, e.getKey()), e.getValue());
+                                    }
+                                }
+                            } else {
+                                Map<String, Object> m = (Map<String, Object>) f.get(this);
+                                m.entrySet().forEach((e) -> {
+                                    map.put(path + "." + e.getKey(), e.getValue());
+                                    keys.add(e.getKey());
+                                });
                             }
                             map.put(path + "Keys", keys);
                         } catch (Exception ex) {

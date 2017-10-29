@@ -12,7 +12,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,6 +41,150 @@ import org.bukkit.plugin.Plugin;
  * @author Bryan_lzh
  */
 public abstract class Utils {
+
+    public static void RemoveItem(Player p, ItemStack... items) {
+        Map<Item, Integer> map = new HashMap<>();
+        for (ItemStack is : items) {
+            Item i = new Item(is);
+            if (map.containsKey(i)) {
+                map.put(i, map.get(i) + is.getAmount());
+            } else {
+                map.put(i, is.getAmount());
+            }
+        }
+        A:
+        for (Map.Entry<Item, Integer> e : map.entrySet()) {
+            Item cl = e.getKey();
+            int amount = e.getValue();
+            for (int i = 0; i < p.getInventory().getSize(); i++) {
+                ItemStack item = p.getInventory().getItem(i);
+                if (amount <= 0) {
+                    continue A;
+                }
+                if (item == null) {
+                    continue;
+                }
+                if (cl.isSame(item)) {
+                    if (amount - item.getAmount() < 0) {
+                        item.setAmount(item.getAmount() - amount);
+                        p.getInventory().setItem(i, item);
+                        continue A;
+                    }
+                    if (amount == item.getAmount()) {
+                        p.getInventory().setItem(i, null);
+                        continue A;
+                    }
+                    if (amount > item.getAmount()) {
+                        amount -= item.getAmount();
+                        p.getInventory().setItem(i, null);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void RemoveItem(Player p, List<ItemStack> items) {
+        Map<Item, Integer> map = new HashMap<>();
+        items.forEach((is) -> {
+            Item i = new Item(is);
+            if (map.containsKey(i)) {
+                map.put(i, map.get(i) + is.getAmount());
+            } else {
+                map.put(i, is.getAmount());
+            }
+        });
+        A:
+        for (Map.Entry<Item, Integer> e : map.entrySet()) {
+            Item cl = e.getKey();
+            int amount = e.getValue();
+            for (int i = 0; i < p.getInventory().getSize(); i++) {
+                ItemStack item = p.getInventory().getItem(i);
+                if (amount <= 0) {
+                    continue A;
+                }
+                if (item == null) {
+                    continue;
+                }
+                if (cl.isSame(item)) {
+                    if (amount - item.getAmount() < 0) {
+                        item.setAmount(item.getAmount() - amount);
+                        p.getInventory().setItem(i, item);
+                        continue A;
+                    }
+                    if (amount == item.getAmount()) {
+                        p.getInventory().setItem(i, null);
+                        continue A;
+                    }
+                    if (amount > item.getAmount()) {
+                        amount -= item.getAmount();
+                        p.getInventory().setItem(i, null);
+                    }
+                }
+            }
+        }
+    }
+
+    public static boolean hasEnoughItems(Player p, List<ItemStack> items) {
+        Map<Item, Integer> map = new HashMap<>();
+        items.forEach((ItemStack is) -> {
+            Item i = new Item(is);
+            if (map.containsKey(i)) {
+                map.put(i, map.get(i) + is.getAmount());
+            } else {
+                map.put(i, is.getAmount());
+            }
+        });
+        for (ItemStack is : p.getInventory().getContents()) {
+            if (is == null || is.getAmount() == 0 || is.getType() == Material.AIR) {
+                continue;
+            }
+            for (Item item : map.keySet()) {
+                if (item.isSame(is)) {
+                    map.put(item, map.get(item) - is.getAmount());
+                    break;
+                }
+            }
+        }
+        return map.values().stream().noneMatch((a) -> (a > 0));
+    }
+
+    public static boolean hasEnoughItems(Player p, ItemStack... items) {
+        Map<Item, Integer> map = new HashMap<>();
+        for (ItemStack is : items) {
+            Item i = new Item(is);
+            if (map.containsKey(i)) {
+                map.put(i, map.get(i) + is.getAmount());
+            } else {
+                map.put(i, is.getAmount());
+            }
+        }
+        for (ItemStack is : p.getInventory().getContents()) {
+            if (is == null || is.getAmount() == 0 || is.getType() == Material.AIR) {
+                continue;
+            }
+            for (Item item : map.keySet()) {
+                if (item.isSame(is)) {
+                    map.put(item, map.get(item) - is.getAmount());
+                    break;
+                }
+            }
+        }
+        return map.values().stream().noneMatch((a) -> (a > 0));
+    }
+
+    public static boolean hasItemInMainHand(Player p) {
+        return p.getItemInHand() != null && p.getItemInHand().getType() != Material.AIR && p.getItemInHand().getAmount() != 0;
+    }
+
+    public static boolean hasItemInOffHand(Player p) {
+        try {
+            return p.getInventory().getItemInOffHand() != null
+                    && p.getInventory().getItemInOffHand().getType() != Material.AIR
+                    && p.getInventory().getItemInOffHand().getAmount() != 0;
+        } catch (Throwable e) {
+        }
+        return false;
+    }
 
     static Economy econ = null;
 
@@ -229,6 +377,7 @@ public abstract class Utils {
      * @param tick 20tick=1s
      * @return {@link CountDownTask}
      */
+    @Deprecated
     public static CountDownTask CreateCountDown(long tick) {
         CountDownTask cdt = new CountDownTask(tick);
         cdt.runTaskLater(PluginData.plugin, tick);
@@ -243,6 +392,7 @@ public abstract class Utils {
      * @param tick 20tick=1s
      * @return {@link CountDownTask}
      */
+    @Deprecated
     public static CountDownTask CreateCountDown(Player p, long tick) {
         CountDownTask cdt = new CountDownTask(p, tick);
         cdt.runTaskLater(PluginData.plugin, tick);
@@ -257,6 +407,7 @@ public abstract class Utils {
      * @param tick 20tick=1s
      * @return {@link CountDownTask}
      */
+    @Deprecated
     public static CountDownTask CreateCountDown(long id, long tick) {
         CountDownTask cdt = new CountDownTask(id, tick);
         cdt.runTaskLater(PluginData.plugin, tick);
@@ -272,6 +423,7 @@ public abstract class Utils {
      * @param tick 20tick=1s
      * @return {@link CountDownTask}
      */
+    @Deprecated
     public static CountDownTask CreateCountDown(long id, Player p, long tick) {
         CountDownTask cdt = new CountDownTask(id, p, tick);
         cdt.runTaskLater(PluginData.plugin, tick);
@@ -597,6 +749,64 @@ public abstract class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static class Item {
+
+        int ID;
+        short Durability;
+        ItemMeta meta;
+
+        public Item(ItemStack is) {
+            this.ID = is.getTypeId();
+            this.Durability = is.getDurability();
+            this.meta = is.getItemMeta().clone();
+        }
+
+        public boolean isSame(Item i) {
+            if (i.ID == this.ID && i.Durability == this.Durability && Bukkit.getItemFactory().equals(i.meta, this.meta)) {
+                return true;
+            }
+            return false;
+        }
+
+        public boolean isSame(ItemStack is) {
+            if (is.getTypeId() == this.ID && is.getDurability() == this.Durability && Bukkit.getItemFactory().equals(is.getItemMeta(), this.meta)) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 61 * hash + this.ID;
+            hash = 61 * hash + this.Durability;
+            hash = 61 * hash + Objects.hashCode(this.meta);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Item other = (Item) obj;
+            if (this.ID != other.ID) {
+                return false;
+            }
+            if (!Bukkit.getItemFactory().equals(other.meta, this.meta)) {
+                return false;
+            }
+            return true;
+        }
+
     }
 
 }
