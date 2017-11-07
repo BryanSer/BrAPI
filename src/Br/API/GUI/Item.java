@@ -8,6 +8,8 @@ package Br.API.GUI;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,57 +19,45 @@ import org.bukkit.inventory.ItemStack;
  */
 public abstract class Item implements Cloneable {
 
-    @FunctionalInterface
-    public interface Useable {
-
-        public boolean Use(Player p);
-    }
-
-    @FunctionalInterface
-    public interface Display {
-
-        public ItemStack getDisplay(Player p);
-    }
-
     public static class ItemBuilder extends Item {
 
-        Useable tar = null;
-        Useable tar_Right = null;
-        Useable tar_Shift = null;
-        Display dis = null;
+        Function<Player, Boolean> tar = null;
+        Function<Player, Boolean> tar_Right = null;
+        Function<Player, Boolean> tar_Shift = null;
+        Function<Player, ItemStack> dis = null;
 
         ItemBuilder() {
         }
 
-        public ItemBuilder setDisplayMethod(Display d) {
+        public ItemBuilder setDisplayMethod(Function<Player, ItemStack> d) {
             this.dis = d;
             return this;
         }
 
-        public ItemBuilder setUse(Useable p) {
+        public ItemBuilder setUse(Function<Player, Boolean> p) {
             tar = p;
             return this;
         }
 
-        public ItemBuilder setUse_Right(Useable p) {
+        public ItemBuilder setUse_Right(Function<Player, Boolean> p) {
             tar_Right = p;
             return this;
         }
 
-        public ItemBuilder setUse_Shift(Useable p) {
+        public ItemBuilder setUse_Shift(Function<Player, Boolean> p) {
             tar_Shift = p;
             return this;
         }
-        
-         public ItemBuilder setUpdate(boolean p) {
-             super.update = p;
+
+        public ItemBuilder setUpdate(boolean p) {
+            super.update = p;
             return this;
         }
 
         @Override
         public boolean Use_Right(Player p) {
             if (tar_Right != null) {
-                return tar_Right.Use(p);
+                return tar_Right.apply(p);
             }
 
             return super.Use_Right(p);
@@ -76,7 +66,7 @@ public abstract class Item implements Cloneable {
         @Override
         public ItemStack getDisplay(Player p) {
             if (this.dis != null) {
-                return this.dis.getDisplay(p);
+                return this.dis.apply(p);
             }
             return super.getDisplay(p); //To change body of generated methods, choose Tools | Templates.
         }
@@ -84,7 +74,7 @@ public abstract class Item implements Cloneable {
         @Override
         public boolean Use_Shift(Player p) {
             if (tar_Shift != null) {
-                return tar_Shift.Use(p);
+                return tar_Shift.apply(p);
             }
             return super.Use_Shift(p);
         }
@@ -92,7 +82,7 @@ public abstract class Item implements Cloneable {
         @Override
         public boolean Use(Player p) {
             if (tar != null) {
-                return tar.Use(p);
+                return tar.apply(p);
             }
             return true;
         }
@@ -108,11 +98,25 @@ public abstract class Item implements Cloneable {
         }
 
         public Item build() {
+            this.todo.accept(this);
             return this;
         }
 
         public ItemBuilder setColddown(int i) {
             super.Colddown = i;
+            return this;
+        }
+
+        Consumer<ItemBuilder> todo = (t) -> {
+        };
+
+        public ItemBuilder doBeforeBuild(Consumer<ItemBuilder> c) {
+            todo = todo.andThen(c);
+            return this;
+        }
+
+        public ItemBuilder Do(Consumer<ItemBuilder> c) {
+            c.accept(this);
             return this;
         }
 
@@ -127,7 +131,7 @@ public abstract class Item implements Cloneable {
      * 玩家点击之后是否保持开启界面
      */
     protected boolean keepopen = true;
-    
+
     /**
      * 玩家点击之后是更新 前提是keepopen == true
      */
@@ -149,8 +153,6 @@ public abstract class Item implements Cloneable {
     public boolean isNeedUpdate() {
         return update;
     }
-    
-    
 
     /**
      * 检查一个玩家是否可用这个物品

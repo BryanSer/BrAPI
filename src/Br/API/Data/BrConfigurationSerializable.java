@@ -82,6 +82,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
         /**
          * 若KeyType == Custom 将需要定义<p>
          * Key的类
+         *
          * @return
          */
         public Class<?> KeyClass() default String.class;
@@ -90,8 +91,9 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
          * 若KeyType == Custom 将需要定义<p>
          * 从字符串变为Key对象的<b>public</b>静态方法名<br>
          * 该静态方法必须存在于 @see KeyClass() 类中
-         * 
+         *
          * 如 public static Object toObject(String s)
+         *
          * @return
          */
         public String toObject() default "";
@@ -99,8 +101,9 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
         /**
          * 若KeyType == Custom 将需要定义<p>
          * 从对象变为字符串的<b>public</b>静态方法名<br>
-         * 该静态方法必须存在于 @see KeyClass() 类中
-         * 如 public static String toString(Object obj)
+         * 该静态方法必须存在于 @see KeyClass() 类中 如 public static String toString(Object
+         * obj)
+         *
          * @return
          */
         public String toStringMethod() default "toString";
@@ -138,7 +141,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                                 });
                             } else {
                                 Method method = mt.KeyClass().getMethod(mt.toObject(), (Class<?>[]) null);
-                                keys.forEach((s) ->{
+                                keys.forEach((s) -> {
                                     try {
                                         m.put(method.invoke(null, s), args.get(path + "." + s));
                                     } catch (IllegalAccessException ex) {
@@ -201,12 +204,15 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                                 if (mt.KeyType() != MapTarget.KeyTypes.Custom) {
                                     MapTarget.KeyTypes kt = mt.KeyType();
                                     ((Set<Map.Entry>) m.entrySet()).forEach((e) -> {
-                                        map.put(kt.toString(e.getKey()), e.getValue());
+                                        map.put(path + "." + kt.toString(e.getKey()), e.getValue());
+                                        keys.add(kt.toString(e.getKey()));
                                     });
                                 } else {
                                     Method method = mt.KeyClass().getMethod(mt.toStringMethod(), Object.class);
                                     for (Map.Entry e : (Set<Map.Entry>) m.entrySet()) {
-                                        map.put((String) method.invoke(null, e.getKey()), e.getValue());
+                                        String key = (String) method.invoke(null, e.getKey());
+                                        map.put(path + "." + key, e.getValue());
+                                        keys.add(key);
                                     }
                                 }
                             } else {

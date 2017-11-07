@@ -64,14 +64,12 @@ public class MenuManager {
     public static void OpenMenuDelay(Player p, String menu) {
         Menu m = Menus.get(menu);
         if (m != null) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    p.closeInventory();
-                    Inventory inv = m.getInv(p);
-                    p.openInventory(inv);
-                }
-            }.runTaskLater(PluginData.plugin, 1);
+
+            Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
+                p.closeInventory();
+                Inventory inv = m.getInv(p);
+                p.openInventory(inv);
+            });
         }
     }
 

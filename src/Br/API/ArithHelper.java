@@ -2,8 +2,8 @@ package Br.API;
 
 /**
  *
- * @author http://www.cnblogs.com/gmq/archive/2013/05/30/3108849.html 龚明秋 , Bryan_lzh
- * 修改了原作者的代码 实现了多次方运算'^' 
+ * @author http://www.cnblogs.com/gmq/archive/2013/05/30/3108849.html 龚明秋 ,
+ * Bryan_lzh 修改了原作者的代码 实现了多次方运算'^'
  */
 public class ArithHelper {
 
@@ -41,13 +41,7 @@ public class ArithHelper {
     }
 
     public static double Power(double x, double y) {
-        if (y > 0d) {
-            return x * Power(x, y - 1);
-        } else if (y < 0d) {
-            return (x * Power(x, -y - 1));
-        } else {
-            return 1;
-        }
+        return Math.pow(x, y);
     }
 
     public static double NPower(double x, double y) {

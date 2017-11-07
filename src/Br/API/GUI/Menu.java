@@ -8,6 +8,7 @@ package Br.API.GUI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -106,9 +107,23 @@ public class Menu implements Cloneable {
         }
 
         public Menu build() {
+            this.todo.accept(this);
             if (super.DisplayName == null || super.Name == null || super.Size == 0) {
                 throw new NullPointerException("在MenuBuilder没有对该赋值的属性赋值");
             }
+            return this;
+        }
+
+        private Consumer<MenuBuilder> todo = (t) -> {
+        };
+
+        public MenuBuilder doBeforeBuild(Consumer<MenuBuilder> c) {
+            todo = this.todo.andThen(c);
+            return this;
+        }
+
+        public MenuBuilder Do(Consumer<MenuBuilder> c) {
+            c.accept(this);
             return this;
         }
     }
@@ -207,7 +222,7 @@ public class Menu implements Cloneable {
     public Object clone() {
         Menu m = this;
         try {
-            m = (Menu)super.clone();
+            m = (Menu) super.clone();
             m.Contains = new ArrayList<>(m.Contains);
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
