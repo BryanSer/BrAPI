@@ -107,10 +107,16 @@ public class MenuManager {
                     return;
                 }
                 evt.setCancelled(true);
-                if (evt.getClickedInventory() != inv) {
-                    return;
-                }
                 int slot = evt.getSlot();
+                try {
+                    if (evt.getClickedInventory() != inv) {
+                        return;
+                    }
+                } catch (Throwable t) {//防止craftbukkit出错(一般没人用了吧)
+                    if (slot < 0) {
+                        return;
+                    }
+                }
                 Item i = m.getClick(slot);
                 if (i != null) {
                     Player p = (Player) evt.getWhoClicked();

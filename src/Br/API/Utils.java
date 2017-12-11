@@ -251,11 +251,9 @@ public abstract class Utils {
             return;
         }
         pItem = pItem.clone();
-        if (pPlayer.getInventory().firstEmpty() == -1) { // 背包满了
-            if (pItem.getMaxStackSize() == 1) {
-                Utils.safeDropItem(pPlayer, pItem);
-                return;
-            }
+        if (pPlayer.getInventory().firstEmpty() == -1 && pItem.getMaxStackSize() == 1) { // 背包满了
+            Utils.safeDropItem(pPlayer, pItem);
+            return;
         }
         int allowCount = 0;
         for (ItemStack sInvItem : pPlayer.getInventory().getContents()) {
@@ -569,12 +567,10 @@ public abstract class Utils {
             if (data.toLowerCase().contains("lore:")) {
                 data = data.substring(data.indexOf(":") + 1);
                 String lores[] = data.split("\\|");
-                int o = 0;
                 List<String> LoreList = new ArrayList<>();
-                for (String os : lores) {
+                for (int o = 0; o < lores.length; o++) {
                     lores[o] = lores[o].replaceAll("_", " ");
                     lores[o] = ChatColor.translateAlternateColorCodes('&', lores[o]);
-                    o++;
                 }
                 LoreList.addAll(Arrays.asList(lores));
                 ItemMeta im = item.getItemMeta();
@@ -807,6 +803,9 @@ public abstract class Utils {
             return true;
         }
 
+    }
+
+    private Utils() {
     }
 
 }

@@ -15,6 +15,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  *
@@ -138,6 +141,15 @@ public class Menu implements Cloneable {
         return mb;
     }
 
+    /**
+     *
+     * @param name
+     * @param displayname
+     * @param permission
+     * @param openitem
+     * @param openitemdam
+     * @deprecated 现在推荐采用Builder形式生成Menu
+     */
     @Deprecated
     public Menu(String name, String displayname, String permission, Material openitem, short openitemdam) {
         this.Name = name;
@@ -147,6 +159,17 @@ public class Menu implements Cloneable {
         this.Permission = permission;
     }
 
+    /**
+     *
+     * @param name
+     * @param displayname
+     * @param permission
+     * @param openitem
+     * @param openitemdam
+     * @param size
+     * @deprecated 现在推荐采用Builder形式生成Menu
+     */
+    @Deprecated
     public Menu(String name, String displayname, String permission, Material openitem, short openitemdam, int size) {
         this.Name = name;
         this.DisplayName = displayname;
@@ -157,6 +180,9 @@ public class Menu implements Cloneable {
     }
 
     public Item getClick(int index) {
+        if (index >= this.Contains.size()) {
+            return null;
+        }
         return this.Contains.get(index);
     }
 
@@ -168,7 +194,13 @@ public class Menu implements Cloneable {
             }
             Item item = this.Contains.get(i);
             if (item != null) {
-                inv.setItem(i, item.getDisplay(p));
+                ItemStack is = item.getDisplay(p);
+                if (is != null) {
+                    ItemMeta im = is.getItemMeta();
+                    im.addItemFlags(ItemFlag.values());
+                    is.setItemMeta(im);
+                }
+                inv.setItem(i, is);
             }
         }
         return inv;
@@ -178,11 +210,10 @@ public class Menu implements Cloneable {
         if (p.isOp()) {
             return true;
         }
-        if (!this.getPermission().isEmpty()) {
-            if (!p.hasPermission(this.Permission)) {
-                return false;
-            }
+        if (!this.getPermission().isEmpty() && !p.hasPermission(this.Permission)) {
+            return false;
         }
+
         return true;
     }
 

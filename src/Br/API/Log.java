@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,13 +21,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
 /**
  *
  * @author Bryan_lzh
  */
-public class Log {
+public class Log extends Writer {
 
     /**
      * 创建一个单独文件作为log的对象
@@ -93,6 +97,8 @@ public class Log {
     }
 
     public void Log(String s) {
+        s = ChatColor.stripColor(s);
+        Bukkit.getConsoleSender().sendMessage(String.format("[%s] %s", this.plugin.getName(),s));
         this.LogRaw("[" + this.getTime() + "] " + s);
     }
 
@@ -160,6 +166,30 @@ public class Log {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
         return df.format(date);
+    }
+
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append(cbuf[i + off]);
+        }
+        this.Log(sb.toString());
+    }
+
+    @Override
+    public void flush() throws IOException {
+        this.Save();
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.Save();
+    }
+    
+    
+    public PrintWriter toPrintWriter(){
+        return new PrintWriter(this);
     }
 }
 

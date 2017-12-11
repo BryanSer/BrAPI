@@ -119,7 +119,7 @@ public interface DatabaseSerializable {
                 throw new NullDatabaseNameException(cls);
             }
         }
-        Driver i = (Driver) Class.forName("com.mysql.jdbc.Driver").newInstance();
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection conn = DriverManager.getConnection(url);
         Connections.put(cls, conn);
         Statement s = conn.createStatement();

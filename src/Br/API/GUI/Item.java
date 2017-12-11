@@ -68,7 +68,7 @@ public abstract class Item implements Cloneable {
             if (this.dis != null) {
                 return this.dis.apply(p);
             }
-            return super.getDisplay(p); //To change body of generated methods, choose Tools | Templates.
+            return super.getDisplay(p);
         }
 
         @Override
