@@ -56,10 +56,12 @@ public abstract class ConfigHelper {
     }
     private Plugin plugin;
 
+    @Deprecated
     public ConfigHelper(Plugin p) {
         this.plugin = p;
     }
 
+    @Deprecated
     public void Reload() throws IOException {
         Class<? extends ConfigHelper> cls = this.getClass();
         File cfg = null;
@@ -94,6 +96,7 @@ public abstract class ConfigHelper {
         }
     }
 
+    @Deprecated
     public void Load() throws IOException {
         Class<? extends ConfigHelper> cls = this.getClass();
         File cfg = null;
@@ -141,4 +144,86 @@ public abstract class ConfigHelper {
         }
     }
 
+    public static void Reload(Class<?> cls, Plugin p) throws IOException {
+        File cfg = null;
+        String root = "";
+        if (cls.isAnnotationPresent(Setting.class)) {
+            Setting s = cls.getAnnotation(Setting.class);
+            String filename = s.File();
+            cfg = new File(p.getDataFolder(), filename);
+            root = s.Root().isEmpty() ? "" : s.Root() + ".";
+        } else {
+            cfg = new File(p.getDataFolder(), "config.yml");
+        }
+        if (!cfg.exists()) {
+            p.getDataFolder().mkdirs();
+            cfg.createNewFile();
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(cfg);
+        for (Field f : cls.getDeclaredFields()) {
+            f.setAccessible(true);
+            if (f.isAnnotationPresent(Config.class)) {
+                Config c = f.getAnnotation(Config.class);
+                String path = root + (c.Path().isEmpty() ? f.getName() : c.Path());
+                if (!config.contains(path)) {
+                    try {
+                        Object get = f.get(null);
+                        if (get != null) {
+                            config.set(path, get);
+                        }
+                    } catch (Throwable ex) {
+                    }
+                } else {
+                    try {
+                        f.set(null, config.get(path));
+                    } catch (Throwable ex) {
+                    }
+                }
+            }
+        }
+    }
+
+    public static void Load(Class<?> cls, Plugin p) throws IOException {
+        File cfg = null;
+        String root = "";
+        if (cls.isAnnotationPresent(Setting.class)) {
+            Setting s = cls.getAnnotation(Setting.class);
+            String filename = s.File();
+            cfg = new File(p.getDataFolder(), filename);
+            root = s.Root().isEmpty() ? "" : s.Root() + ".";
+        } else {
+            cfg = new File(p.getDataFolder(), "config.yml");
+        }
+        if (!cfg.exists()) {
+            p.getDataFolder().mkdirs();
+            cfg.createNewFile();
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(cfg);
+        boolean save = false;
+        for (Field f : cls.getDeclaredFields()) {
+            f.setAccessible(true);
+            if (f.isAnnotationPresent(Config.class)) {
+                Config c = f.getAnnotation(Config.class);
+                String path = root + (c.Path().isEmpty() ? f.getName() : c.Path());
+                if (!config.contains(path)) {
+                    try {
+                        Object get = f.get(null);
+                        if (get != null) {
+                            config.set(path, get);
+                            save = true;
+                        }
+                    } catch (Throwable ex) {
+                    }
+                } else {
+                    try {
+                        f.set(null, config.get(path));
+                    } catch (Throwable ex) {
+                    }
+                }
+            }
+        }
+        if (save) {
+            config.save(cfg);
+        }
+    }
 }

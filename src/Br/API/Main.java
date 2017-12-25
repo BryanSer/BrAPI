@@ -39,6 +39,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
         Utils.econ = this.setupEconomy();
+        Main.RegisterMetrics();
     }
 
     private Economy setupEconomy() {
@@ -53,7 +54,6 @@ public class Main extends JavaPlugin {
         return econ;
     }
 
-    @Deprecated
     public static void RegisterMetrics() {
         int vaule = 0;
         for (Plugin p : Bukkit.getPluginManager().getPlugins()) {

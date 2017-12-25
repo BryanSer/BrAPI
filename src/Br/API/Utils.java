@@ -9,14 +9,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -806,6 +808,69 @@ public abstract class Utils {
     }
 
     private Utils() {
+    }
+
+    /**
+     * 将指定格式字符串转换成时间长度<p>
+     * 格式为: ##年##(个)月##(个小)时##分(钟)##秒
+     * @param time
+     * @return
+     */
+    public static long getTimeLength(String time) {
+        time = time.replaceAll("[^0-9年月天时分秒]", "");
+        long result = 0L;
+        
+        if (time.matches("[0-9]+(年)(.?)")) {
+            int year = Integer.parseInt(time.split("年")[0]);
+            result += (year * 31536000000L);
+        }
+        time = time.replaceAll("[0-9]+(年)", "");
+        
+        if (time.matches("[0-9]+(月)(.?)")) {
+            int month = Integer.parseInt(time.split("月")[0]);
+            result += (month * 2592000000L);
+        }
+        time = time.replaceAll("[0-9]+(月)", "");
+        
+        if (time.matches("[0-9]+(天)(.?)")) {
+            int day = Integer.parseInt(time.split("天")[0]);
+            result += (day * 86400000L);
+        }
+        time = time.replaceAll("[0-9]+(天)", "");
+        
+        if (time.matches("[0-9]+(时)(.?)")) {
+            int hour = Integer.parseInt(time.split("时")[0]);
+            result += (hour * 3600000L);
+        }
+        time = time.replaceAll("[0-9]+(时)", "");
+        
+        if(time.matches("[0-9]+(分)(.?)")){
+            int min = Integer.parseInt(time.split("分")[0]);
+            result += (min * 60000L);
+        }
+        time = time.replaceAll("[0-9]+(分)", "");
+        
+        if(time.matches("[0-9]+(秒)")){
+            int second = Integer.parseInt(time.replaceAll("[^0-9]", ""));
+            result += (second * 1000);
+        }
+        return result;
+    }
+    
+    public static long getTimeLengthAddNow(String time){
+        long now = Utils.getTimeLength(time) + System.currentTimeMillis();
+        now /= 1000;
+        now *= 1000;
+        return now;
+    }
+    private static SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static String toDateFormat(long now) {
+        return SDF.format(new Date(now));
+    }
+    
+    public static Date toDate(String s) throws ParseException{
+        return SDF.parse(s);
     }
 
 }

@@ -98,7 +98,7 @@ public class Log extends Writer {
 
     public void Log(String s) {
         s = ChatColor.stripColor(s);
-        Bukkit.getConsoleSender().sendMessage(String.format("[%s] %s", this.plugin.getName(),s));
+        Bukkit.getConsoleSender().sendMessage(String.format("[%s] %s", this.plugin.getName(), s));
         this.LogRaw("[" + this.getTime() + "] " + s);
     }
 
@@ -174,7 +174,7 @@ public class Log extends Writer {
         for (int i = 0; i < len; i++) {
             sb.append(cbuf[i + off]);
         }
-        this.Log(sb.toString());
+        this.Log(sb.toString().replace('\n', ' '));
     }
 
     @Override
@@ -186,9 +186,8 @@ public class Log extends Writer {
     public void close() throws IOException {
         this.Save();
     }
-    
-    
-    public PrintWriter toPrintWriter(){
+
+    public PrintWriter toPrintWriter() {
         return new PrintWriter(this);
     }
 }
