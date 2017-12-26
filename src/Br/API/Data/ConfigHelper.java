@@ -34,6 +34,13 @@ public abstract class ConfigHelper {
          * @return
          */
         public String Path() default "";
+
+        /**
+         * 用来设定该字段的注释
+         *
+         * @return
+         */
+        public String Annotation() default "";
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -125,6 +132,14 @@ public abstract class ConfigHelper {
                         Object get = f.get(this);
                         if (get != null) {
                             config.set(path, get);
+                            if (!c.Annotation().isEmpty()) {
+                                String h = config.options().header();
+                                if (h == null) {
+                                    h = "";
+                                }
+                                h += path + " >> " + c.Annotation() + "\n";
+                                config.options().header(h);
+                            }
                             save = true;
                         }
                     } catch (Throwable ex) {
@@ -170,6 +185,14 @@ public abstract class ConfigHelper {
                         Object get = f.get(null);
                         if (get != null) {
                             config.set(path, get);
+                            if (!c.Annotation().isEmpty()) {
+                                String h = config.options().header();
+                                if (h == null) {
+                                    h = "";
+                                }
+                                h += path + " >> " + c.Annotation() + "\n";
+                                config.options().header(h);
+                            }
                         }
                     } catch (Throwable ex) {
                     }

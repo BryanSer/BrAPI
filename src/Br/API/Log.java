@@ -174,7 +174,10 @@ public class Log extends Writer {
         for (int i = 0; i < len; i++) {
             sb.append(cbuf[i + off]);
         }
-        this.Log(sb.toString().replace('\n', ' '));
+        String s = sb.toString();
+        if (!s.equalsIgnoreCase("\n")) {
+            this.Log(s);
+        }
     }
 
     @Override
