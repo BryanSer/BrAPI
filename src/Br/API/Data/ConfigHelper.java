@@ -60,6 +60,13 @@ public abstract class ConfigHelper {
          * @return
          */
         public String File() default "config.yml";
+
+        /**
+         * 用于描述该配置文件
+         *
+         * @return
+         */
+        public String Description() default "";
     }
     private Plugin plugin;
 
@@ -108,11 +115,15 @@ public abstract class ConfigHelper {
         Class<? extends ConfigHelper> cls = this.getClass();
         File cfg = null;
         String root = "";
+        String des = null;
         if (cls.isAnnotationPresent(Setting.class)) {
             Setting s = cls.getAnnotation(Setting.class);
             String filename = s.File();
             cfg = new File(this.plugin.getDataFolder(), filename);
             root = s.Root().isEmpty() ? "" : s.Root() + ".";
+            if (!s.Description().isEmpty()) {
+                des = s.Description();
+            }
         } else {
             cfg = new File(this.plugin.getDataFolder(), "config.yml");
         }
@@ -121,6 +132,9 @@ public abstract class ConfigHelper {
             cfg.createNewFile();
         }
         YamlConfiguration config = YamlConfiguration.loadConfiguration(cfg);
+        if (des != null) {
+            config.options().header(des);
+        }
         boolean save = false;
         for (Field f : cls.getDeclaredFields()) {
             f.setAccessible(true);
