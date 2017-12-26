@@ -88,7 +88,7 @@ public class BrItemStack {
     public void setTag(BrNBTTagCompound nbt){
         try {
             Method method = cls.getMethod("setTag", Utils.getNMSClass("NBTTagCompound"));
-            method.invoke(this.obj, nbt.obj);
+            method.invoke(this.obj, nbt.TargetObject);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrItemStack.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {

@@ -5,6 +5,7 @@ import Br.API.Item.ItemManager;
 import Br.API.LangUtils.Lang;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -39,7 +40,6 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
         Utils.econ = this.setupEconomy();
-        Main.RegisterMetrics();
     }
 
     private Economy setupEconomy() {
@@ -95,7 +95,7 @@ public class Main extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("BrAPI")) {
             if (EventListener.Reg) {
-                //RegisterMetrics();
+                RegisterMetrics();
                 EventListener.Reg = false;
             }
             String plugins = "§a";

@@ -19,9 +19,9 @@ import java.util.logging.Logger;
 public class BrNBTTagCompound extends BrNBTBase {
 
     public BrNBTTagCompound() {
-        super.cls = Utils.getNMSClass("NBTTagCompound");
+        super.TargetClass = Utils.getNMSClass("NBTTagCompound");
         try {
-            super.obj = cls.newInstance();
+            super.TargetObject = TargetClass.newInstance();
         } catch (InstantiationException ex) {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
@@ -30,14 +30,14 @@ public class BrNBTTagCompound extends BrNBTBase {
     }
 
     public BrNBTTagCompound(Object obj) {
-        super.cls = Utils.getNMSClass("NBTTagCompound");
-        super.obj = obj;
+        super.TargetClass = Utils.getNMSClass("NBTTagCompound");
+        super.TargetObject = obj;
     }
 
     public void set(String key, BrNBTBase nbt) {
         try {
-            Method m = super.cls.getMethod("set", String.class, Utils.getNMSClass("NBTBase"));
-            m.invoke(super.obj, key, nbt.obj);
+            Method m = super.TargetClass.getMethod("set", String.class, Utils.getNMSClass("NBTBase"));
+            m.invoke(super.TargetObject, key, nbt.TargetObject);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -53,8 +53,8 @@ public class BrNBTTagCompound extends BrNBTBase {
 
     public boolean hasValue(String key) {
         try {
-            Method m = super.cls.getMethod("hasKey", String.class);
-            return (boolean) m.invoke(super.obj, key);
+            Method m = super.TargetClass.getMethod("hasKey", String.class);
+            return (boolean) m.invoke(super.TargetObject, key);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {

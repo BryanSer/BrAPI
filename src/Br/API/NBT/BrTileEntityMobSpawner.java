@@ -52,8 +52,8 @@ public class BrTileEntityMobSpawner extends BrTileEntity {
     public void save(BrNBTTagCompound br) {
         c = Utils.getNMSClass("TileEntityMobSpawner");
         try {
-            Method m = c.getMethod("a", br.cls);
-            m.invoke(obj, br.obj);
+            Method m = c.getMethod("a", br.TargetClass);
+            m.invoke(obj, br.TargetObject);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrTileEntity.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {

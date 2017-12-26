@@ -19,12 +19,25 @@ public class PlayerMap<V> extends HashMap<String, V> {
     public PlayerMap(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }
-    
-    public PlayerMap(int initialCapacity){
+
+    public PlayerMap(int initialCapacity) {
         super(initialCapacity);
     }
-    
-    public PlayerMap(Map<Player, ? extends V> m){
-        Map<String,? extends V> r = new HashMap<>();
+
+    public PlayerMap(Map<Player, ? extends V> m) {
+        Map<String, ? extends V> r = new HashMap<>();
     }
+
+    public V get(Player key) {
+        return super.get(key.getName());
+    }
+
+    public V put(Player key, V value) {
+        return super.put(key.getName(), value);
+    }
+
+    public V remove(Player key) {
+        return super.remove(key.getName());
+    }
+
 }

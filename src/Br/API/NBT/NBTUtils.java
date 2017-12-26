@@ -82,9 +82,9 @@ public class NBTUtils {
 
     public static BrNBTTagCompound setString(BrNBTTagCompound bn, String key, String value) {
         try {
-            Method method = bn.cls.getMethod("set", String.class, new BrNBTBase().cls);
+            Method method = bn.TargetClass.getMethod("set", String.class, new BrNBTBase().TargetClass);
             BrNBTTagString bns = new BrNBTTagString(value);
-            method.invoke(bn.obj, key, bns.obj);
+            method.invoke(bn.TargetObject, key, bns.TargetObject);
             return bn;
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(NBTUtils.class.getName()).log(Level.SEVERE, null, ex);
@@ -107,7 +107,7 @@ public class NBTUtils {
             Class<?> cis = Utils.getBukkitClass("inventory.CraftItemStack");
             Method method = cis.getMethod("asNMSCopy", ItemStack.class);
             BrItemStack bris = new BrItemStack(method.invoke(null, is));
-            Object obj = ((boolean) bris.getCls().getMethod("hasTag", (Class<?>[]) null).invoke(bris.getObject(), (Object[]) null)) ? bris.getCls().getMethod("getTag", (Class<?>[]) null).invoke(bris.getObject(), (Object[]) null) : new BrNBTTagCompound().cls.newInstance();
+            Object obj = ((boolean) bris.getCls().getMethod("hasTag", (Class<?>[]) null).invoke(bris.getObject(), (Object[]) null)) ? bris.getCls().getMethod("getTag", (Class<?>[]) null).invoke(bris.getObject(), (Object[]) null) : new BrNBTTagCompound().TargetClass.newInstance();
             return new BrNBTTagCompound(obj);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(NBTUtils.class.getName()).log(Level.SEVERE, null, ex);

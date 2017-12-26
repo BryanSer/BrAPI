@@ -18,20 +18,20 @@ import java.util.logging.Logger;
  */
 public class BrNBTBase {
 
-    protected Class<?> cls;
-    protected Object obj;
+    protected Class<?> TargetClass;
+    protected Object TargetObject;
 
     public BrNBTBase() {
-        cls = Utils.getNMSClass("NBTBase");
+        TargetClass = Utils.getNMSClass("NBTBase");
     }
 
     public BrNBTBase(int i) {
         try {
-            cls = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTBase");
             Class<?> num = Utils.getNMSClass("NBTTagInt");
             Constructor<?> con = num.getConstructor(int.class);
             Object obj = con.newInstance(i);
-            this.obj = obj;
+            this.TargetObject = obj;
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTBase.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -49,11 +49,11 @@ public class BrNBTBase {
 
     public BrNBTBase(float i) {
         try {
-            cls = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTBase");
             Class<?> num = Utils.getNMSClass("NBTTagFloat");
             Constructor<?> con = num.getConstructor(float.class);
             Object obj = con.newInstance(i);
-            this.obj = obj;
+            this.TargetObject = obj;
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTBase.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -71,11 +71,11 @@ public class BrNBTBase {
 
     public BrNBTBase(double i) {
         try {
-            cls = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTBase");
             Class<?> num = Utils.getNMSClass("NBTTagDouble");
             Constructor<?> con = num.getConstructor(double.class);
             Object obj = con.newInstance(i);
-            this.obj = obj;
+            this.TargetObject = obj;
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTBase.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -93,11 +93,11 @@ public class BrNBTBase {
 
     public BrNBTBase(byte i) {
         try {
-            cls = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTBase");
             Class<?> num = Utils.getNMSClass("NBTTagByte");
             Constructor<?> con = num.getConstructor(byte.class);
             Object obj = con.newInstance(i);
-            this.obj = obj;
+            this.TargetObject = obj;
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTBase.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -115,11 +115,11 @@ public class BrNBTBase {
     
     public BrNBTBase(short i) {
         try {
-            cls = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTBase");
             Class<?> num = Utils.getNMSClass("NBTTagShort");
             Constructor<?> con = num.getConstructor(short.class);
             Object obj = con.newInstance(i);
-            this.obj = obj;
+            this.TargetObject = obj;
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTBase.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -137,11 +137,11 @@ public class BrNBTBase {
     
     public BrNBTBase(long i) {
         try {
-            cls = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTBase");
             Class<?> num = Utils.getNMSClass("NBTTagLong");
             Constructor<?> con = num.getConstructor(long.class);
             Object obj = con.newInstance(i);
-            this.obj = obj;
+            this.TargetObject = obj;
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTBase.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -157,12 +157,12 @@ public class BrNBTBase {
         }
     }
 
-    public Class<?> getCls() {
-        return cls;
+    public Class<?> getTargetClass() {
+        return TargetClass;
     }
 
-    public Object getObject() {
-        return obj;
+    public Object getTargetObject() {
+        return TargetObject;
     }
     
     
