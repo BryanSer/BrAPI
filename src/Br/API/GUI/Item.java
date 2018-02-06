@@ -24,6 +24,11 @@ public abstract class Item implements Cloneable {
         Function<Player, Boolean> tar = null;
         Function<Player, Boolean> tar_Right = null;
         Function<Player, Boolean> tar_Shift = null;
+        Function<Player, Boolean> tar_Shift_R = null;
+        Function<Player, Boolean> tar_Shift_L = null;
+        Function<Player, Boolean> tar_Drop = null;
+        Function<Player, Boolean> tar_Drop_C = null;
+        Function<Player, Boolean> tar_Middle = null;
         Function<Player, ItemStack> dis = null;
 
         ItemBuilder() {
@@ -49,9 +54,58 @@ public abstract class Item implements Cloneable {
             return this;
         }
 
+        public ItemBuilder setUse_Shift_Left(Function<Player, Boolean> p) {
+            tar_Shift_L = p;
+            return this;
+        }
+        
+        public ItemBuilder setUse_Drop(Function<Player, Boolean> p) {
+            tar_Drop = p;
+            return this;
+        }
+        
+        public ItemBuilder setUse_Middle(Function<Player, Boolean> p) {
+            tar_Middle = p;
+            return this;
+        }
+        
+        public ItemBuilder setUse_Drop_Ctrl(Function<Player, Boolean> p) {
+            tar_Drop_C = p;
+            return this;
+        }
+
+        public ItemBuilder setUse_Shift_Right(Function<Player, Boolean> p) {
+            tar_Shift_R = p;
+            return this;
+        }
+
         public ItemBuilder setUpdate(boolean p) {
             super.update = p;
             return this;
+        }
+
+        @Override
+        public boolean Use_Middle(Player p) {
+            if (this.tar_Middle != null) {
+                return this.tar_Middle.apply(p);
+            }
+            return super.Use_Middle(p);
+        }
+
+        @Override
+        public boolean Use_Drop(Player p) {
+            if (this.tar_Drop != null) {
+                return this.tar_Drop.apply(p);
+            }
+            return super.Use_Drop(p);
+        }
+
+        @Override
+        public boolean Use_Drop_Ctrl(Player p) {
+            if (this.tar_Drop_C != null) {
+                return this.tar_Drop_C.apply(p);
+            }
+            return super.Use_Drop_Ctrl(p);
         }
 
         @Override
@@ -77,6 +131,22 @@ public abstract class Item implements Cloneable {
                 return tar_Shift.apply(p);
             }
             return super.Use_Shift(p);
+        }
+
+        @Override
+        public boolean Use_Shift_Left(Player p) {
+            if (tar_Shift_L != null) {
+                return this.tar_Shift_L.apply(p);
+            }
+            return super.Use_Shift_Left(p);
+        }
+
+        @Override
+        public boolean Use_Shift_Right(Player p) {
+            if (tar_Shift_R != null) {
+                return this.tar_Shift_L.apply(p);
+            }
+            return super.Use_Shift_Right(p);
         }
 
         @Override
@@ -170,6 +240,10 @@ public abstract class Item implements Cloneable {
         long get = this.LastUseTime.get(p.getName());
         return System.currentTimeMillis() - (1000 * this.Colddown) >= get;
     }
+    
+    public String CDMessage(Player p){
+        return "§c你还不能使用这个项目 请稍等后重试";
+    }
 
     /**
      * 使一个玩家进入CD
@@ -206,7 +280,49 @@ public abstract class Item implements Cloneable {
         return this.Use(p);
     }
 
+    public boolean Use_Shift_Right(Player p) {
+        return this.Use_Shift(p);
+    }
+
+    public boolean Use_Shift_Left(Player p) {
+        return this.Use_Shift(p);
+    }
+
+    /**
+     * 玩家对物品按下Q时触发
+     *
+     * @param p
+     * @return
+     */
+    public boolean Use_Drop(Player p) {
+        return this.Use(p);
+    }
+
+    /**
+     * 玩家按住ctrl时按下Q时触发
+     *
+     * @param p
+     * @return
+     */
+    public boolean Use_Drop_Ctrl(Player p) {
+        return this.Use_Drop(p);
+    }
+
+//    public boolean Use_NumberKey(Player p,int num){
+//        return this.Use(p);
+//    }
+    /**
+     * 玩家对物品按下中键时触发
+     *
+     * @param p
+     * @return
+     */
+    public boolean Use_Middle(Player p) {
+        return this.Use(p);
+    }
+
     @Override
+    @Deprecated
     protected Item clone() {
         try {
             Item i = (Item) super.clone();
@@ -218,24 +334,7 @@ public abstract class Item implements Cloneable {
             return i;
         } catch (CloneNotSupportedException ex) {
         }
-        return Item
-                .getItemBuilder()
-                .setUse((p) -> {
-                    return this.Use(p);
-                })
-                .setColddown(this.Colddown)
-                .setDisplay(this.display.clone())
-                .setKeepOpen(this.keepopen)
-                .setUse_Right((p) -> {
-                    return this.Use_Right(p);
-                })
-                .setUse_Shift((p) -> {
-                    return this.Use_Shift(p);
-                })
-                .setDisplayMethod((p) -> {
-                    return this.getDisplay(p);
-                })
-                .build();
+        return null;
     }
 
     public static ItemBuilder getItemBuilder() {

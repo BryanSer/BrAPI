@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -41,6 +42,8 @@ public abstract class ConfigHelper {
          * @return
          */
         public String Annotation() default "";
+
+        public boolean Colored() default false;
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -101,7 +104,11 @@ public abstract class ConfigHelper {
                 String path = root + (c.Path().isEmpty() ? f.getName() : c.Path());
                 if (config.contains(path)) {
                     try {
-                        f.set(this, config.get(path));
+                        boolean color = c.Colored();
+                        if (!config.isString(path)) {
+                            color = false;
+                        }
+                        f.set(this, color ? ChatColor.translateAlternateColorCodes('&', (String) config.get(path)) : config.get(path));
                     } catch (Throwable ex) {
                         Logger.getLogger(ConfigHelper.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -161,7 +168,11 @@ public abstract class ConfigHelper {
                     }
                 } else {
                     try {
-                        f.set(this, config.get(path));
+                        boolean color = c.Colored();
+                        if (!config.isString(path)) {
+                            color = false;
+                        }
+                        f.set(this, color ? ChatColor.translateAlternateColorCodes('&', (String) config.get(path)) : config.get(path));
                     } catch (Throwable ex) {
                         Logger.getLogger(ConfigHelper.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -212,7 +223,11 @@ public abstract class ConfigHelper {
                     }
                 } else {
                     try {
-                        f.set(null, config.get(path));
+                        boolean color = c.Colored();
+                        if (!config.isString(path)) {
+                            color = false;
+                        }
+                        f.set(null, color ? ChatColor.translateAlternateColorCodes('&', (String) config.get(path)) : config.get(path));
                     } catch (Throwable ex) {
                     }
                 }
@@ -253,7 +268,11 @@ public abstract class ConfigHelper {
                     }
                 } else {
                     try {
-                        f.set(null, config.get(path));
+                        boolean color = c.Colored();
+                        if (!config.isString(path)) {
+                            color = false;
+                        }
+                        f.set(null, color ? ChatColor.translateAlternateColorCodes('&', (String) config.get(path)) : config.get(path));
                     } catch (Throwable ex) {
                     }
                 }

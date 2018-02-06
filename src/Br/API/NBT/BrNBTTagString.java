@@ -9,6 +9,7 @@ package Br.API.NBT;
 import Br.API.Utils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,5 +53,23 @@ public class BrNBTTagString extends BrNBTBase{
         } catch (InvocationTargetException ex) {
             Logger.getLogger(BrNBTTagString.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public String getValue(){
+        try {
+            Method m = super.TargetClass.getMethod("c_", (Class<?>[]) null);
+            return (String) m.invoke(super.TargetObject, (Object[]) null);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(BrNBTTagString.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(BrNBTTagString.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(BrNBTTagString.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(BrNBTTagString.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(BrNBTTagString.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

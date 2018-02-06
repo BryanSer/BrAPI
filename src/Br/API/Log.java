@@ -43,6 +43,18 @@ public class Log extends Writer {
     }
 
     /**
+     * 创建一个单独文件作为log的对象
+     *
+     * @param p 插件主类
+     * @param c 缓存空间
+     * @param con 是否向后台输出内容
+     * @return
+     */
+    public static Log getOneFileLog(Plugin p, int c, boolean con) {
+        return new OneFileLog(p, c, con);
+    }
+
+    /**
      * 将旧的.\\Log\\文件夹里的全部xxx.log合并到.\Log.log中 并且创建一个单独文件作为log的对象
      *
      * @param p 插件主类
@@ -50,7 +62,19 @@ public class Log extends Writer {
      * @return
      */
     public static Log CombineOldLog(Plugin p, int c) {
-        Log log = new OneFileLog(p, c);
+        return Log.CombineOldLog(p, c, false);
+    }
+
+    /**
+     * 将旧的.\\Log\\文件夹里的全部xxx.log合并到.\Log.log中 并且创建一个单独文件作为log的对象
+     *
+     * @param p 插件主类
+     * @param c 缓存空间
+     * @param con 是否向后台输出
+     * @return
+     */
+    public static Log CombineOldLog(Plugin p, int c, boolean con) {
+        Log log = new OneFileLog(p, c, con);
         File fold = p.getDataFolder();
         fold = new File(fold, File.separator + "Logs" + File.separator);
         if (fold.exists()) {
@@ -80,6 +104,7 @@ public class Log extends Writer {
     List<String> LogCache = new ArrayList<>();
     int CacheLength;
     Plugin plugin;
+    boolean ConsoleSend;
 
     /**
      *
@@ -88,21 +113,38 @@ public class Log extends Writer {
      * @param cachelength
      */
     public Log(Plugin p, int deleteday, int cachelength) {
+        this(p, deleteday, cachelength, false);
+    }
+
+    /**
+     *
+     * @param p 插件主类
+     * @param deleteday 多少天后删除 -1为永不删除
+     * @param cachelength
+     * @param con 是否向后台输出
+     */
+    public Log(Plugin p, int deleteday, int cachelength, boolean con) {
         this.plugin = p;
         if (deleteday < -1 || deleteday == 0) {
             throw new IllegalArgumentException("参数错误 删除日期不得小于-1且不为0");
         }
         this.DeleteDay = deleteday;
         this.CacheLength = cachelength;
+        ConsoleSend = con;
     }
 
     public void Log(String s) {
         s = ChatColor.stripColor(s);
-        Bukkit.getConsoleSender().sendMessage(String.format("[%s] %s", this.plugin.getName(), s));
         this.LogRaw("[" + this.getTime() + "] " + s);
     }
 
     public void LogRaw(String s) {
+        if (this.ConsoleSend) {
+            if (s.matches("\\[(.*)\\] (.)*")) {
+                s = s.replaceFirst("\\[(.*)\\] ", "");
+            }
+            Bukkit.getConsoleSender().sendMessage(String.format("%s[%s] %s", "§6", this.plugin.getName(), s));
+        }
         LogCache.add(s);
         if (LogCache.size() >= CacheLength) {
             this.Save();
@@ -118,13 +160,12 @@ public class Log extends Writer {
         }
         File aim = null;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date nowdata = new Date();
         for (File f : fold.listFiles()) {
             String name = f.getName().replaceAll("\\.log", "");
             if (DeleteDay != -1) {
                 try {
                     Date d = format.parse(name);
-                    if (nowdata.getTime() - d.getTime() >= DeleteDay * 24 * 60 * 60 * 1000) {
+                    if (System.currentTimeMillis() - d.getTime() >= DeleteDay * 24L * 60L * 60L * 1000L) {
                         f.deleteOnExit();
                     }
                 } catch (ParseException ex) {
@@ -199,6 +240,10 @@ class OneFileLog extends Log {
 
     public OneFileLog(Plugin p, int cachelength) {
         super(p, -1, cachelength);
+    }
+
+    public OneFileLog(Plugin p, int cachelength, boolean con) {
+        super(p, -1, cachelength, con);
     }
 
     @Override

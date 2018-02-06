@@ -1,6 +1,7 @@
 package Br.API;
 
 import Br.API.Data.DataManager;
+import Br.API.Data.DatabaseSerializable;
 import Br.API.Item.ItemManager;
 import Br.API.LangUtils.Lang;
 import java.io.File;
@@ -26,7 +27,7 @@ public class Main extends JavaPlugin {
     public static Set<String> Plugins = new HashSet();
 
     public void onEnable() {
-        
+
         PluginData.plugin = this;
         File dataFolder = PluginData.plugin.getDataFolder();
         if (!dataFolder.exists()) {
@@ -40,6 +41,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
         Utils.econ = this.setupEconomy();
+
     }
 
     private Economy setupEconomy() {
@@ -69,6 +71,7 @@ public class Main extends JavaPlugin {
             Metrics.Graph g = metrics.createGraph("SubPlugin");
             g.addPlotter(new Metrics.Plotter() {
                 final int va = v;
+
                 public int getValue() {
                     return this.va;
                 }
@@ -90,6 +93,7 @@ public class Main extends JavaPlugin {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        DatabaseSerializable.PreparedStatements.Close();
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

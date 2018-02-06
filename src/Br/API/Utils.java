@@ -749,7 +749,7 @@ public abstract class Utils {
         return null;
     }
 
-    public static class Item {
+    private static class Item {
 
         int ID;
         short Durability;

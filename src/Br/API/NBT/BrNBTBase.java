@@ -24,10 +24,22 @@ public class BrNBTBase {
     public BrNBTBase() {
         TargetClass = Utils.getNMSClass("NBTBase");
     }
+    
+     public BrNBTBase(Object obj) {
+        TargetClass = Utils.getNMSClass("NBTBase");
+        TargetObject = obj;
+    }
+    
+    public static BrNBTBase getNumber(Object num){
+        BrNBTBase tag = new BrNBTBase();
+        tag.TargetClass = Utils.getNMSClass("NBTNumber");
+        tag.TargetObject = num;
+        return tag;
+    }
 
     public BrNBTBase(int i) {
         try {
-            TargetClass = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTTagInt");
             Class<?> num = Utils.getNMSClass("NBTTagInt");
             Constructor<?> con = num.getConstructor(int.class);
             Object obj = con.newInstance(i);
@@ -49,7 +61,7 @@ public class BrNBTBase {
 
     public BrNBTBase(float i) {
         try {
-            TargetClass = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTTagFloat");
             Class<?> num = Utils.getNMSClass("NBTTagFloat");
             Constructor<?> con = num.getConstructor(float.class);
             Object obj = con.newInstance(i);
@@ -71,7 +83,7 @@ public class BrNBTBase {
 
     public BrNBTBase(double i) {
         try {
-            TargetClass = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTTagDouble");
             Class<?> num = Utils.getNMSClass("NBTTagDouble");
             Constructor<?> con = num.getConstructor(double.class);
             Object obj = con.newInstance(i);
@@ -93,7 +105,7 @@ public class BrNBTBase {
 
     public BrNBTBase(byte i) {
         try {
-            TargetClass = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTTagByte");
             Class<?> num = Utils.getNMSClass("NBTTagByte");
             Constructor<?> con = num.getConstructor(byte.class);
             Object obj = con.newInstance(i);
@@ -115,7 +127,7 @@ public class BrNBTBase {
     
     public BrNBTBase(short i) {
         try {
-            TargetClass = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTTagShort");
             Class<?> num = Utils.getNMSClass("NBTTagShort");
             Constructor<?> con = num.getConstructor(short.class);
             Object obj = con.newInstance(i);
@@ -137,7 +149,7 @@ public class BrNBTBase {
     
     public BrNBTBase(long i) {
         try {
-            TargetClass = Utils.getNMSClass("NBTBase");
+            TargetClass = Utils.getNMSClass("NBTTagLong");
             Class<?> num = Utils.getNMSClass("NBTTagLong");
             Constructor<?> con = num.getConstructor(long.class);
             Object obj = con.newInstance(i);

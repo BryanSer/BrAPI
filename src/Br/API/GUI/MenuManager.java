@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -121,21 +122,51 @@ public class MenuManager {
                 if (i != null) {
                     Player p = (Player) evt.getWhoClicked();
                     if (!i.checkCD(p)) {
-                        p.sendMessage("§c你还不能使用这个项目 请稍等后重试");
+                        p.sendMessage(i.CDMessage(p));
                         return;
                     }
-                    if (evt.isLeftClick()) {
-                        if (i.Use(p)) {
-                            i.CD(p);
-                        }
-                    } else if (evt.isRightClick()) {
-                        if (i.Use_Right(p)) {
-                            i.CD(p);
-                        }
-                    } else {
-                        if (i.Use_Shift(p)) {
-                            i.CD(p);
-                        }
+
+                    switch (evt.getClick()) {
+                        case LEFT:
+                            if (i.Use(p)) {
+                                i.CD(p);
+                            }
+                            break;
+                        case RIGHT:
+                            if (i.Use_Right(p)) {
+                                i.CD(p);
+                            }
+                            break;
+                        case SHIFT_LEFT:
+                            if (i.Use_Shift_Left(p)) {
+                                i.CD(p);
+                            }
+                            break;
+                        case SHIFT_RIGHT:
+                            if (i.Use_Shift_Right(p)) {
+                                i.CD(p);
+                            }
+                            break;
+                        case DROP:
+                            if (i.Use_Drop(p)) {
+                                i.CD(p);
+                            }
+                            break;
+                        case CONTROL_DROP:
+                            if (i.Use_Drop_Ctrl(p)) {
+                                i.CD(p);
+                            }
+                            break;
+                        case MIDDLE:
+                            if (i.Use_Middle(p)) {
+                                i.CD(p);
+                            }
+                            break;
+                        default:
+                            if (i.Use(p)) {
+                                i.CD(p);
+                            }
+                            break;
                     }
                     if (!i.isKeepopen()) {
                         evt.getWhoClicked().closeInventory();
