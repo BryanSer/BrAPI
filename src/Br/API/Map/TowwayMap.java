@@ -12,9 +12,10 @@ import java.util.Set;
 
 /**
  * 闲着无聊写的双向Map 虽然本质还是HashMap
+ *
  * @author Bryan_lzh
  */
-public class TowwayMap<K, V> implements Map {
+public class TowwayMap<K, V> implements Map<K, V> {
 
     private Map<K, V> KtoV = new HashMap<>();
     private Map<V, K> VtoK = new HashMap<>();
@@ -46,22 +47,26 @@ public class TowwayMap<K, V> implements Map {
 
     /**
      * 通过V找K
+     *
      * @param value
      * @return
      */
-    public K getKey(Object value) {
+    public K getKey(V value) {
         return this.VtoK.get((V) value);
     }
 
     @Override
-    public V put(Object key, Object value) {
+    public V put(K key, V value) {
+        if (this.KtoV.containsKey(key)) {
+            this.VtoK.remove(this.KtoV.get(key));
+        }
         this.KtoV.put((K) key, (V) value);
         this.VtoK.put((V) value, (K) key);
         return (V) value;
     }
 
     @Override
-    public Object remove(Object key) {
+    public V remove(Object key) {
         V v = this.KtoV.remove((K) key);
         this.VtoK.remove(v);
         return v;

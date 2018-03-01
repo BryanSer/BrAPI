@@ -21,7 +21,9 @@ import java.util.Set;
  * @author Administrator
  * @param <K>
  * @param <V>
+ * @deprecated 年轻的时候不知道SortedMap
  */
+@Deprecated
 public class SortableMap<K, V extends Comparable> implements Map<K, V> {
 
     LinkedHashMap<K, V> map = new LinkedHashMap<>();

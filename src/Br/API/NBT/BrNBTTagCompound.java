@@ -39,7 +39,7 @@ public class BrNBTTagCompound extends BrNBTBase {
     public void set(String key, BrNBTBase nbt) {
         try {
             Method m = super.TargetClass.getMethod("set", String.class, Utils.getNMSClass("NBTBase"));
-            m.invoke(super.TargetObject, key, nbt.TargetObject);
+            m.invoke(super.TargetObject, key, Utils.getNMSClass("NBTBase").cast(nbt.TargetObject));
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -70,8 +70,8 @@ public class BrNBTTagCompound extends BrNBTBase {
         }
         return false;
     }
-    
-    public Set<String> getKeySet(){
+
+    public Set<String> getKeySet() {
         try {
             Method m = super.TargetClass.getMethod("c", (Class<?>[]) null);
             return (Set<String>) m.invoke(super.TargetObject, (Object[]) null);
@@ -88,8 +88,8 @@ public class BrNBTTagCompound extends BrNBTBase {
         }
         return new HashSet<>();
     }
-    
-    public BrNBTTagCompound getCompound(String key){
+
+    public BrNBTTagCompound getCompound(String key) {
         try {
             Method m = super.TargetClass.getMethod("getCompound", String.class);
             Object obj = m.invoke(super.TargetObject, key);
@@ -107,24 +107,24 @@ public class BrNBTTagCompound extends BrNBTBase {
         }
         return null;
     }
-    
-    public BrNBTBase getNBTBase(String key){
+
+    public BrNBTBase getNBTBase(String key) {
         try {
             Method m = super.TargetClass.getMethod("get", String.class);
             Object obj = m.invoke(super.TargetObject, key);
-            if(obj == null){
+            if (obj == null) {
                 return null;
             }
-            if(Utils.getNMSClass("NBTTagString").isInstance(obj)){
+            if (Utils.getNMSClass("NBTTagString").isInstance(obj)) {
                 return new BrNBTTagString(obj);
             }
-            if(Utils.getNMSClass("NBTTagList").isInstance(obj)){
+            if (Utils.getNMSClass("NBTTagList").isInstance(obj)) {
                 return new BrNBTTagList(obj);
             }
-            if(Utils.getNMSClass("NBTNumber").isInstance(obj)){
+            if (Utils.getNMSClass("NBTNumber").isInstance(obj)) {
                 return BrNBTBase.getNumber(obj);
             }
-            return new BrNBTBase(obj);
+            return BrNBTBase.toBase(obj);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {

@@ -95,7 +95,7 @@ public class AttributeModifiers {
                 for (Map.Entry<AttributeType, Double> E : this.Attrs_opt_0.entrySet()) {
                     BrNBTTagCompound tag = new BrNBTTagCompound();
                     tag.set("Name", new BrNBTTagString(E.getKey().name()));
-                    tag.set("Amount", new BrNBTBase(E.getValue()));
+                    tag.set("Amount", new BrNBTBase(E.getValue().doubleValue()));
                     tag.set("UUIDLeast", new BrNBTBase(Math.abs(ran.nextInt())));
                     tag.set("UUIDMost", new BrNBTBase(Math.abs(ran.nextInt())));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
@@ -106,7 +106,7 @@ public class AttributeModifiers {
                 for (Map.Entry<AttributeType, Double> E : this.Attrs_opt_1.entrySet()) {
                     BrNBTTagCompound tag = new BrNBTTagCompound();
                     tag.set("Name", new BrNBTTagString(E.getKey().name()));
-                    tag.set("Amount", new BrNBTBase(E.getValue()));
+                    tag.set("Amount", new BrNBTBase(E.getValue().doubleValue()));
                     tag.set("UUIDLeast", new BrNBTBase(Math.abs(ran.nextInt())));
                     tag.set("UUIDMost", new BrNBTBase(Math.abs(ran.nextInt())));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
@@ -117,7 +117,7 @@ public class AttributeModifiers {
                 for (Map.Entry<AttributeType, Double> E : this.Attrs_opt_2.entrySet()) {
                     BrNBTTagCompound tag = new BrNBTTagCompound();
                     tag.set("Name", new BrNBTTagString(E.getKey().name()));
-                    tag.set("Amount", new BrNBTBase(E.getValue()));
+                    tag.set("Amount", new BrNBTBase(E.getValue().doubleValue()));
                     tag.set("UUIDLeast", new BrNBTBase(Math.abs(ran.nextInt())));
                     tag.set("UUIDMost", new BrNBTBase(Math.abs(ran.nextInt())));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));

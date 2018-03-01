@@ -27,10 +27,12 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -175,7 +177,7 @@ public abstract class Utils {
     }
 
     public static boolean hasItemInMainHand(Player p) {
-        return p.getItemInHand() != null && p.getItemInHand().getType() != Material.AIR && p.getItemInHand().getAmount() != 0;
+        return p.getItemInHand() != null && p.getItemInHand().getTypeId() != 0 && p.getItemInHand().getAmount() != 0;
     }
 
     public static boolean hasItemInOffHand(Player p) {
@@ -522,6 +524,7 @@ public abstract class Utils {
      * 格式: ID 数量 损伤值
      * <p>
      * 可选: Name:名字 Lore:Lore Color:RED(用于染料羊毛) 或 Color:RGB(用于皮革)
+     * Ench:附魔Id-附魔等级<p>
      *
      * @param s String 字符串
      * @return ItemStack
@@ -579,6 +582,27 @@ public abstract class Utils {
                 im.setLore(LoreList);
                 item.setItemMeta(im);
                 continue;
+            }
+            if (data.toLowerCase().contains("hide:")) {
+                data = data.substring(data.indexOf(":") + 1);
+                ItemMeta im = item.getItemMeta();
+                for (String str : data.split(",")) {
+                    im.addItemFlags(ItemFlag.valueOf(str));
+                }
+                item.setItemMeta(im);
+                continue;
+            }
+            if (data.toLowerCase().contains("ench:")) {
+                data = data.substring(data.indexOf(":") + 1);
+                String str[] = data.split("-");
+                Enchantment e = null;
+                try {
+                    e = Enchantment.getById(Integer.parseInt(str[0]));
+                } catch (NumberFormatException ee) {
+                    e = Enchantment.getByName(str[0]);
+                }
+                int lv = Integer.parseInt(str[1]);
+                item.addUnsafeEnchantment(e, lv);
             }
             if (data.toLowerCase().contains("color:")) {
                 data = data.substring(data.indexOf(":") + 1);
@@ -813,51 +837,52 @@ public abstract class Utils {
     /**
      * 将指定格式字符串转换成时间长度<p>
      * 格式为: ##年##(个)月##(个小)时##分(钟)##秒
+     *
      * @param time
      * @return
      */
     public static long getTimeLength(String time) {
         time = time.replaceAll("[^0-9年月天时分秒]", "");
         long result = 0L;
-        
+
         if (time.matches("[0-9]+(年)(.?)")) {
             int year = Integer.parseInt(time.split("年")[0]);
             result += (year * 31536000000L);
         }
         time = time.replaceAll("[0-9]+(年)", "");
-        
+
         if (time.matches("[0-9]+(月)(.?)")) {
             int month = Integer.parseInt(time.split("月")[0]);
             result += (month * 2592000000L);
         }
         time = time.replaceAll("[0-9]+(月)", "");
-        
+
         if (time.matches("[0-9]+(天)(.?)")) {
             int day = Integer.parseInt(time.split("天")[0]);
             result += (day * 86400000L);
         }
         time = time.replaceAll("[0-9]+(天)", "");
-        
+
         if (time.matches("[0-9]+(时)(.?)")) {
             int hour = Integer.parseInt(time.split("时")[0]);
             result += (hour * 3600000L);
         }
         time = time.replaceAll("[0-9]+(时)", "");
-        
-        if(time.matches("[0-9]+(分)(.?)")){
+
+        if (time.matches("[0-9]+(分)(.?)")) {
             int min = Integer.parseInt(time.split("分")[0]);
             result += (min * 60000L);
         }
         time = time.replaceAll("[0-9]+(分)", "");
-        
-        if(time.matches("[0-9]+(秒)")){
+
+        if (time.matches("[0-9]+(秒)")) {
             int second = Integer.parseInt(time.replaceAll("[^0-9]", ""));
             result += (second * 1000);
         }
         return result;
     }
-    
-    public static long getTimeLengthAddNow(String time){
+
+    public static long getTimeLengthAddNow(String time) {
         long now = Utils.getTimeLength(time) + System.currentTimeMillis();
         now /= 1000;
         now *= 1000;
@@ -868,8 +893,8 @@ public abstract class Utils {
     public static String toDateFormat(long now) {
         return SDF.format(new Date(now));
     }
-    
-    public static Date toDate(String s) throws ParseException{
+
+    public static Date toDate(String s) throws ParseException {
         return SDF.parse(s);
     }
 

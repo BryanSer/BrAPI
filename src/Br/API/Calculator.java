@@ -1,6 +1,7 @@
 package Br.API;
 
 import java.util.Collections;
+import java.util.Scanner;
 import java.util.Stack;
 
 /**
@@ -55,7 +56,6 @@ public class Calculator {
             return new String(arr);
         }
     }
-
     /**
      * 按照给定的表达式计算
      *
@@ -63,7 +63,7 @@ public class Calculator {
      * @return
      */
     public double calculate(String expression) {
-        Stack<String> resultStack = new Stack<String>();
+        Stack<String> resultStack = new Stack<>();
         prepare(expression);
         Collections.reverse(postfixStack);// 将后缀式栈反转
         String firstValue, secondValue, currentValue;// 参与计算的第一个值，第二个值和算术运算符

@@ -24,13 +24,21 @@ public class BrNBTBase {
     public BrNBTBase() {
         TargetClass = Utils.getNMSClass("NBTBase");
     }
+
+//    @Deprecated
+//    public BrNBTBase(Object obj) {
+//        TargetClass = Utils.getNMSClass("NBTBase");
+//        TargetObject = obj;
+//    }
     
-     public BrNBTBase(Object obj) {
-        TargetClass = Utils.getNMSClass("NBTBase");
-        TargetObject = obj;
+    public static BrNBTBase toBase(Object num) {
+        BrNBTBase tag = new BrNBTBase();
+        tag.TargetClass = Utils.getNMSClass("NBTBase");
+        tag.TargetObject = num;
+        return tag;
     }
-    
-    public static BrNBTBase getNumber(Object num){
+
+    public static BrNBTBase getNumber(Object num) {
         BrNBTBase tag = new BrNBTBase();
         tag.TargetClass = Utils.getNMSClass("NBTNumber");
         tag.TargetObject = num;
@@ -124,7 +132,7 @@ public class BrNBTBase {
             Logger.getLogger(BrNBTBase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public BrNBTBase(short i) {
         try {
             TargetClass = Utils.getNMSClass("NBTTagShort");
@@ -146,7 +154,7 @@ public class BrNBTBase {
             Logger.getLogger(BrNBTBase.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public BrNBTBase(long i) {
         try {
             TargetClass = Utils.getNMSClass("NBTTagLong");
@@ -176,6 +184,5 @@ public class BrNBTBase {
     public Object getTargetObject() {
         return TargetObject;
     }
-    
-    
+
 }
