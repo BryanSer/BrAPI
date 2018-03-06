@@ -247,52 +247,53 @@ public abstract class Utils {
     /**
      * 安全的添加物品到玩家背包,如果玩家背包满了. 会将物品丢弃到地上
      *
-     * @param pPlayer 玩家
-     * @param pItem 物品
+     * @param p 玩家
+     * @param is 物品
      */
-    public static void safeGiveItem(Player pPlayer, ItemStack pItem) {
-        if (pPlayer == null || pItem == null) {
+    public static void safeGiveItem(Player p, ItemStack is) {
+        if (p == null || is == null) {
             return;
         }
-        pItem = pItem.clone();
-        if (pPlayer.getInventory().firstEmpty() == -1 && pItem.getMaxStackSize() == 1) { // 背包满了
-            Utils.safeDropItem(pPlayer, pItem);
+        is = is.clone();
+        if (p.getInventory().firstEmpty() == -1 && is.getMaxStackSize() == 1) { // 背包满了
+            Utils.safeDropItem(p, is);
             return;
         }
         int allowCount = 0;
-        for (ItemStack sInvItem : pPlayer.getInventory().getContents()) {
+        for (ItemStack sInvItem : p.getInventory().getContents()) {
             if (sInvItem != null && sInvItem.getType() != Material.AIR) {
-                if (sInvItem.isSimilar(pItem)) {
+                if (sInvItem.isSimilar(is)) {
                     allowCount += sInvItem.getMaxStackSize() - sInvItem.getAmount();
                 }
             } else {
-                allowCount += pItem.getMaxStackSize();
+                allowCount += is.getMaxStackSize();
             }
-            if (allowCount >= pItem.getAmount()) {
+            if (allowCount >= is.getAmount()) {
                 break;
             }
         }
-        if (allowCount < pItem.getAmount()) {
-            ItemStack dropItems = pItem.clone();
-            dropItems.setAmount(pItem.getAmount() - allowCount);
-            pItem.setAmount(allowCount);
-            Utils.safeDropItem(pPlayer, dropItems);
+        if (allowCount < is.getAmount()) {
+            ItemStack dropItems = is.clone();
+            dropItems.setAmount(is.getAmount() - allowCount);
+            is.setAmount(allowCount);
+            Utils.safeDropItem(p, dropItems);
         }
-        if (pItem.getMaxStackSize() != 0) {
-            for (int i = 0; i < pItem.getAmount() / pItem.getMaxStackSize(); i++) {
-                ItemStack giveItem = pItem.clone();
+        if (is.getMaxStackSize() != 0) {
+            for (int i = 0; i < is.getAmount() / is.getMaxStackSize(); i++) {
+                ItemStack giveItem = is.clone();
                 giveItem.setAmount(giveItem.getMaxStackSize());
-                pPlayer.getInventory().addItem(giveItem);
+                p.getInventory().addItem(giveItem);
             }
         }
-        if (pItem.getMaxStackSize() > 1) {
-            int leftItemCount = pItem.getAmount() % pItem.getMaxStackSize();
+        if (is.getMaxStackSize() > 1) {
+            int leftItemCount = is.getAmount() % is.getMaxStackSize();
             if (leftItemCount != 0) {
-                ItemStack giveItem = pItem.clone();
+                ItemStack giveItem = is.clone();
                 giveItem.setAmount(leftItemCount);
-                pPlayer.getInventory().addItem(giveItem);
+                p.getInventory().addItem(giveItem);
             }
         }
+        p.updateInventory();
     }
 
     public static void safeDropItem(Player p, ItemStack is) {
