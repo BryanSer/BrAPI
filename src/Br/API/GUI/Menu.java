@@ -39,7 +39,21 @@ public class Menu implements Cloneable {
         protected MenuBuilder() {
         }
 
+        @Deprecated
         public MenuBuilder setItem(Item i, int index) {
+            if (index >= super.Contains.size()) {
+                while (true) {
+                    this.addItem(null);
+                    if (super.Contains.size() == index + 1) {
+                        break;
+                    }
+                }
+            }
+            super.Contains.set(index, i);
+            return this;
+        }
+
+        public MenuBuilder setItem(int index, Item i) {
             if (index >= super.Contains.size()) {
                 while (true) {
                     this.addItem(null);
