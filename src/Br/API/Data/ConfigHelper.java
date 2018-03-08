@@ -203,6 +203,7 @@ public abstract class ConfigHelper {
         for (Field f : cls.getDeclaredFields()) {
             f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
+                f.setAccessible(true);
                 Config c = f.getAnnotation(Config.class);
                 String path = root + (c.Path().isEmpty() ? f.getName() : c.Path());
                 if (!config.contains(path)) {
@@ -253,8 +254,8 @@ public abstract class ConfigHelper {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(cfg);
         boolean save = false;
         for (Field f : cls.getDeclaredFields()) {
-            f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
+                f.setAccessible(true);
                 Config c = f.getAnnotation(Config.class);
                 String path = root + (c.Path().isEmpty() ? f.getName() : c.Path());
                 if (!config.contains(path)) {
