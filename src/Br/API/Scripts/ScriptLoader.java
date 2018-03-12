@@ -31,7 +31,7 @@ public class ScriptLoader {
             }
         });
     }
-    
+
     public static NashornScriptEngine eval(Plugin p, String fr) {
         return eval(p, (t) -> {
             try {
