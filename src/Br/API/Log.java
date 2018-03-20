@@ -35,11 +35,11 @@ public class Log extends Writer {
      * 创建一个单独文件作为log的对象
      *
      * @param p 插件主类
-     * @param c 缓存空间
+     * @param cache 缓存空间 建议填写1这样能实时生成log
      * @return
      */
-    public static Log getOneFileLog(Plugin p, int c) {
-        return new OneFileLog(p, c);
+    public static Log getOneFileLog(Plugin p, int cache) {
+        return new OneFileLog(p, cache);
     }
 
     /**
