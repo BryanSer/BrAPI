@@ -23,6 +23,7 @@ public class WriteSignEvent extends Event {
     public WriteSignEvent(Player p, String write, String id) {
         this.pl = p;
         this.wi = write;
+        this.id = id;
     }
 
     public String getID() {
