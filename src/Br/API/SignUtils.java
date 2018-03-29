@@ -16,15 +16,19 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import java.lang.reflect.InvocationTargetException;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 
 /**
  *
@@ -50,8 +54,27 @@ public class SignUtils {
         }
     }
 
-    private SignUtils() {
+    private static Map<String, Map.Entry<String, BiConsumer<Player, String>>> Callbacks = new HashMap<>();
 
+    public void SendSignRequest(Player p, BiConsumer<Player, String> callback) {
+        String id = String.valueOf(System.currentTimeMillis());
+        Callbacks.put(p.getName(), new AbstractMap.SimpleEntry<>(id, callback));
+        SendSignRequest(p, id);
+    }
+
+    private SignUtils() {
+        Bukkit.getPluginManager().registerEvents(new Listener() {
+            @EventHandler
+            public void onSign(WriteSignEvent evt) {
+                if (Callbacks.containsKey(evt.getPlayer().getName())) {
+                    Map.Entry<String, BiConsumer<Player, String>> v = Callbacks.get(evt.getPlayer().getName());
+                    Callbacks.remove(evt.getPlayer().getName());
+                    if(evt.getID().equals(v.getKey())){
+                        v.getValue().accept(evt.getPlayer(), evt.getWrite());
+                    }
+                }
+            }
+        }, PluginData.plugin);
         ProtocolManager pm = ProtocolLibrary.getProtocolManager();
         pm.addPacketListener(new PacketAdapter(PacketAdapter
                 .params()
