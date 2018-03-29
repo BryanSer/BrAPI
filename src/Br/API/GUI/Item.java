@@ -39,44 +39,108 @@ public abstract class Item implements Cloneable {
             return this;
         }
 
+        @Deprecated
         public ItemBuilder setUse(Function<Player, Boolean> p) {
             tar = p;
             return this;
         }
 
+        public ItemBuilder setUse(Consumer<Player> p) {
+            return this.setUse((t) -> {
+                p.accept(t);
+                return true;
+            });
+        }
+
+        @Deprecated
         public ItemBuilder setUse_Right(Function<Player, Boolean> p) {
             tar_Right = p;
             return this;
         }
 
+        public ItemBuilder setUse_Right(Consumer<Player> p) {
+            return this.setUse_Right((t) -> {
+                p.accept(t);
+                return true;
+            });
+        }
+
+        @Deprecated
         public ItemBuilder setUse_Shift(Function<Player, Boolean> p) {
             tar_Shift = p;
             return this;
         }
 
+        public ItemBuilder setUse_Shift(Consumer<Player> p) {
+            return this.setUse_Shift((t) -> {
+                p.accept(t);
+                return true;
+            });
+        }
+
+        @Deprecated
         public ItemBuilder setUse_Shift_Left(Function<Player, Boolean> p) {
             tar_Shift_L = p;
             return this;
         }
-        
+
+        public ItemBuilder setUse_Shift_Left(Consumer<Player> p) {
+            return this.setUse_Shift_Left((t) -> {
+                p.accept(t);
+                return true;
+            });
+        }
+
+        @Deprecated
         public ItemBuilder setUse_Drop(Function<Player, Boolean> p) {
             tar_Drop = p;
             return this;
         }
-        
+
+        public ItemBuilder setUse_Drop(Consumer<Player> p) {
+            return this.setUse_Drop((t) -> {
+                p.accept(t);
+                return true;
+            });
+        }
+
+        @Deprecated
         public ItemBuilder setUse_Middle(Function<Player, Boolean> p) {
             tar_Middle = p;
             return this;
         }
-        
+
+        public ItemBuilder setUse_Middle(Consumer<Player> p) {
+            return this.setUse_Middle((t) -> {
+                p.accept(t);
+                return true;
+            });
+        }
+
+        @Deprecated
         public ItemBuilder setUse_Drop_Ctrl(Function<Player, Boolean> p) {
             tar_Drop_C = p;
             return this;
         }
 
+        public ItemBuilder setUse_Drop_Ctrl(Consumer<Player> p) {
+            return this.setUse_Drop_Ctrl((t) -> {
+                p.accept(t);
+                return true;
+            });
+        }
+
+        @Deprecated
         public ItemBuilder setUse_Shift_Right(Function<Player, Boolean> p) {
             tar_Shift_R = p;
             return this;
+        }
+
+        public ItemBuilder setUse_Shift_Right(Consumer<Player> p) {
+            return this.setUse_Shift_Right((t) -> {
+                p.accept(t);
+                return true;
+            });
         }
 
         public ItemBuilder setUpdate(boolean p) {
@@ -240,8 +304,8 @@ public abstract class Item implements Cloneable {
         long get = this.LastUseTime.get(p.getName());
         return System.currentTimeMillis() - (1000 * this.Colddown) >= get;
     }
-    
-    public String CDMessage(Player p){
+
+    public String CDMessage(Player p) {
         return "§c你还不能使用这个项目 请稍等后重试";
     }
 
