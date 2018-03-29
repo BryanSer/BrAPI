@@ -68,8 +68,6 @@ public class SignUtils {
             public void onSign(WriteSignEvent evt) {
                 if (Callbacks.containsKey(evt.getPlayer().getName())) {
                     Map.Entry<String, BiConsumer<Player, String>> v = Callbacks.get(evt.getPlayer().getName());
-                    System.out.println(v == null);
-                    System.out.println(evt.getID() == null);
                     if (evt.getID().equals(v.getKey())) {
                         v.getValue().accept(evt.getPlayer(), evt.getWrite());
                     }
