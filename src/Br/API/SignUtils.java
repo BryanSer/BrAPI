@@ -70,6 +70,8 @@ public class SignUtils {
                     Map.Entry<String, BiConsumer<Player, String>> v = Callbacks.get(evt.getPlayer().getName());
                     if (evt.getID().equals(v.getKey())) {
                         v.getValue().accept(evt.getPlayer(), evt.getWrite());
+                        v.setValue((t, u) -> {//debug
+                        });
                     }
                     Callbacks.remove(evt.getPlayer().getName());
                 }
