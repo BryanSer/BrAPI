@@ -118,7 +118,7 @@ public class MenuManager {
                         return;
                     }
                 }
-                Item i = m.getClick(slot);
+                Item i = m.getClick(slot, (Player) evt.getWhoClicked());
                 if (i != null) {
                     Player p = (Player) evt.getWhoClicked();
                     if (!i.checkCD(p)) {

@@ -193,11 +193,16 @@ public class Menu implements Cloneable {
         this.Size = size;
     }
 
+    @Deprecated
     public Item getClick(int index) {
         if (index >= this.Contains.size()) {
             return null;
         }
         return this.Contains.get(index);
+    }
+    
+    public Item getClick(int index,Player p){
+        return this.getClick(index);
     }
 
     public Inventory getInv(Player p) {
