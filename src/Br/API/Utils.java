@@ -19,6 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
+import java.util.function.BiConsumer;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,6 +36,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -899,4 +905,107 @@ public abstract class Utils {
         return SDF.parse(s);
     }
 
+    public static class CallBack implements Listener {
+
+        public static void SendSignRequest(Player p, BiConsumer<Player, String> callback) {
+            SignUtils.getSignUtils().SendSignRequest(p, callback);
+        }
+
+        private static Map<String, BiConsumer<Player, Integer>> SBR_Function = new HashMap<>();
+        private static Map<String, Integer> SBR_Indexs = new HashMap<>();
+        private static boolean Register = false;
+
+        /**
+         * 向玩家发送一堆按钮 按钮的的内容将由msg决定,最后通过BiConsumer来返回执行玩家按下的按钮<p>
+         * 按钮计数从0开始
+         *
+         * @param p
+         * @param msg
+         * @param callback 注意 Integer参数可能是null
+         */
+        public static void SendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback) {
+            RegisterListener();
+            BiConsumer<Player, Integer> f = SBR_Function.remove(p.getName());
+            if (f != null) {
+                f.accept(p, null);
+            }
+            ComponentBuilder builder = new ComponentBuilder("");
+            final String key[] = new String[msg.length];
+            for (int i = 0; i < msg.length; i++) {
+                String s = msg[i];
+                String cmd = getRandomString();
+                key[i] = cmd;
+                SBR_Indexs.put(cmd, i);
+                builder.append(getButton(String.format("[%s]", s), cmd)).append("    ");
+            }
+            p.spigot().sendMessage(builder.create());
+            callback = callback.andThen((t, u) -> {
+                for (String s : key) {
+                    SBR_Indexs.remove(s);
+                }
+            });
+            SBR_Function.put(p.getName(), callback);
+        }
+
+        @EventHandler
+        public void onCommand(PlayerCommandPreprocessEvent evt) {
+            if (SBR_Function.isEmpty()) {
+                return;
+            }
+            if (evt.getMessage().matches(REGex)) {
+                evt.setCancelled(true);
+                String key = evt.getMessage().split(" ")[2];
+                Integer i = SBR_Indexs.get(key);
+                if(i != null){
+                    BiConsumer<Player, Integer> f = SBR_Function.remove(evt.getPlayer().getName());
+                    if(f != null){
+                        f.accept(evt.getPlayer(), i);
+                    }
+                }
+            }
+        }
+
+        public static BaseComponent[] getButton(String text, String cmd) {
+            return new ComponentBuilder(text)
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/BrAPI Button " + cmd))
+                    .create();
+        }
+
+        private static void RegisterListener() {
+            if (!Register) {
+                Bukkit.getPluginManager().registerEvents(new CallBack(), PluginData.plugin);
+                Register = true;
+            }
+        }
+
+        private static final int CHARAMOUNT = 24 + 24 + 10;
+        private static final int LENGTH = 6;
+        private static final char[] CHAR = new char[CHARAMOUNT];
+        private static final Random Random = new Random();
+        private static final String REGex = String.format("\\/?BrAPI Button [a-zA-Z0-9]{%d,%d}", LENGTH, LENGTH);
+
+        private static String getRandomString() {
+            char c[] = new char[LENGTH];
+            for (int i = 0; i < LENGTH; i++) {
+                c[i] = CHAR[Random.nextInt(CHARAMOUNT)];
+            }
+            return new String(c);
+        }
+
+        static {
+            int index = 0;
+            for (char c = 'a'; c <= 'z'; c++) {
+                CHAR[index++] = c;
+            }
+            for (char c = 'A'; c <= 'Z'; c++) {
+                CHAR[index++] = c;
+            }
+            for (char c = '0'; c <= '9'; c++) {
+                CHAR[index++] = c;
+            }
+        }
+
+        private CallBack() {
+        }
+    }
 }
