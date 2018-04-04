@@ -24,6 +24,7 @@ import java.util.function.BiConsumer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -929,16 +930,23 @@ public abstract class Utils {
             if (f != null) {
                 f.accept(p, null);
             }
-            ComponentBuilder builder = new ComponentBuilder("");
+            List<BaseComponent> bs = new ArrayList<>();
             final String key[] = new String[msg.length];
             for (int i = 0; i < msg.length; i++) {
                 String s = msg[i];
                 String cmd = getRandomString();
                 key[i] = cmd;
                 SBR_Indexs.put(cmd, i);
-                builder.append(getButton(String.format("[%s]", s), cmd)).append("    ");
+                for (BaseComponent b : getButton(String.format("[%s]", s), cmd)) {
+                    bs.add(b);
+                }
+                bs.add(new TextComponent("    "));
             }
-            p.spigot().sendMessage(builder.create());
+            BaseComponent[] comps = new BaseComponent[bs.size()];
+            for (int i = 0; i < comps.length; i++) {
+                comps[i] = bs.get(i);
+            }
+            p.spigot().sendMessage(comps);
             callback = callback.andThen((t, u) -> {
                 for (String s : key) {
                     SBR_Indexs.remove(s);
@@ -978,7 +986,7 @@ public abstract class Utils {
             }
         }
 
-        private static final int CHARAMOUNT = 24 + 24 + 10;
+        private static final int CHARAMOUNT = 26 + 26 + 10;
         private static final int LENGTH = 6;
         private static final char[] CHAR = new char[CHARAMOUNT];
         private static final Random Random = new Random();
