@@ -937,9 +937,7 @@ public abstract class Utils {
                 String cmd = getRandomString();
                 key[i] = cmd;
                 SBR_Indexs.put(cmd, i);
-                for (BaseComponent b : getButton(String.format("[%s]", s), cmd)) {
-                    bs.add(b);
-                }
+                bs.addAll(Arrays.asList(getButton(String.format("[%s]", s), cmd)));
                 bs.add(new TextComponent("    "));
             }
             BaseComponent[] comps = new BaseComponent[bs.size()];
