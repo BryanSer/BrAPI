@@ -19,8 +19,16 @@ import org.bukkit.event.Listener;
 public interface ScriptListener<E extends Event> extends Listener {
 
     public void onEvent(E e);
+    
+    public String getEventName();
 
-    public Class<E> getEventClass();
+    public default Class<E> getEventClass(){
+        try {
+            return (Class<E>) Class.forName(this.getEventName());
+        } catch (ClassNotFoundException e) {
+        }
+        return null;
+    }
 
     public default EventPriority getPriority() {
         return EventPriority.NORMAL;
