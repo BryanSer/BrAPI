@@ -18,7 +18,10 @@ import org.bukkit.plugin.Plugin;
 public class ScriptListenerManager {
 
     public static void RegisterListener(Plugin p, ScriptListener listener) {
-        Bukkit.getPluginManager().registerEvent(listener.getEventClass(), listener, listener.getPriority(), (l, e) -> listener.onEvent(e), p, listener.ignoreCancelled());
+        Class cls = listener.getEventClass();
+        if (cls != null) {
+            Bukkit.getPluginManager().registerEvent(cls, listener, listener.getPriority(), (l, e) -> listener.onEvent(e), p, listener.ignoreCancelled());
+        }
     }
 
     public static void UnregisterListener(ScriptListener l) {
