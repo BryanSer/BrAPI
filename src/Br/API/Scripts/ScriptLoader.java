@@ -6,7 +6,12 @@
  */
 package Br.API.Scripts;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +32,20 @@ public class ScriptLoader {
             try {
                 t.eval(fr);
             } catch (ScriptException ex) {
+                Logger.getLogger(ScriptLoader.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+    }
+
+    public static NashornScriptEngine evalAsUTF8(Plugin p, File f) {
+        return eval(p, (t) -> {
+            try {
+                t.eval(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+            } catch (ScriptException ex) {
+                Logger.getLogger(ScriptLoader.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(ScriptLoader.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(ScriptLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
         });

@@ -6,6 +6,7 @@
  */
 package Br.API.Scripts;
 
+import java.nio.charset.Charset;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
