@@ -21,6 +21,12 @@ public interface ScriptListener<E extends Event> extends Listener {
     public void onEvent(E e);
     
     public String getEventName();
+    
+    public default void castEvent(E evt){
+        if(this.getEventClass().isInstance(evt)){
+            this.onEvent(evt);
+        } 
+    }
 
     public default Class<E> getEventClass(){
         try {

@@ -21,7 +21,7 @@ public class ScriptListenerManager {
     public static void RegisterListener(Plugin p, ScriptListener listener) {
         Class cls = listener.getEventClass();
         if (cls != null) {
-            Bukkit.getPluginManager().registerEvent(cls, listener, listener.getPriority(), (l, e) -> listener.onEvent(e), p, listener.ignoreCancelled());
+            Bukkit.getPluginManager().registerEvent(cls, listener, listener.getPriority(), (l, e) -> listener.castEvent(e), p, listener.ignoreCancelled());
         }
     }
 
