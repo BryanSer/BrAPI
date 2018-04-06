@@ -19,6 +19,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONObject;
 
 public class Main extends JavaPlugin {
 
@@ -63,22 +64,12 @@ public class Main extends JavaPlugin {
                 Plugins.add(p.getName());
             }
         }
-        final int v = vaule;
+        int v = vaule;
         PluginsAmount = v;
-        try {
-            Metrics metrics = new Metrics(PluginData.plugin);
-            Metrics.Graph g = metrics.createGraph("SubPlugin");
-            g.addPlotter(new Metrics.Plotter() {
-                final int va = v;
-
-                public int getValue() {
-                    return this.va;
-                }
-            });
-            metrics.addGraph(g);
-            metrics.start();
-        } catch (IOException e) {
-        }
+        Metrics metrics = new Metrics(PluginData.plugin);
+        metrics.addCustomChart(new Metrics.SimplePie("subplugin", () -> {
+            return String.valueOf(PluginsAmount);
+        }));
     }
 
     public void onDisable() {
