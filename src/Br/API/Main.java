@@ -6,7 +6,9 @@ import Br.API.Item.ItemManager;
 import Br.API.LangUtils.Lang;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,8 +68,17 @@ public class Main extends JavaPlugin {
         int v = vaule;
         PluginsAmount = v;
         Metrics metrics = new Metrics(PluginData.plugin);
-        metrics.addCustomChart(new Metrics.SingleLineChart("subplugins", () -> {
-            return PluginsAmount;
+        metrics.addCustomChart(new Metrics.AdvancedPie("subpluginamount", () -> {
+            Map<String, Integer> map = new HashMap<>();
+            map.put(String.valueOf(PluginsAmount), 1);
+            return map;
+        }));
+        metrics.addCustomChart(new Metrics.AdvancedPie("installedsubplugin", () -> {
+            Map<String, Integer> map = new HashMap<>();
+            for (String n : Plugins) {
+                map.put(n, 1);
+            }
+            return map;
         }));
     }
 
