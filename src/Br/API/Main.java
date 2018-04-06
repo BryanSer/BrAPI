@@ -19,7 +19,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONObject;
 
 public class Main extends JavaPlugin {
 
@@ -67,8 +66,8 @@ public class Main extends JavaPlugin {
         int v = vaule;
         PluginsAmount = v;
         Metrics metrics = new Metrics(PluginData.plugin);
-        metrics.addCustomChart(new Metrics.SimplePie("subplugin", () -> {
-            return String.valueOf(PluginsAmount);
+        metrics.addCustomChart(new Metrics.SingleLineChart("subplugins", () -> {
+            return PluginsAmount;
         }));
     }
 
