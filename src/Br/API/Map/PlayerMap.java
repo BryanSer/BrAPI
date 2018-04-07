@@ -16,6 +16,9 @@ import org.bukkit.entity.Player;
  */
 public class PlayerMap<V> extends HashMap<String, V> {
 
+    public PlayerMap(){
+        super();
+    }
     public PlayerMap(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }

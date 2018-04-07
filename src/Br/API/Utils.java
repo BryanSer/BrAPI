@@ -4,6 +4,7 @@
  */
 package Br.API;
 
+import Br.API.Map.PlayerMap;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
 import org.bukkit.material.Wool;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -914,11 +916,12 @@ public abstract class Utils {
 
         private static Map<String, BiConsumer<Player, Integer>> SBR_Function = new HashMap<>();
         private static Map<String, Integer> SBR_Indexs = new HashMap<>();
+        private static Map<String, BukkitTask> SBR_Tasks = new HashMap<>();
         private static boolean Register = false;
 
         /**
          * 向玩家发送一堆按钮 按钮的的内容将由msg决定,最后通过BiConsumer来返回执行玩家按下的按钮<p>
-         * 按钮计数从0开始
+         * 按钮计数从0开始 超时30秒则传入null
          *
          * @param p
          * @param msg
@@ -945,9 +948,20 @@ public abstract class Utils {
                 comps[i] = bs.get(i);
             }
             p.spigot().sendMessage(comps);
+            SBR_Tasks.put(p.getName(), Bukkit.getScheduler().runTaskLater(PluginData.plugin, () -> {
+                SBR_Function.get(p.getName()).accept(p, null);
+                for (String s : key) {
+                    SBR_Indexs.remove(s);
+                }
+                SBR_Tasks.remove(p.getName());
+            }, 30 * 20));
             callback = callback.andThen((t, u) -> {
                 for (String s : key) {
                     SBR_Indexs.remove(s);
+                }
+                BukkitTask bt = SBR_Tasks.remove(p.getName());
+                if (bt != null) {
+                    bt.cancel();
                 }
             });
             SBR_Function.put(p.getName(), callback);
@@ -962,9 +976,9 @@ public abstract class Utils {
                 evt.setCancelled(true);
                 String key = evt.getMessage().split(" ")[2];
                 Integer i = SBR_Indexs.get(key);
-                if(i != null){
+                if (i != null) {
                     BiConsumer<Player, Integer> f = SBR_Function.remove(evt.getPlayer().getName());
-                    if(f != null){
+                    if (f != null) {
                         f.accept(evt.getPlayer(), i);
                     }
                 }
