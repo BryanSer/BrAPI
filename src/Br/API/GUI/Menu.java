@@ -193,6 +193,13 @@ public class Menu implements Cloneable {
         this.Size = size;
     }
 
+    /**
+     * 出于可扩展性而弃用
+     *
+     * @param index
+     * @return
+     * @deprecated
+     */
     @Deprecated
     public Item getClick(int index) {
         if (index >= this.Contains.size()) {
@@ -200,18 +207,23 @@ public class Menu implements Cloneable {
         }
         return this.Contains.get(index);
     }
-    
-    public Item getClick(int index,Player p){
-        return this.getClick(index);
+
+    public Item getClick(int index, Player p) {
+        List<Item> list = this.getContains(p);
+        if (index >= list.size()) {
+            return null;
+        }
+        return list.get(index);
     }
 
     public Inventory getInv(Player p) {
         Inventory inv = Bukkit.createInventory(p, 9 * this.Size, this.DisplayName + SplCode + MenuManager.toCode(this.Name));
+        List<Item> list = this.getContains(p);
         for (int i = 0; i < 9 * this.Size; i++) {
-            if (i == this.Contains.size()) {
+            if (i == list.size()) {
                 break;
             }
-            Item item = this.Contains.get(i);
+            Item item = list.get(i);
             if (item != null) {
                 ItemStack is = item.getDisplay(p);
                 if (is != null) {
@@ -256,8 +268,13 @@ public class Menu implements Cloneable {
         return OpenItem_Dam;
     }
 
+    @Deprecated
     public List<Item> getContains() {
         return Contains;
+    }
+
+    public List<Item> getContains(Player p) {
+        return getContains();
     }
 
     public int getSize() {

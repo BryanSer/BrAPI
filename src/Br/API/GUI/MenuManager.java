@@ -36,7 +36,7 @@ public class MenuManager {
         Menu m = MenuManager.getMenu(inv);
         if (m != null) {
             inv.clear();
-            List<Item> list = m.getContains();
+            List<Item> list = m.getContains(p);
             for (int i = 0; i < 9 * m.getSize(); i++) {
                 if (i == list.size()) {
                     break;
