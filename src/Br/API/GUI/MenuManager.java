@@ -8,13 +8,13 @@ package Br.API.GUI;
 
 import Br.API.PluginData;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -36,11 +36,12 @@ public class MenuManager {
         Menu m = MenuManager.getMenu(inv);
         if (m != null) {
             inv.clear();
+            List<Item> list = m.getContains();
             for (int i = 0; i < 9 * m.getSize(); i++) {
-                if (i == m.Contains.size()) {
+                if (i == list.size()) {
                     break;
                 }
-                Item item = m.Contains.get(i);
+                Item item = list.get(i);
                 if (item != null) {
                     inv.setItem(i, item.getDisplay(p));
                 }
