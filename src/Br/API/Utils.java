@@ -928,7 +928,6 @@ public abstract class Utils {
          * @param callback 注意 Integer参数可能是null
          */
         public static void SendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback) {
-            RegisterListener();
             BiConsumer<Player, Integer> f = SBR_Function.remove(p.getName());
             if (f != null) {
                 f.accept(p, null);
@@ -993,18 +992,17 @@ public abstract class Utils {
                     .create();
         }
 
-        private static void RegisterListener() {
-            if (!Register) {
-                Bukkit.getPluginManager().registerEvents(new CallBack(), PluginData.plugin);
-                Register = true;
-            }
+        public static void RegisterListener() {
+            Bukkit.getPluginManager().registerEvents(new CallBack(), PluginData.plugin);
+            Register = true;
+
         }
 
         private static final int CHARAMOUNT = 26 + 26 + 10;
         private static final int LENGTH = 6;
         private static final char[] CHAR = new char[CHARAMOUNT];
         private static final Random Random = new Random();
-        private static final String REGex = String.format("\\/?BrAPI Button [a-zA-Z0-9]{%d,%d}", LENGTH, LENGTH);
+        private static final String REGex = String.format("\\/?BrAPI Button .{%d,%d}", LENGTH, LENGTH);
 
         private static String getRandomString() {
             char c[] = new char[LENGTH];

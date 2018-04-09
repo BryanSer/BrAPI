@@ -41,6 +41,7 @@ public class Main extends JavaPlugin {
         //DataManager.LoadAll(true);
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
+        Utils.CallBack.RegisterListener();
         Utils.econ = this.setupEconomy();
 
     }
