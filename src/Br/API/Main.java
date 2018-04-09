@@ -98,6 +98,10 @@ public class Main extends JavaPlugin {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("BrAPI")) {
+            if(args.length > 1 && args[0].equals("Button")){
+                sender.sendMessage("§c按钮监听器异常 请重启服务器");
+                return true;
+            }
             if (EventListener.Reg) {
                 RegisterMetrics();
                 EventListener.Reg = false;

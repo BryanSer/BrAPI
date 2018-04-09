@@ -940,7 +940,7 @@ public abstract class Utils {
                 String cmd = getRandomString();
                 key[i] = cmd;
                 SBR_Indexs.put(cmd, i);
-                bs.addAll(Arrays.asList(getButton(String.format("[%s]", s), cmd)));
+                bs.addAll(Arrays.asList(getButton(String.format("§r[%s§r]", s), cmd)));
                 bs.add(new TextComponent("    "));
             }
             BaseComponent[] comps = new BaseComponent[bs.size()];
@@ -981,6 +981,8 @@ public abstract class Utils {
                     if (f != null) {
                         f.accept(evt.getPlayer(), i);
                     }
+                } else {
+                    evt.getPlayer().sendMessage("§c这个按钮已过期");
                 }
             }
         }
