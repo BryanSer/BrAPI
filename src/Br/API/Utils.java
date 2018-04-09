@@ -948,7 +948,7 @@ public abstract class Utils {
             }
             p.spigot().sendMessage(comps);
             SBR_Tasks.put(p.getName(), Bukkit.getScheduler().runTaskLater(PluginData.plugin, () -> {
-                SBR_Function.get(p.getName()).accept(p, null);
+                SBR_Function.remove(p.getName()).accept(p, null);
                 for (String s : key) {
                     SBR_Indexs.remove(s);
                 }
@@ -968,9 +968,6 @@ public abstract class Utils {
 
         @EventHandler
         public void onCommand(PlayerCommandPreprocessEvent evt) {
-            if (SBR_Function.isEmpty()) {
-                return;
-            }
             if (evt.getMessage().matches(REGex)) {
                 evt.setCancelled(true);
                 String key = evt.getMessage().split(" ")[2];
@@ -1002,7 +999,7 @@ public abstract class Utils {
         private static final int LENGTH = 6;
         private static final char[] CHAR = new char[CHARAMOUNT];
         private static final Random Random = new Random();
-        private static final String REGex = String.format("\\/?BrAPI Button .{%d,%d}", LENGTH, LENGTH);
+        private static final String REGex = "\\/?BrAPI Button .*";
 
         private static String getRandomString() {
             char c[] = new char[LENGTH];
