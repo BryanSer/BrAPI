@@ -4,7 +4,6 @@
  */
 package Br.API;
 
-import Br.API.Map.PlayerMap;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,12 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
-import java.util.function.BiConsumer;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,7 +31,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -47,7 +39,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
 import org.bukkit.material.Wool;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -906,6 +897,54 @@ public abstract class Utils {
 
     public static Date toDate(String s) throws ParseException {
         return SDF.parse(s);
+    }
+
+    public static class Exp {
+
+        public static int getTotalExp(int lv) {
+            double exp = lv * lv;
+            if (lv <= 16) {
+                exp += 6 * lv;
+            } else if (lv <= 31) {
+                exp *= 2.5;
+                exp -= 40.5 * lv;
+                exp += 360;
+            } else {
+                exp *= 4.5;
+                exp -= 162.5 * lv;
+            }
+            return (int) exp;
+        }
+
+        public static int getLvExp(int lv) {
+            if (lv <= 15) {
+                return 2 * lv + 7;
+            } else if (lv <= 30) {
+                return 5 * lv - 38;
+            }
+            return 9 * lv - 158;
+        }
+
+        public static int getExp(Player p) {
+            int exp = 0;
+            exp = getTotalExp(p.getLevel());
+            exp += p.getExp() * getLvExp(p.getLevel());
+            return exp;
+        }
+
+        public static void setExp(Player p, int exp) {
+            int lv = 0;
+            for (; true; lv++) {
+                int need = getLvExp(lv);
+                if (exp < need) {
+                    break;
+                }
+                exp -= need;
+            }
+            float e = exp / (float) getLvExp(lv);
+            p.setLevel(lv);
+            p.setExp(e);
+        }
     }
 
 }
