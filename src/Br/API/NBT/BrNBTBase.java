@@ -30,11 +30,22 @@ public class BrNBTBase {
 //        TargetClass = Utils.getNMSClass("NBTBase");
 //        TargetObject = obj;
 //    }
-    
-    public static BrNBTBase toBase(Object num) {
+    public static BrNBTBase toBase(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if (Utils.getNMSClass("NBTTagString").isInstance(obj)) {
+            return new BrNBTTagString(obj);
+        }
+        if (Utils.getNMSClass("NBTTagList").isInstance(obj)) {
+            return new BrNBTTagList(obj);
+        }
+        if (Utils.getNMSClass("NBTNumber").isInstance(obj)) {
+            return BrNBTBase.getNumber(obj);
+        }
         BrNBTBase tag = new BrNBTBase();
         tag.TargetClass = Utils.getNMSClass("NBTBase");
-        tag.TargetObject = num;
+        tag.TargetObject = obj;
         return tag;
     }
 
