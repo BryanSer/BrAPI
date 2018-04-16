@@ -149,7 +149,7 @@ public class AttributeModifiers {
         return item;
     }
 
-    public ItemStack addAttribute(ItemStack is, AttributeType at, double value, int opt) {
+    public static ItemStack addAttribute(ItemStack is, AttributeType at, double value, int opt) {
         BrItemStack bi = new BrItemStack(is);
         BrNBTTagCompound basetag = bi.hasTag() ? bi.getTag() : new BrNBTTagCompound();
         BrNBTTagList attr = (BrNBTTagList) basetag.getNBTBase("AttributeModifiers");
@@ -162,6 +162,31 @@ public class AttributeModifiers {
         tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
         tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
         tag.set("AttributeName", new BrNBTTagString(at.getPath()));
+        tag.set("Operation", new BrNBTBase(2));
+        attr.add(tag);
+        basetag.set("AttributeModifiers", attr);
+        bi.setTag(basetag);
+        ItemStack item = NBTUtils.getItemStack(bi);
+        ItemMeta im = item.getItemMeta();
+        im.removeItemFlags(ItemFlag.values());
+        item.setItemMeta(im);
+        return item;
+    }
+
+    public static ItemStack addAttribute(ItemStack is, AttributeType at, double value, String solt, int opt) {
+        BrItemStack bi = new BrItemStack(is);
+        BrNBTTagCompound basetag = bi.hasTag() ? bi.getTag() : new BrNBTTagCompound();
+        BrNBTTagList attr = (BrNBTTagList) basetag.getNBTBase("AttributeModifiers");
+        if (attr == null) {
+            attr = new BrNBTTagList();
+        }
+        BrNBTTagCompound tag = new BrNBTTagCompound();
+        tag.set("Name", new BrNBTTagString(at.name()));
+        tag.set("Amount", new BrNBTBase(value));
+        tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+        tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+        tag.set("AttributeName", new BrNBTTagString(at.getPath()));
+        tag.set("Solt", new BrNBTTagString(solt));
         tag.set("Operation", new BrNBTBase(2));
         attr.add(tag);
         basetag.set("AttributeModifiers", attr);
