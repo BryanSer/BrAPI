@@ -115,15 +115,6 @@ public class BrNBTTagCompound extends BrNBTBase {
             if (obj == null) {
                 return null;
             }
-            if (Utils.getNMSClass("NBTTagString").isInstance(obj)) {
-                return new BrNBTTagString(obj);
-            }
-            if (Utils.getNMSClass("NBTTagList").isInstance(obj)) {
-                return new BrNBTTagList(obj);
-            }
-            if (Utils.getNMSClass("NBTNumber").isInstance(obj)) {
-                return BrNBTBase.getNumber(obj);
-            }
             return BrNBTBase.toBase(obj);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(BrNBTTagCompound.class.getName()).log(Level.SEVERE, null, ex);

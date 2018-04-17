@@ -149,6 +149,31 @@ public class AttributeModifiers {
         return item;
     }
 
+    public static ItemStack removeAttribute(ItemStack is, AttributeType at) {
+        BrItemStack bi = new BrItemStack(is);
+        BrNBTTagCompound basetag = bi.hasTag() ? bi.getTag() : new BrNBTTagCompound();
+        BrNBTTagList attr = (BrNBTTagList) basetag.getNBTBase("AttributeModifiers");
+        if (attr == null) {
+            return is;
+        }
+        BrNBTTagList nattr = new BrNBTTagList();
+        for (BrNBTBase b : attr.getList()) {
+            if (b instanceof BrNBTTagCompound) {
+                BrNBTBase nbt = ((BrNBTTagCompound) b).getNBTBase("Name");
+                if (nbt instanceof BrNBTTagString) {
+                    if (((BrNBTTagString) nbt).getValue().equals(at.name())) {
+                        continue;
+                    }
+                }
+            }
+            nattr.add(b);
+        }
+        basetag.set("AttributeModifiers", nattr);
+        bi.setTag(basetag);
+        ItemStack item = NBTUtils.getItemStack(bi);
+        return item;
+    }
+
     public static ItemStack addAttribute(ItemStack is, AttributeType at, double value, int opt) {
         BrItemStack bi = new BrItemStack(is);
         BrNBTTagCompound basetag = bi.hasTag() ? bi.getTag() : new BrNBTTagCompound();
@@ -192,9 +217,6 @@ public class AttributeModifiers {
         basetag.set("AttributeModifiers", attr);
         bi.setTag(basetag);
         ItemStack item = NBTUtils.getItemStack(bi);
-        ItemMeta im = item.getItemMeta();
-        im.removeItemFlags(ItemFlag.values());
-        item.setItemMeta(im);
         return item;
     }
 }

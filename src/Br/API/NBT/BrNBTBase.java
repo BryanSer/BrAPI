@@ -34,6 +34,9 @@ public class BrNBTBase {
         if (obj == null) {
             return null;
         }
+        if(Utils.getNMSClass("NBTTagCompound").isInstance(obj)){
+            return new BrNBTTagCompound(obj);
+        }
         if (Utils.getNMSClass("NBTTagString").isInstance(obj)) {
             return new BrNBTTagString(obj);
         }
