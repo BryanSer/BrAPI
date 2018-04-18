@@ -112,7 +112,7 @@ public class AttributeModifiers {
                     tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
                     tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
-                    tag.set("Solt", new BrNBTTagString(solt));
+                    tag.set("Slot", new BrNBTTagString(solt));
                     tag.set("Operation", new BrNBTBase(0));
                     attrs.add(tag);
                 }
@@ -123,7 +123,7 @@ public class AttributeModifiers {
                     tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
                     tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
-                    tag.set("Solt", new BrNBTTagString(solt));
+                    tag.set("Slot", new BrNBTTagString(solt));
                     tag.set("Operation", new BrNBTBase(1));
                     attrs.add(tag);
                 }
@@ -134,7 +134,7 @@ public class AttributeModifiers {
                     tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
                     tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
-                    tag.set("Solt", new BrNBTTagString(solt));
+                    tag.set("Slot", new BrNBTTagString(solt));
                     tag.set("Operation", new BrNBTBase(2));
                     attrs.add(tag);
                 }
@@ -198,7 +198,7 @@ public class AttributeModifiers {
         return item;
     }
 
-    public static ItemStack addAttribute(ItemStack is, AttributeType at, double value, String solt, int opt) {
+    public static ItemStack addAttribute(ItemStack is, AttributeType at, double value, String slot, int opt) {
         BrItemStack bi = new BrItemStack(is);
         BrNBTTagCompound basetag = bi.hasTag() ? bi.getTag() : new BrNBTTagCompound();
         BrNBTTagList attr = (BrNBTTagList) basetag.getNBTBase("AttributeModifiers");
@@ -211,7 +211,7 @@ public class AttributeModifiers {
         tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
         tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
         tag.set("AttributeName", new BrNBTTagString(at.getPath()));
-        tag.set("Solt", new BrNBTTagString(solt));
+        tag.set("Slot", new BrNBTTagString(slot));
         tag.set("Operation", new BrNBTBase(2));
         attr.add(tag);
         basetag.set("AttributeModifiers", attr);

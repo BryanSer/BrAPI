@@ -41,6 +41,7 @@ public class BrNBTTagList extends BrNBTBase {
         List<BrNBTBase> l = new ArrayList<>();
         try {
             Field f = super.TargetClass.getDeclaredField("list");
+            f.setAccessible(true);
             List get = (List) f.get(super.TargetObject);
             for (Object o : get) {
                 l.add(BrNBTBase.toBase(o));
@@ -64,6 +65,7 @@ public class BrNBTTagList extends BrNBTBase {
         }
         try {
             Field f = super.TargetClass.getDeclaredField("list");
+            f.setAccessible(true);
             f.set(super.TargetObject, l);
         } catch (NoSuchFieldException ex) {
             Logger.getLogger(BrNBTTagList.class.getName()).log(Level.SEVERE, null, ex);
