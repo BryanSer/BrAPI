@@ -17,7 +17,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,7 +46,6 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
         Utils.econ = this.setupEconomy();
-
     }
 
     private Economy setupEconomy() {
@@ -98,7 +101,7 @@ public class Main extends JavaPlugin {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("BrAPI")) {
-            if(args.length > 1 && args[0].equals("Button")){
+            if (args.length > 1 && args[0].equals("Button")) {
                 sender.sendMessage("§c按钮监听器异常 请重启服务器");
                 return true;
             }

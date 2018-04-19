@@ -24,10 +24,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,6 +44,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.Dye;
 import org.bukkit.material.Wool;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 
 /**
  *
@@ -897,6 +903,33 @@ public abstract class Utils {
 
     public static Date toDate(String s) throws ParseException {
         return SDF.parse(s);
+    }
+
+    public static LivingEntity getLookAtEntity(LivingEntity e, double maxlength, int 密度) {
+        Egg d = e.getWorld().spawn(e.getLocation().add(0, -5, 0), Egg.class);
+        d.setSilent(true);
+        Location loc = e.getEyeLocation();
+        d.setGravity(false);
+        Vector v = e.getLocation().getDirection();
+        for (double l = maxlength / 密度; l < maxlength; l += maxlength / 密度) {
+            Vector vd = v.clone().multiply(l);
+            d.teleport(loc.clone().add(vd));
+            if (d.getLocation().getBlock().getType() != Material.AIR) {
+                d.remove();
+                return null;
+            }
+            for (Entity eeee : d.getNearbyEntities(0.25, 0.25, 0.25)) {
+                if (eeee == e) {
+                    continue;
+                }
+                if (eeee instanceof LivingEntity) {
+                    d.remove();
+                    return (LivingEntity) eeee;
+                }
+            }
+        }
+        d.remove();
+        return null;
     }
 
     public static class Exp {
