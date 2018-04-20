@@ -905,13 +905,13 @@ public abstract class Utils {
         return SDF.parse(s);
     }
 
-    public static LivingEntity getLookAtEntity(LivingEntity e, double maxlength, int 密度) {
+    public static LivingEntity getLookAtEntity(LivingEntity e, double maxlength, int ρ) {
         Egg d = e.getWorld().spawn(e.getLocation().add(0, -5, 0), Egg.class);
         d.setSilent(true);
         Location loc = e.getEyeLocation();
         d.setGravity(false);
         Vector v = e.getLocation().getDirection();
-        for (double l = maxlength / 密度; l < maxlength; l += maxlength / 密度) {
+        for (double l = maxlength / ρ; l < maxlength; l += maxlength / ρ) {
             Vector vd = v.clone().multiply(l);
             d.teleport(loc.clone().add(vd));
             if (d.getLocation().getBlock().getType() != Material.AIR) {

@@ -41,17 +41,17 @@ public class CallBack implements Listener {
 
     /**
      * 向玩家发送一堆按钮 按钮的的内容将由msg决定,最后通过BiConsumer来返回执行玩家按下的按钮<p>
-     * 按钮计数从0开始 超时30秒则传入null
+     * 按钮计数从0开始 超时overtime秒则传入null
      *
      * @param p
      * @param msg
      * @param callback 注意 Integer参数为null时表示超时 玩家如果中途退出游戏也会触发null
      * @param overtime 超时时间 单位秒
-     * @return true时表示 请求成功  false时表示 上个处理还未完成
+     * @return true时表示 请求成功 false时表示 上个处理还未完成
      */
-    public static boolean SendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback,int overtime) {
+    public static boolean SendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime) {
         RegisterListener();
-        if(ButtonInfos.containsKey(p.getName())){
+        if (ButtonInfos.containsKey(p.getName())) {
             return false;
         }
         ButtonInfo bi = new ButtonInfo(p, msg, callback, overtime);
@@ -77,7 +77,7 @@ public class CallBack implements Listener {
             String key = evt.getMessage().split(" ")[2];
             ButtonInfo bi = ButtonInfos.get(evt.getPlayer().getName());
             int index = bi.getKeys().indexOf(key);
-            if(index == -1){
+            if (index == -1) {
                 bi.getCallback().accept(evt.getPlayer(), null);
             }
             bi.getCallback().accept(evt.getPlayer(), index);
@@ -124,7 +124,6 @@ public class CallBack implements Listener {
 
     private CallBack() {
     }
-
 
     public static class ButtonInfo extends BukkitRunnable {
 
