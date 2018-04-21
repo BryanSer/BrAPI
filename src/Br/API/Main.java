@@ -17,11 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,7 +28,6 @@ public class Main extends JavaPlugin {
     public static Set<String> Plugins = new HashSet();
 
     public void onEnable() {
-
         PluginData.plugin = this;
         File dataFolder = PluginData.plugin.getDataFolder();
         if (!dataFolder.exists()) {
