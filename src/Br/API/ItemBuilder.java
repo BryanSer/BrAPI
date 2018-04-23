@@ -29,6 +29,10 @@ public class ItemBuilder {
     };
 
     public ItemBuilder type(Material m) {
+        if(this.Item == null){
+            this.Item = new ItemStack(m);
+            return this;
+        }
         this.Item.setType(m);
         return this;
     }
