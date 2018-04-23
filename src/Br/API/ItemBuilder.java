@@ -4,7 +4,7 @@
  * 保留一切所有权
  * 若为Bukkit插件 请前往plugin.yml查看剩余协议
  */
-package Br.API;
+package Br.Artifice.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class ItemBuilder {
     }
 
     private ItemStack Item;
-    private Consumer<ItemStack> Do = (is) -> {
+    private Consumer<ItemBuilder> Do = (is) -> {
     };
 
     public ItemBuilder type(Material m) {
@@ -63,13 +63,13 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder Do(Consumer<ItemStack> what) {
+    public ItemBuilder Do(Consumer<ItemBuilder> what) {
         this.Do.andThen(what);
         return this;
     }
 
     public ItemStack build() {
-        this.Do.accept(Item);
+        this.Do.accept(this);
         return this.Item;
     }
 
