@@ -14,6 +14,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -109,6 +111,16 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
         public String toStringMethod() default "toString";
     }
 
+    static <T extends BrConfigurationSerializable> Collection<Field> getAllDeclaredFields(Class<T> cls) {
+        Class<?> t = cls;
+        List<Field> f = new ArrayList<>();
+        while(t != Object.class){
+            f.addAll(Arrays.asList(t.getDeclaredFields()));
+            t = t.getSuperclass();
+        }
+        return f;
+    }
+
     /**
      * 自动反序列号静态方法
      *
@@ -118,7 +130,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
      */
     public static <T extends BrConfigurationSerializable> void deserialize(Map<String, Object> args, T t) {
         Class<? extends BrConfigurationSerializable> c = t.getClass();
-        for (Field f : c.getDeclaredFields()) {
+        for (Field f : getAllDeclaredFields(c)) {
             f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
                 Config co = f.getAnnotation(Config.class);
@@ -184,7 +196,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
     @Override
     public default Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
-        for (Field f : this.getClass().getDeclaredFields()) {
+        for (Field f : getAllDeclaredFields(this.getClass())) {
             f.setAccessible(true);
             if (f.isAnnotationPresent(Config.class)) {
                 Config c = f.getAnnotation(Config.class);
