@@ -961,7 +961,7 @@ public abstract class Utils {
         public static int getExp(Player p) {
             int exp = 0;
             exp = getTotalExp(p.getLevel());
-            exp += p.getExp() * getLvExp(p.getLevel());
+            exp += p.getExp() * getLvExp(p.getLevel() + 1);
             return exp;
         }
 
