@@ -20,6 +20,7 @@ import org.bukkit.plugin.Plugin;
  *
  * @author Bryan_lzh
  */
+@Deprecated
 public class Lang {
 
     public static List<Lang> LangDatas = new ArrayList<>();

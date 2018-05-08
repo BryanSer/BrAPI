@@ -122,9 +122,6 @@ public class CallBack implements Listener {
         }
     }
 
-    private CallBack() {
-    }
-
     public static class ButtonInfo extends BukkitRunnable {
 
         private String Name;
@@ -176,4 +173,7 @@ public class CallBack implements Listener {
 
     }
 
+
+    private CallBack() {
+    }
 }
