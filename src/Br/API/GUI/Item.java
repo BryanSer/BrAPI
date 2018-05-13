@@ -208,7 +208,7 @@ public abstract class Item implements Cloneable {
         @Override
         public boolean Use_Shift_Right(Player p) {
             if (tar_Shift_R != null) {
-                return this.tar_Shift_L.apply(p);
+                return this.tar_Shift_R.apply(p);
             }
             return super.Use_Shift_Right(p);
         }
