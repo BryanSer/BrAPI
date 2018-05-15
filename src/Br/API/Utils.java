@@ -945,6 +945,7 @@ public abstract class Utils {
             } else {
                 exp *= 4.5;
                 exp -= 162.5 * lv;
+                exp += 2220;
             }
             return (int) exp;
         }
