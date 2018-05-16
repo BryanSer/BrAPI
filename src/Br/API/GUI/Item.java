@@ -17,8 +17,10 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Bryan_lzh
  */
+@Deprecated
 public abstract class Item implements Cloneable {
 
+    @Deprecated
     public static class ItemBuilder extends Item {
 
         Function<Player, Boolean> tar = null;

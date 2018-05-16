@@ -25,6 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  *
  * @author Bryan_lzh
  */
+@Deprecated
 public class MenuManager {
 
     public static Map<String, Menu> Menus = new HashMap<>();
