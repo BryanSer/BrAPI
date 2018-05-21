@@ -6,7 +6,6 @@
  */
 package Br.API.GUI.Ex;
 
-import com.sun.istack.internal.Nullable;
 import org.bukkit.entity.Player;
 
 /**
@@ -33,8 +32,7 @@ public abstract class BaseUI {
         return Rows;
     }
 
-    public abstract @Nullable
-    Item getItem(Player p, int slot);
+    public abstract Item getItem(Player p, int slot);
 
     public int getSize() {
         return this.Rows * 9;
