@@ -18,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
 /**
@@ -80,10 +81,34 @@ public class UIManager {
     }
 
     private static void UpdateUI(Player p) {
+        Inventory inv = p.getOpenInventory().getTopInventory();
+        if (inv.getName() == null || !inv.getName().contains(BaseUI.UICODE)) {
+            return;
+        }
+        String name = ChatColor.stripColor(inv.getName().split(BaseUI.UICODE)[1]);
+        BaseUI ui = RegisteredUI.get(name);
+        if (ui == null) {
+            return;
+        }
+        Snapshot s = ui.getSnapshotFactory().getNewSnapshot(p, ui);
+        for (int i = 0; i < ui.getSize(); i++) {
+            Item item = s.getItem(i);
+            if (item != null) {
+                inv.setItem(i, item.getDisplayItem(p));
+            }
+        }
+        Bukkit.getScheduler().runTask(PluginData.plugin, p::updateInventory);
     }
 
     private static void RegisterListener() {
         Bukkit.getPluginManager().registerEvents(new Listener() {
+            @EventHandler
+            public void onClose(InventoryCloseEvent evt) {
+                for (BaseUI ui : RegisteredUI.values()) {
+                    ui.getSnapshotFactory().deleteSanpshop((Player) evt.getPlayer());
+                }
+            }
+
             @EventHandler(priority = EventPriority.HIGHEST)
             public void onClick(InventoryClickEvent evt) {
                 Inventory inv = evt.getWhoClicked().getOpenInventory().getTopInventory();
