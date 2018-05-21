@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
  * @author Bryan_lzh
  * @version 1.0
  */
-public class Item {
+public class Item{
 
     /**
      * 玩家点击之后是否保持开启界面
@@ -35,7 +35,7 @@ public class Item {
     /**
      * 按钮的回调函数 返回true时表示点击事件不取消 (也就是可以移动物品)
      */
-    protected Function<Player, Boolean> ButtonCellback = p -> true;
+    protected Function<Player, Boolean> onClickNotCancel = p -> false;
 
     /**
      * 显示物品用
@@ -80,8 +80,8 @@ public class Item {
         return this;
     }
 
-    public Function<Player, Boolean> getButtonCellback() {
-        return ButtonCellback;
+    public Function<Player, Boolean> getOnClickNotCancel() {
+        return onClickNotCancel;
     }
 
     public Function<Player, ItemStack> getDisplayLambda() {
@@ -99,7 +99,7 @@ public class Item {
     }
 
     public Item setButtonCellback(Function<Player, Boolean> b) {
-        this.ButtonCellback = b;
+        this.onClickNotCancel = b;
         return this;
     }
 

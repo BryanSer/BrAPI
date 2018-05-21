@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Bryan_lzh
  */
-@Deprecated
 public class CheckItem {
 
     public CheckItem() {

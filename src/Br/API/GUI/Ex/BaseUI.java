@@ -7,6 +7,9 @@
 
 package Br.API.GUI.Ex;
 
+import com.sun.istack.internal.Nullable;
+import org.bukkit.entity.Player;
+
 /**
  *
  * @author Bryan_lzh
@@ -19,8 +22,6 @@ public abstract class BaseUI {
     protected String DisplayName;
     protected int Rows = 6;
     
-    
-
     public String getName() {
         return Name;
     }
@@ -33,11 +34,15 @@ public abstract class BaseUI {
         return Rows;
     }
     
+    public abstract @Nullable Item getItem(Player p,int slot);
+    
     public int getSize(){
         return this.Rows * 9;
     }
     
-    public String getPrefix(){
-        return UIManager.encode(this.Name) + BaseUI.UICODE;
-    }
+    /**
+     * 警告 每次调用这个方法必须返回同一个对象
+     * @return
+     */
+    public abstract SnapshotFactory getSnapshotFactory();
 }
