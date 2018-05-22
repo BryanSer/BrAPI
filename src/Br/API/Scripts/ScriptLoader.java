@@ -21,6 +21,28 @@ import jdk.nashorn.api.scripting.NashornScriptEngine;
 import org.bukkit.plugin.Plugin;
 
 /**
+ * nashorn脚本引擎存在一个明显的BUG<br>
+ * 位于<br>
+ * jdk.nashorn.api.scripting.NashornScriptEngineFactory:431的静态方法getAppClassLoader<br>
+ * 其中字节码描述如下:
+ * <p>
+ * <br>
+ * 0: invokestatic java/lang/Thread.currentThread:()Ljava/lang/Thread;<br>
+ * 3: invokevirtual
+ * java/lang/Thread.getContextClassLoader:()Ljava/lang/ClassLoader;<br>
+ * 6: astore_0<br>
+ * 7: aload_0<br>
+ * 8: ifnonnull 19<br>
+ * 11: ldc jdk/nashorn/api/scripting/NashornScriptEngineFactory<br>
+ * 13: invokevirtual
+ * java/lang/Class.getClassLoader:()Ljava/lang/ClassLoader;<br>
+ * 16: goto 20<br>
+ * 19: aload_0<br>
+ * 20: areturn<br></p>
+ * 显然<br>
+ * 代码返回的类加载器首先选取当前线程的类加载器(位于Thread.currentThread().getContextClassLoader())<br>
+ * 若返回null则返回NashornScriptEngineFactory的类加载器(NashornScriptEngineFactory.class.getClassLoader())<br>
+ * 这意味着 通过构造ScriptEngineManager所传入的类加载器没有任何用处 导致返回的ScriptEngine不使用所指定的类加载<br>
  *
  * @author Bryan_lzh
  * @version 1.0
@@ -62,26 +84,6 @@ public class ScriptLoader {
     }
 
     public static NashornScriptEngine eval(Plugin p, Consumer<NashornScriptEngine> c) {
-        /*  
-        nashorn脚本引擎存在一个明显的BUG
-        位于 jdk.nashorn.api.scripting.NashornScriptEngineFactory:431的静态方法getAppClassLoader
-        其中字节码描述如下: 
-             * 0: invokestatic  java/lang/Thread.currentThread:()Ljava/lang/Thread;
-             * 3: invokevirtual java/lang/Thread.getContextClassLoader:()Ljava/lang/ClassLoader;
-             * 6: astore_0
-             * 7: aload_0
-             * 8: ifnonnull     19
-             * 11: ldc           jdk/nashorn/api/scripting/NashornScriptEngineFactory
-             * 13: invokevirtual java/lang/Class.getClassLoader:()Ljava/lang/ClassLoader;
-             * 16: goto          20
-             * 19: aload_0
-             * 20: areturn
-        显然 代码返回的类加载器首先选取当前线程的类加载器(位于Thread.currentThread().getContextClassLoader())
-        若返回null则返回NashornScriptEngineFactory的类加载器(NashornScriptEngineFactory.class.getClassLoader())
-        这意味着 通过构造ScriptEngineManager所传入的类加载器没有任何用处
-        导致返回的ScriptEngine不使用所指定的类加载器
-        故本方法做了修改当前线程类加载器的修改
-        */
         ClassLoader backup = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(p.getClass().getClassLoader());
         ScriptEngineManager EngineManager = new ScriptEngineManager(p.getClass().getClassLoader());
