@@ -27,7 +27,7 @@ public @interface SubCommand {
 
     /**
      * 这个参数不包括子命令<br>
-     * 也就是 如果玩家使用/<command> <subcommand>  那么参数是0
+     * 也就是 如果玩家使用/command subcommand  那么参数是0
      * @return
      */
     int minimalArgs() default 0;

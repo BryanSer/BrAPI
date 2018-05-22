@@ -447,7 +447,7 @@ public abstract class Utils {
      *
      * @param config 配置文件
      * @param path 路径
-     * @return List<ItemStack> 按顺序读取的ItemStack
+     * @return List 按顺序读取的ItemStack
      * @deprecated 已经不使用 太SB了
      */
     @Deprecated
@@ -642,7 +642,7 @@ public abstract class Utils {
      *
      * @param config 配置文件
      * @param path 路径
-     * @return List<ItemStack> 按顺序读取的ItemStack
+     * @return List 按顺序读取的ItemStack
      */
     public static List<ItemStack> AnalyticalItems_2(FileConfiguration config, String path) {
         if (!config.isList(path)) {
