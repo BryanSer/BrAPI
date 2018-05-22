@@ -28,6 +28,8 @@ import org.bukkit.inventory.Inventory;
  */
 public class UIManager {
 
+    public static final String UICODE = "\u00a7c\u00a7b\u00a7p\u00a7r";
+
     public static ClickType getSuperClickType(ClickType t) {
         switch (t) {
             case SHIFT_RIGHT:
@@ -62,7 +64,7 @@ public class UIManager {
         Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
             p.closeInventory();
             Snapshot s = ui.getSnapshotFactory().getNewSnapshot(p, ui);
-            Inventory inv = Bukkit.createInventory(p, ui.getSize(), ui.getDisplayName() + BaseUI.UICODE + UIManager.encode(ui.getName()));
+            Inventory inv = Bukkit.createInventory(p, ui.getSize(), ui.getDisplayName() + UICODE + UIManager.encode(ui.getName()));
             for (int i = 0; i < ui.getSize(); i++) {
                 Item item = s.getItem(i);
                 if (item != null) {
@@ -82,15 +84,15 @@ public class UIManager {
 
     private static void UpdateUI(Player p) {
         Inventory inv = p.getOpenInventory().getTopInventory();
-        if (inv.getName() == null || !inv.getName().contains(BaseUI.UICODE)) {
+        if (inv.getName() == null || !inv.getName().contains(UICODE)) {
             return;
         }
-        String name = ChatColor.stripColor(inv.getName().split(BaseUI.UICODE)[1]);
+        String name = ChatColor.stripColor(inv.getName().split(UICODE)[1]);
         BaseUI ui = RegisteredUI.get(name);
         if (ui == null) {
             return;
         }
-        Snapshot s = ui.getSnapshotFactory().getNewSnapshot(p, ui);
+        Snapshot s = ui.getSnapshot(p);
         for (int i = 0; i < ui.getSize(); i++) {
             Item item = s.getItem(i);
             if (item != null) {
@@ -112,10 +114,10 @@ public class UIManager {
             @EventHandler(priority = EventPriority.HIGHEST)
             public void onClick(InventoryClickEvent evt) {
                 Inventory inv = evt.getWhoClicked().getOpenInventory().getTopInventory();
-                if (inv.getName() == null || !inv.getName().contains(BaseUI.UICODE)) {
+                if (inv.getName() == null || !inv.getName().contains(UIManager.UICODE)) {
                     return;
                 }
-                String name = ChatColor.stripColor(inv.getName().split(BaseUI.UICODE)[1]);
+                String name = ChatColor.stripColor(inv.getName().split(UIManager.UICODE)[1]);
                 BaseUI ui = RegisteredUI.get(name);
                 if (ui == null) {
                     return;

@@ -8,6 +8,7 @@ package Br.API.GUI.Ex;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -41,6 +42,12 @@ public class Item{
      * 显示物品用
      */
     protected Function<Player, ItemStack> DisplayLambda;
+    
+    /**
+     * 用于更新时的Lambda 若为null将调用
+     * @see Item#DisplayLambda
+     */
+    protected BiFunction<Player,Snapshot,ItemStack> UpadteDisplayLambda = null;
 
     /**
      * 全部的点击事件储存于此
@@ -50,6 +57,12 @@ public class Item{
     protected Item() {
     }
 
+    /**
+     * <p>创建一个新的Item</p>
+     * <p>若不通过此方法创建 请继承该类实现相关功能</p>
+     * @param display
+     * @return Item
+     */
     public static Item getNewInstance(Function<Player, ItemStack> display) {
         return new Item().setDisplay(display);
     }
@@ -106,6 +119,14 @@ public class Item{
     public Item setClick(ClickType ct, Consumer<Player> c) {
         this.ClickLambdas.put(ct, c);
         return this;
+    }
+
+    public void setUpadteDisplayLambda(BiFunction<Player, Snapshot, ItemStack> UpadteDisplayLambda) {
+        this.UpadteDisplayLambda = UpadteDisplayLambda;
+    }
+    
+    public ItemStack Update(Player p,Snapshot s){
+        return this.UpadteDisplayLambda == null ? this.getDisplayItem(p) : this.UpadteDisplayLambda.apply(p, s);
     }
 
 }
