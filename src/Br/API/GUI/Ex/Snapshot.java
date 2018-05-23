@@ -7,6 +7,7 @@
 
 package Br.API.GUI.Ex;
 
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -31,4 +32,8 @@ public interface Snapshot<T extends BaseUI> {
     Object getData(String key);
     
     void removeData(String key);
+    
+    Inventory getInventory();
+    
+    void setInventory(Inventory inv);
 }

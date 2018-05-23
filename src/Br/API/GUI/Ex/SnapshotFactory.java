@@ -9,6 +9,7 @@ package Br.API.GUI.Ex;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 /**
  *
@@ -70,6 +71,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     @Override
                     public void Delete() {
                         data = null;
+                        inv = null;
                     }
 
                     @Override
@@ -100,6 +102,18 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     @Override
                     public void removeData(String key) {
                         data.remove(key);
+                    }
+
+                    
+                    private Inventory inv;
+                    @Override
+                    public Inventory getInventory() {
+                        return inv;
+                    }
+
+                    @Override
+                    public void setInventory(Inventory inv) {
+                        this.inv = inv;
                     }
                 };
             }

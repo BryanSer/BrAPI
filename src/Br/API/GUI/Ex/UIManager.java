@@ -7,7 +7,10 @@
 package Br.API.GUI.Ex;
 
 import Br.API.PluginData;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import org.bukkit.Bukkit;
@@ -49,6 +52,10 @@ public class UIManager {
         return sb.toString();
     }
 
+    public static String decode(String s) {
+        return s.replaceAll("§", "");
+    }
+
     private static Map<String, BaseUI> RegisteredUI = new ConcurrentHashMap<>();
 
     private static boolean Reigstered = false;
@@ -56,6 +63,7 @@ public class UIManager {
     public static void RegisterUI(BaseUI ui) {
         if (!Reigstered) {
             RegisterListener();
+            Reigstered = true;
         }
         RegisteredUI.put(ui.getName(), ui);
     }
@@ -71,6 +79,7 @@ public class UIManager {
                     inv.setItem(i, item.getDisplayItem(p));
                 }
             }
+            s.setInventory(inv);
             p.openInventory(inv);
         });
     }
@@ -111,18 +120,23 @@ public class UIManager {
                 }
             }
 
+            private Set<String> ClickLimit = new HashSet<>();
+
             @EventHandler(priority = EventPriority.HIGHEST)
             public void onClick(InventoryClickEvent evt) {
+                if (ClickLimit.contains(evt.getWhoClicked().getName())) {
+                    evt.setCancelled(true);
+                    return;
+                }
                 Inventory inv = evt.getWhoClicked().getOpenInventory().getTopInventory();
                 if (inv.getName() == null || !inv.getName().contains(UIManager.UICODE)) {
                     return;
                 }
-                String name = ChatColor.stripColor(inv.getName().split(UIManager.UICODE)[1]);
+                String name = UIManager.decode(inv.getName().split(UIManager.UICODE)[1]);
                 BaseUI ui = RegisteredUI.get(name);
                 if (ui == null) {
                     return;
                 }
-                evt.setCancelled(true);
                 Player p = (Player) evt.getWhoClicked();
                 Snapshot snap = ui.getSnapshotFactory().getSnapshot(p);
                 int slot = evt.getSlot();
@@ -135,8 +149,10 @@ public class UIManager {
                         return;
                     }
                 }
+                evt.setCancelled(true);
                 Item item = snap.getItem(slot);
                 if (item != null) {
+                    ClickLimit.add(evt.getWhoClicked().getName());
                     Consumer<Player> c = item.getClickLambda(evt.getClick());
                     if (c != null) {
                         c.accept(p);
@@ -145,9 +161,19 @@ public class UIManager {
                         evt.setCancelled(false);
                     }
                     if (!item.isKeepOpen()) {
-                        Bukkit.getScheduler().runTask(PluginData.plugin, p::closeInventory);
+                        Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
+                            p.closeInventory();
+                            ClickLimit.remove(p.getName());
+                        });
                     } else if (item.isUpdate()) {
-                        UpdateUI(p);
+                        Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
+                            UpdateUI(p);
+                            ClickLimit.remove(p.getName());
+                        });
+                    } else {
+                        Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
+                            ClickLimit.remove(p.getName());
+                        });
                     }
                 }
             }

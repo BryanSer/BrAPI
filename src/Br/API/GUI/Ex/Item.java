@@ -66,6 +66,10 @@ public class Item{
     public static Item getNewInstance(Function<Player, ItemStack> display) {
         return new Item().setDisplay(display);
     }
+    
+     public static Item getNewInstance(ItemStack display) {
+        return new Item().setDisplay((p) -> display);
+    }
 
     public Consumer<Player> getClickLambda(ClickType ct) {
         Consumer<Player> c = ClickLambdas.get(ct);
@@ -121,8 +125,9 @@ public class Item{
         return this;
     }
 
-    public void setUpadteDisplayLambda(BiFunction<Player, Snapshot, ItemStack> UpadteDisplayLambda) {
+    public Item setUpadteDisplayLambda(BiFunction<Player, Snapshot, ItemStack> UpadteDisplayLambda) {
         this.UpadteDisplayLambda = UpadteDisplayLambda;
+        return this;
     }
     
     public ItemStack Update(Player p,Snapshot s){
