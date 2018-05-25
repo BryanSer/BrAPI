@@ -45,6 +45,7 @@ public abstract class BaseUI {
 
     /**
      * 获取某个位置的物品
+     *
      * @param p 打开UI的玩家
      * @param slot 位置
      * @return Item
@@ -52,7 +53,7 @@ public abstract class BaseUI {
     public abstract Item getItem(Player p, int slot);
 
     /**
-     * 
+     *
      * @return UI总物品数
      */
     public int getSize() {
@@ -73,5 +74,8 @@ public abstract class BaseUI {
      */
     public Snapshot getSnapshot(Player p) {
         return getSnapshotFactory().getSnapshot(p);
+    }
+
+    public void onClose(Player p, Snapshot s) {
     }
 }

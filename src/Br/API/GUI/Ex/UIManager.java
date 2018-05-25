@@ -7,14 +7,12 @@
 package Br.API.GUI.Ex;
 
 import Br.API.PluginData;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -96,7 +94,7 @@ public class UIManager {
         if (inv.getName() == null || !inv.getName().contains(UICODE)) {
             return;
         }
-        String name = ChatColor.stripColor(inv.getName().split(UICODE)[1]);
+        String name = UIManager.decode(inv.getName().split(UICODE)[1]);
         BaseUI ui = RegisteredUI.get(name);
         if (ui == null) {
             return;
@@ -105,7 +103,7 @@ public class UIManager {
         for (int i = 0; i < ui.getSize(); i++) {
             Item item = s.getItem(i);
             if (item != null) {
-                inv.setItem(i, item.getDisplayItem(p));
+                inv.setItem(i, item.Update(p, s));
             }
         }
         Bukkit.getScheduler().runTask(PluginData.plugin, p::updateInventory);
@@ -116,7 +114,12 @@ public class UIManager {
             @EventHandler
             public void onClose(InventoryCloseEvent evt) {
                 for (BaseUI ui : RegisteredUI.values()) {
-                    ui.getSnapshotFactory().deleteSanpshop((Player) evt.getPlayer());
+                    Player p = (Player) evt.getPlayer();
+                    Snapshot s = ui.getSnapshot(p);
+                    if (s != null) {
+                        ui.onClose(p, s);
+                        ui.getSnapshotFactory().deleteSanpshop(p);
+                    }
                 }
             }
 
