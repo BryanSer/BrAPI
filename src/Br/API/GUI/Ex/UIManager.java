@@ -113,6 +113,7 @@ public class UIManager {
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onClose(InventoryCloseEvent evt) {
+                ClickLimit.remove(evt.getPlayer().getName());
                 for (BaseUI ui : RegisteredUI.values()) {
                     Player p = (Player) evt.getPlayer();
                     Snapshot s = ui.getSnapshot(p);
@@ -170,7 +171,11 @@ public class UIManager {
                         });
                     } else if (item.isUpdate()) {
                         Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
-                            UpdateUI(p);
+                            try {
+                                UpdateUI(p);
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            }
                             ClickLimit.remove(p.getName());
                         });
                     } else {
