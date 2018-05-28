@@ -173,7 +173,7 @@ public class UIManager {
                         Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
                             try {
                                 UpdateUI(p);
-                            } catch (Throwable e) {
+                            } catch (Throwable e) {//修正BUG
                                 e.printStackTrace();
                             }
                             ClickLimit.remove(p.getName());
