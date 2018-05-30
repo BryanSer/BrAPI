@@ -4,7 +4,7 @@ authors: ['Bryan_lzh']
 main: Br.API.Main
 description: '开发者QQ:390807154'
 softdepend: [Vault,ProtocolLib]
-version: Release-3.0.0
+version: Release-3.0.1
 
 commands:
     BrAPI:

@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 
 /**
@@ -111,6 +112,16 @@ public class UIManager {
 
     private static void RegisterListener() {
         Bukkit.getPluginManager().registerEvents(new Listener() {
+
+            @EventHandler
+            public void onDrug(InventoryDragEvent evt) {
+                Inventory inv = evt.getView().getTopInventory();
+                if (inv.getName() == null || !inv.getName().contains(UIManager.UICODE)) {
+                    return;
+                }
+                evt.setCancelled(true);
+            }
+
             @EventHandler
             public void onClose(InventoryCloseEvent evt) {
                 ClickLimit.remove(evt.getPlayer().getName());
