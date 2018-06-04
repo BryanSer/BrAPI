@@ -157,10 +157,12 @@ public class UIManager {
                 int slot = evt.getSlot();
                 try {
                     if (evt.getClickedInventory() != inv) {
+                        evt.setCancelled(true);
                         return;
                     }
                 } catch (Throwable t) {//防止craftbukkit出错(一般没人用了吧)
                     if (slot < 0) {
+                        evt.setCancelled(true);
                         return;
                     }
                 }

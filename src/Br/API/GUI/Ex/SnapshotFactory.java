@@ -6,6 +6,7 @@
  */
 package Br.API.GUI.Ex;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.entity.Player;
@@ -61,7 +62,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     items[i] = ui.getItem(p, i);
                 }
                 return new Snapshot<T>() {
-                    private Map<String, Object> data = new ConcurrentHashMap<>();
+                    private Map<String, Object> data = new HashMap<>();
 
                     @Override
                     public String getPlayerName() {

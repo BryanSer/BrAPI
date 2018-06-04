@@ -128,9 +128,11 @@ public class CallBack implements Listener {
         private List<String> Keys = new ArrayList<>();
         private BiConsumer<Player, Integer> Callback;
         private boolean canceled = false;
+        private Player Player;
 
         ButtonInfo(Player p, String[] display, BiConsumer<Player, Integer> callback, int overtime) {
             this.Name = p.getName();
+            Player = p;
             for (String s : display) {
                 Keys.add(CallBack.getRandomString());
             }
@@ -152,6 +154,7 @@ public class CallBack implements Listener {
             if (canceled) {
                 return;
             }
+            Callback.accept(Player, null);
             ButtonInfos.remove(this.Name);
         }
 
