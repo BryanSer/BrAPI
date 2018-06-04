@@ -129,6 +129,7 @@ public class CallBack implements Listener {
         private BiConsumer<Player, Integer> Callback;
         private boolean canceled = false;
         private Player Player;
+        private boolean overtime = true;
 
         ButtonInfo(Player p, String[] display, BiConsumer<Player, Integer> callback, int overtime) {
             this.Name = p.getName();
@@ -142,6 +143,7 @@ public class CallBack implements Listener {
 
         @Override
         public synchronized void cancel() throws IllegalStateException {
+            overtime = false;
             if (!canceled) {
                 this.run();
                 this.canceled = true;
@@ -154,7 +156,9 @@ public class CallBack implements Listener {
             if (canceled) {
                 return;
             }
-            Callback.accept(Player, null);
+            if (overtime) {
+                Callback.accept(Player, null);
+            }
             ButtonInfos.remove(this.Name);
         }
 
@@ -175,7 +179,6 @@ public class CallBack implements Listener {
         }
 
     }
-
 
     private CallBack() {
     }
