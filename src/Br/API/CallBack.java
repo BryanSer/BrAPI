@@ -76,6 +76,9 @@ public class CallBack implements Listener {
             evt.setCancelled(true);
             String key = evt.getMessage().split(" ")[2];
             ButtonInfo bi = ButtonInfos.get(evt.getPlayer().getName());
+            if (bi == null) {
+                return;
+            }
             int index = bi.getKeys().indexOf(key);
             if (index == -1) {
                 bi.getCallback().accept(evt.getPlayer(), null);
