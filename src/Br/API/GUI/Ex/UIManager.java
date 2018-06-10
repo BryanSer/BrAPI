@@ -70,16 +70,18 @@ public class UIManager {
     public static void OpenUI(Player p, BaseUI ui) {
         Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
             p.closeInventory();
-            Snapshot s = ui.getSnapshotFactory().getNewSnapshot(p, ui);
-            Inventory inv = Bukkit.createInventory(p, ui.getSize(), ui.getDisplayName() + UICODE + UIManager.encode(ui.getName()));
-            for (int i = 0; i < ui.getSize(); i++) {
-                Item item = s.getItem(i);
-                if (item != null) {
-                    inv.setItem(i, item.getDisplayItem(p));
+            Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
+                Snapshot s = ui.getSnapshotFactory().getNewSnapshot(p, ui);
+                Inventory inv = Bukkit.createInventory(p, ui.getSize(), ui.getDisplayName() + UICODE + UIManager.encode(ui.getName()));
+                s.setInventory(inv);
+                for (int i = 0; i < ui.getSize(); i++) {
+                    Item item = s.getItem(i);
+                    if (item != null) {
+                        inv.setItem(i, item.getDisplayItem(p));
+                    }
                 }
-            }
-            s.setInventory(inv);
-            p.openInventory(inv);
+                p.openInventory(inv);
+            });
         });
     }
 
