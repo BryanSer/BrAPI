@@ -265,6 +265,14 @@ public abstract class ConfigHelper {
                             config.set(path, get);
                             save = true;
                         }
+                        if (!c.Annotation().isEmpty()) {
+                            String h = config.options().header();
+                            if (h == null) {
+                                h = "";
+                            }
+                            h += path + " >> " + c.Annotation() + "\n";
+                            config.options().header(h);
+                        }
                     } catch (Throwable ex) {
                     }
                 } else {

@@ -32,6 +32,11 @@ public class Item{
      * 玩家点击之后是更新 前提是keepopen == true
      */
     protected boolean Update = true;
+    
+    /**
+     * 更新时是否也更新图标
+     */
+    protected boolean UpdateIcon = true;
 
     /**
      * 按钮的回调函数 返回true时表示点击事件不取消 (也就是可以移动物品)
@@ -112,6 +117,15 @@ public class Item{
 
     public Item setUpdate(boolean u) {
         this.Update = u;
+        return this;
+    }
+
+    public boolean isUpdateIcon() {
+        return UpdateIcon;
+    }
+
+    public Item setUpdateIcon(boolean UpdateIcon) {
+        this.UpdateIcon = UpdateIcon;
         return this;
     }
 

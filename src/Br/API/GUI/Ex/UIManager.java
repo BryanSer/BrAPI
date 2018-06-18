@@ -92,7 +92,7 @@ public class UIManager {
         }
     }
 
-    private static void UpdateUI(Player p) {
+    public static void UpdateUI(Player p) {
         Inventory inv = p.getOpenInventory().getTopInventory();
         if (inv.getName() == null || !inv.getName().contains(UICODE)) {
             return;
@@ -106,7 +106,9 @@ public class UIManager {
         for (int i = 0; i < ui.getSize(); i++) {
             Item item = s.getItem(i);
             if (item != null) {
-                inv.setItem(i, item.Update(p, s));
+                if (item.isUpdateIcon()) {
+                    inv.setItem(i, item.Update(p, s));
+                }
             }
         }
         Bukkit.getScheduler().runTask(PluginData.plugin, p::updateInventory);
