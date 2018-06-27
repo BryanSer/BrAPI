@@ -990,14 +990,27 @@ public abstract class Utils {
         public static String getVersionName() {
             return PluginData.plugin.getDescription().getVersion();
         }
-        
-        public static int[] getVersion(){
+
+        public static int[] getVersion() {
             int v[] = new int[3];
             String[] s = getVersionName().split("-")[1].split("\\.");
             for (int i = 0; i < v.length; i++) {
                 v[i] = Integer.parseInt(s[i]);
             }
             return v;
+        }
+
+        public static boolean checkVersion(int v[]) {
+            int ver[] = getVersion();
+            for (int i = 0; i < v.length; i++) {
+                if (ver[i] > v[i]) {
+                    return true;
+                }
+                if(ver[i] < v[i]){
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
