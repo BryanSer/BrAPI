@@ -18,6 +18,16 @@ public class Calculator {
 
     public static double conversion(String expression) {
         expression = expression.replaceAll(" ", "").replaceAll("random()", Math.random() + "");
+        boolean number = true;
+        for (char c : expression.toCharArray()) {
+            if(isOperator(c)){
+                number = false;
+                break;
+            }
+        }
+        if(number){
+            return Double.parseDouble(expression);
+        }
         double result = 0;
         Calculator cal = new Calculator();
         try {
@@ -138,7 +148,7 @@ public class Calculator {
      * @param c
      * @return
      */
-    private boolean isOperator(char c) {
+    private static boolean isOperator(char c) {
         return c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '^';
     }
 

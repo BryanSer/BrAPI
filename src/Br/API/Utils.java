@@ -981,4 +981,24 @@ public abstract class Utils {
         }
     }
 
+    public static class Version {
+
+        public static boolean isRelease() {
+            return getVersionName().contains("Release");
+        }
+
+        public static String getVersionName() {
+            return PluginData.plugin.getDescription().getVersion();
+        }
+        
+        public static int[] getVersion(){
+            int v[] = new int[3];
+            String[] s = getVersionName().split("-")[1].split("\\.");
+            for (int i = 0; i < v.length; i++) {
+                v[i] = Integer.parseInt(s[i]);
+            }
+            return v;
+        }
+    }
+
 }

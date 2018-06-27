@@ -33,7 +33,7 @@ public class Main extends JavaPlugin {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
-        dataFolder = new File(dataFolder, "\\Datas\\");
+        dataFolder = new File(dataFolder, File.separator + "Datas" + File.separator);
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
@@ -121,4 +121,6 @@ public class Main extends JavaPlugin {
         }
         return false;
     }
+    
+    
 }
