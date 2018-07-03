@@ -133,6 +133,11 @@ public class Item{
         this.onClickNotCancel = b;
         return this;
     }
+    
+    public Item setButtonPutable(Function<Player, Boolean> b) {
+        this.onClickNotCancel = b;
+        return this;
+    }
 
     public Item setClick(ClickType ct, Consumer<Player> c) {
         this.ClickLambdas.put(ct, c);
