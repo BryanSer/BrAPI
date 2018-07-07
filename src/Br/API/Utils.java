@@ -986,6 +986,10 @@ public abstract class Utils {
         public static boolean isRelease() {
             return getVersionName().contains("Release");
         }
+        
+        public static boolean isLite(){
+            return getVersionName().contains("Lite");
+        }
 
         public static String getVersionName() {
             return PluginData.plugin.getDescription().getVersion();
