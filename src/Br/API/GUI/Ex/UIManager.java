@@ -167,7 +167,7 @@ public class UIManager {
                         return;
                     }
                 } catch (Throwable t) {//防止craftbukkit出错(一般没人用了吧)
-                    if (slot < 0) {
+                    if (slot < 0 || slot > inv.getSize()) {
                         if (evt.getClick() == ClickType.SHIFT_LEFT || evt.getClick() == ClickType.SHIFT_LEFT) {
                             evt.setCancelled(true);
                         }
