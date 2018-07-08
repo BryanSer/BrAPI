@@ -18,6 +18,7 @@ public abstract class BaseUI {
     protected String Name;
     protected String DisplayName;
     protected int Rows = 6;
+    protected boolean AllowShift = false;
 
     /**
      *
@@ -74,6 +75,10 @@ public abstract class BaseUI {
      */
     public Snapshot getSnapshot(Player p) {
         return getSnapshotFactory().getSnapshot(p);
+    }
+
+    public boolean isAllowShift() {
+        return AllowShift;
     }
 
     public void onClose(Player p, Snapshot s) {
