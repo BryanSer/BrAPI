@@ -161,18 +161,20 @@ public class UIManager {
                 int slot = evt.getSlot();
                 try {
                     if (evt.getClickedInventory() != inv) {
-                        if (evt.getClick() == ClickType.SHIFT_LEFT || evt.getClick() == ClickType.SHIFT_LEFT) {
+                        if (evt.getClick() == ClickType.SHIFT_LEFT ) {
                             evt.setCancelled(true);
                         }
                         return;
                     }
                 } catch (Throwable t) {//防止craftbukkit出错(一般没人用了吧)
-                    if (slot < 0 || slot > inv.getSize()) {
-                        if (evt.getClick() == ClickType.SHIFT_LEFT || evt.getClick() == ClickType.SHIFT_LEFT) {
+                    slot = evt.getRawSlot();
+                    if (slot < 0 || slot >= inv.getSize() || slot >= ui.getSize()) {
+                        if (evt.getClick() == ClickType.SHIFT_LEFT ) {
                             evt.setCancelled(true);
                         }
                         return;
                     }
+                    slot = evt.getSlot();
                 }
                 evt.setCancelled(true);
                 Item item = snap.getItem(slot);
