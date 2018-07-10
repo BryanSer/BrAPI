@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @author Bryan_lzh
  */
 
+@Deprecated
 public class Menu implements Cloneable {
 
     protected String Name;
