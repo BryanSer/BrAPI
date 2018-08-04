@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -575,7 +577,6 @@ public abstract class Utils {
         return ItemList;
     }
 
-
     /**
      * 获取方便表达的物品名称
      *
@@ -780,6 +781,65 @@ public abstract class Utils {
         return null;
     }
 
+    /**
+     * 默认 FileType = GET_AND_CREATE
+     *
+     * @see FileType
+     * @param s
+     * @return
+     */
+    public static File getFile(Plugin p, String... s) {
+        return Utils.getFile(p, FileType.GET_AND_CREATE, s);
+    }
+
+    public enum FileType {
+        GET,
+        GET_AND_CREATE,
+        GET_AND_SAVE_DEFAULT;
+    }
+
+    /**
+     * 返回文件
+     *
+     * @param create
+     * @param s
+     * @return
+     */
+    public static File getFile(Plugin p, FileType create, String... s) {
+        StringBuilder url = new StringBuilder();
+        if (s.length == 0) {
+            url.append(s[0]);
+        } else {
+            for (int i = 0; i < s.length; i++) {
+                url.append(File.separator).append(s[i]);
+            }
+        }
+        File f = new File(p.getDataFolder(), url.toString());
+        if (create != FileType.GET) {
+            if (f.isDirectory() && !f.exists()) {
+                f.mkdirs();
+            } else {
+                File pf = f.getParentFile();
+                if (!pf.exists()) {
+                    pf.mkdirs();
+                }
+                if (!f.exists()) {
+                    try {
+                        if (create == FileType.GET_AND_CREATE) {
+                            f.createNewFile();
+                        } else {
+                            String[] fs = url.toString().split(File.separator);
+                            Utils.OutputFile(p, fs[fs.length - 1], f.getParentFile());
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        return f;
+    }
+
     public static class Exp {
 
         public static int getTotalExp(int lv) {
@@ -834,8 +894,8 @@ public abstract class Utils {
         public static boolean isRelease() {
             return getVersionName().contains("Release");
         }
-        
-        public static boolean isLite(){
+
+        public static boolean isLite() {
             return getVersionName().contains("Lite");
         }
 
@@ -858,7 +918,7 @@ public abstract class Utils {
                 if (ver[i] > v[i]) {
                     return true;
                 }
-                if(ver[i] < v[i]){
+                if (ver[i] < v[i]) {
                     return false;
                 }
             }
