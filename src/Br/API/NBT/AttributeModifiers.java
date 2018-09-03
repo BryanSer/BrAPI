@@ -21,7 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author Bryan_lzh
  */
-public class AttributeModifiers implements BrConfigurationSerializable{
+public class AttributeModifiers implements BrConfigurationSerializable {
 
     @Config(Path = "FixAttribute")
     private Map<AttributeType, Double> Attrs_opt_0 = new EnumMap<>(AttributeType.class);
@@ -31,8 +31,11 @@ public class AttributeModifiers implements BrConfigurationSerializable{
     private Map<AttributeType, Double> Attrs_opt_2 = new EnumMap<>(AttributeType.class);
     @Config
     private List<String> Solt = new LinkedList<>();
-    
-    public AttributeModifiers(Map<String,Object> args){
+
+    public AttributeModifiers() {
+    }
+
+    public AttributeModifiers(Map<String, Object> args) {
         BrConfigurationSerializable.deserialize(args, this);
     }
 
