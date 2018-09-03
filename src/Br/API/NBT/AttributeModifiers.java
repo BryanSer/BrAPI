@@ -6,13 +6,13 @@
  */
 package Br.API.NBT;
 
+import Br.API.Data.BrConfigurationSerializable;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
+import java.util.UUID;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,14 +21,20 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author Bryan_lzh
  */
-public class AttributeModifiers {
+public class AttributeModifiers implements BrConfigurationSerializable{
 
-    private static Random RANDOM = new Random();
-
+    @Config(Path = "FixAttribute")
     private Map<AttributeType, Double> Attrs_opt_0 = new EnumMap<>(AttributeType.class);
+    @Config(Path = "AttributeBoost")
     private Map<AttributeType, Double> Attrs_opt_1 = new EnumMap<>(AttributeType.class);
+    @Config(Path = "LastAttributeBoost")
     private Map<AttributeType, Double> Attrs_opt_2 = new EnumMap<>(AttributeType.class);
+    @Config
     private List<String> Solt = new LinkedList<>();
+    
+    public AttributeModifiers(Map<String,Object> args){
+        BrConfigurationSerializable.deserialize(args, this);
+    }
 
     /**
      * 操作值0: 直接加上value<P>
@@ -77,8 +83,9 @@ public class AttributeModifiers {
                 BrNBTTagCompound tag = new BrNBTTagCompound();
                 tag.set("Name", new BrNBTTagString(E.getKey().name()));
                 tag.set("Amount", new BrNBTBase(E.getValue()));
-                tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
-                tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+                UUID uid = UUID.randomUUID();
+                tag.set("UUIDLeast", new BrNBTBase(uid.getLeastSignificantBits()));
+                tag.set("UUIDMost", new BrNBTBase(uid.getMostSignificantBits()));
                 tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
                 tag.set("Operation", new BrNBTBase(0));
                 attrs.add(tag);
@@ -87,8 +94,9 @@ public class AttributeModifiers {
                 BrNBTTagCompound tag = new BrNBTTagCompound();
                 tag.set("Name", new BrNBTTagString(E.getKey().name()));
                 tag.set("Amount", new BrNBTBase(E.getValue()));
-                tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
-                tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+                UUID uid = UUID.randomUUID();
+                tag.set("UUIDLeast", new BrNBTBase(uid.getLeastSignificantBits()));
+                tag.set("UUIDMost", new BrNBTBase(uid.getMostSignificantBits()));
                 tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
                 tag.set("Operation", new BrNBTBase(1));
                 attrs.add(tag);
@@ -97,8 +105,9 @@ public class AttributeModifiers {
                 BrNBTTagCompound tag = new BrNBTTagCompound();
                 tag.set("Name", new BrNBTTagString(E.getKey().name()));
                 tag.set("Amount", new BrNBTBase(E.getValue()));
-                tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
-                tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+                UUID uid = UUID.randomUUID();
+                tag.set("UUIDLeast", new BrNBTBase(uid.getLeastSignificantBits()));
+                tag.set("UUIDMost", new BrNBTBase(uid.getMostSignificantBits()));
                 tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
                 tag.set("Operation", new BrNBTBase(2));
                 attrs.add(tag);
@@ -109,8 +118,9 @@ public class AttributeModifiers {
                     BrNBTTagCompound tag = new BrNBTTagCompound();
                     tag.set("Name", new BrNBTTagString(E.getKey().name()));
                     tag.set("Amount", new BrNBTBase(E.getValue().doubleValue()));
-                    tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
-                    tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+                    UUID uid = UUID.randomUUID();
+                    tag.set("UUIDLeast", new BrNBTBase(uid.getLeastSignificantBits()));
+                    tag.set("UUIDMost", new BrNBTBase(uid.getMostSignificantBits()));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
                     tag.set("Slot", new BrNBTTagString(solt));
                     tag.set("Operation", new BrNBTBase(0));
@@ -120,8 +130,9 @@ public class AttributeModifiers {
                     BrNBTTagCompound tag = new BrNBTTagCompound();
                     tag.set("Name", new BrNBTTagString(E.getKey().name()));
                     tag.set("Amount", new BrNBTBase(E.getValue().doubleValue()));
-                    tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
-                    tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+                    UUID uid = UUID.randomUUID();
+                    tag.set("UUIDLeast", new BrNBTBase(uid.getLeastSignificantBits()));
+                    tag.set("UUIDMost", new BrNBTBase(uid.getMostSignificantBits()));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
                     tag.set("Slot", new BrNBTTagString(solt));
                     tag.set("Operation", new BrNBTBase(1));
@@ -131,8 +142,9 @@ public class AttributeModifiers {
                     BrNBTTagCompound tag = new BrNBTTagCompound();
                     tag.set("Name", new BrNBTTagString(E.getKey().name()));
                     tag.set("Amount", new BrNBTBase(E.getValue().doubleValue()));
-                    tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
-                    tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+                    UUID uid = UUID.randomUUID();
+                    tag.set("UUIDLeast", new BrNBTBase(uid.getLeastSignificantBits()));
+                    tag.set("UUIDMost", new BrNBTBase(uid.getMostSignificantBits()));
                     tag.set("AttributeName", new BrNBTTagString(E.getKey().getPath()));
                     tag.set("Slot", new BrNBTTagString(solt));
                     tag.set("Operation", new BrNBTBase(2));
@@ -184,8 +196,9 @@ public class AttributeModifiers {
         BrNBTTagCompound tag = new BrNBTTagCompound();
         tag.set("Name", new BrNBTTagString(at.name()));
         tag.set("Amount", new BrNBTBase(value));
-        tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
-        tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+        UUID uid = UUID.randomUUID();
+        tag.set("UUIDLeast", new BrNBTBase(uid.getLeastSignificantBits()));
+        tag.set("UUIDMost", new BrNBTBase(uid.getMostSignificantBits()));
         tag.set("AttributeName", new BrNBTTagString(at.getPath()));
         tag.set("Operation", new BrNBTBase(2));
         attr.add(tag);
@@ -208,8 +221,9 @@ public class AttributeModifiers {
         BrNBTTagCompound tag = new BrNBTTagCompound();
         tag.set("Name", new BrNBTTagString(at.name()));
         tag.set("Amount", new BrNBTBase(value));
-        tag.set("UUIDLeast", new BrNBTBase(Math.abs(RANDOM.nextInt())));
-        tag.set("UUIDMost", new BrNBTBase(Math.abs(RANDOM.nextInt())));
+        UUID uid = UUID.randomUUID();
+        tag.set("UUIDLeast", new BrNBTBase(uid.getLeastSignificantBits()));
+        tag.set("UUIDMost", new BrNBTBase(uid.getMostSignificantBits()));
         tag.set("AttributeName", new BrNBTTagString(at.getPath()));
         tag.set("Slot", new BrNBTTagString(slot));
         tag.set("Operation", new BrNBTBase(2));

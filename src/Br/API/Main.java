@@ -4,6 +4,7 @@ import Br.API.Data.DataManager;
 import Br.API.Data.DatabaseSerializable;
 import Br.API.Item.ItemManager;
 import Br.API.LangUtils.Lang;
+import Br.API.NBT.AttributeModifiers;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -38,6 +40,7 @@ public class Main extends JavaPlugin {
             dataFolder.mkdirs();
         }
         //DataManager.LoadAll(true);
+        ConfigurationSerialization.registerClass(AttributeModifiers.class);
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
         Utils.econ = this.setupEconomy();
