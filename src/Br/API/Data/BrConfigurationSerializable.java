@@ -114,7 +114,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
     static <T extends BrConfigurationSerializable> Collection<Field> getAllDeclaredFields(Class<T> cls) {
         Class<?> t = cls;
         List<Field> f = new ArrayList<>();
-        while(t != Object.class){
+        while (t != Object.class) {
             f.addAll(Arrays.asList(t.getDeclaredFields()));
             t = t.getSuperclass();
         }
@@ -207,32 +207,24 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                     path = c.Path();
                 }
                 try {
-                    if (f.getType().isAssignableFrom(Map.class)) {
+                    if (f.getType().isAssignableFrom(Map.class) && f.isAnnotationPresent(MapTarget.class)) {
                         try {
                             List<String> keys = new ArrayList<>();
-                            if (f.isAnnotationPresent(MapTarget.class)) {
-                                Map m = (Map) f.get(this);
-                                MapTarget mt = f.getAnnotation(MapTarget.class);
-                                if (mt.KeyType() != MapTarget.KeyTypes.Custom) {
-                                    MapTarget.KeyTypes kt = mt.KeyType();
-                                    ((Set<Map.Entry>) m.entrySet()).forEach((e) -> {
-                                        map.put(path + "." + kt.toString(e.getKey()), e.getValue());
-                                        keys.add(kt.toString(e.getKey()));
-                                    });
-                                } else {
-                                    Method method = mt.KeyClass().getMethod(mt.toStringMethod(), Object.class);
-                                    for (Map.Entry e : (Set<Map.Entry>) m.entrySet()) {
-                                        String key = (String) method.invoke(null, e.getKey());
-                                        map.put(path + "." + key, e.getValue());
-                                        keys.add(key);
-                                    }
-                                }
-                            } else {
-                                Map<String, Object> m = (Map<String, Object>) f.get(this);
-                                m.entrySet().forEach((e) -> {
-                                    map.put(path + "." + e.getKey(), e.getValue());
-                                    keys.add(e.getKey());
+                            Map m = (Map) f.get(this);
+                            MapTarget mt = f.getAnnotation(MapTarget.class);
+                            if (mt.KeyType() != MapTarget.KeyTypes.Custom) {
+                                MapTarget.KeyTypes kt = mt.KeyType();
+                                ((Set<Map.Entry>) m.entrySet()).forEach((e) -> {
+                                    map.put(path + "." + kt.toString(e.getKey()), e.getValue());
+                                    keys.add(kt.toString(e.getKey()));
                                 });
+                            } else {
+                                Method method = mt.KeyClass().getMethod(mt.toStringMethod(), Object.class);
+                                for (Map.Entry e : (Set<Map.Entry>) m.entrySet()) {
+                                    String key = (String) method.invoke(null, e.getKey());
+                                    map.put(path + "." + key, e.getValue());
+                                    keys.add(key);
+                                }
                             }
                             map.put(path + "Keys", keys);
                         } catch (Exception ex) {
