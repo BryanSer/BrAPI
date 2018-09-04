@@ -66,7 +66,7 @@ public interface ProxyUtil {
     }
 
     @FunctionalInterface
-    public interface ProxyedScript<T> {
+    public interface ProxiedScript<T> {
 
         T proxy(Object... args);
     }
@@ -83,19 +83,19 @@ public interface ProxyUtil {
         String vaule();
     }
 
-    public static Map<String, List<Class<? extends ProxyUtil>>> Proxyed = new HashMap<>();
+    public static Map<String, List<Class<? extends ProxyUtil>>> Proxied = new HashMap<>();
 
     public static void addProxy(Plugin plugin, Class<? extends ProxyUtil> cls) {
-        List<Class<? extends ProxyUtil>> list = Proxyed.get(plugin.getName());
+        List<Class<? extends ProxyUtil>> list = Proxied.get(plugin.getName());
         if (list == null) {
             list = new ArrayList<>();
-            Proxyed.put(plugin.getName(), list);
+            Proxied.put(plugin.getName(), list);
         }
         list.add(cls);
     }
 
     public static void proxy(Plugin plugin) {
-        List<Class<? extends ProxyUtil>> list = Proxyed.get(plugin.getName());
+        List<Class<? extends ProxyUtil>> list = Proxied.get(plugin.getName());
         if (list == null) {
             return;
         }
@@ -124,7 +124,7 @@ public interface ProxyUtil {
                 }
                 f.setAccessible(true);
                 if (f.isAnnotationPresent(ProxyScript.class)) {
-                    if (!ProxyedScript.class.isAssignableFrom(f.getType())) {
+                    if (!ProxiedScript.class.isAssignableFrom(f.getType())) {
                         continue;
                     }
                     ProxyScript ps = f.getAnnotation(ProxyScript.class);
@@ -136,7 +136,7 @@ public interface ProxyUtil {
                             Logger.getLogger(ProxyUtil.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                    ProxyedScript pds = new ProxyedScript() {
+                    ProxiedScript pds = new ProxiedScript() {
                         private String Function = ps.function();
                         private NashornScriptEngine Engine = ScriptLoader.evalAsUTF8(plugin, jsFile);
 
