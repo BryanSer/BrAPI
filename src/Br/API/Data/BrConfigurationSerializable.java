@@ -111,7 +111,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
         public String toStringMethod() default "toString";
     }
 
-    static <T extends BrConfigurationSerializable> Collection<Field> getAllDeclaredFields(Class<T> cls) {
+    public static <T extends BrConfigurationSerializable> Collection<Field> getAllDeclaredFields(Class<T> cls) {
         Class<?> t = cls;
         List<Field> f = new ArrayList<>();
         while (t != Object.class) {
