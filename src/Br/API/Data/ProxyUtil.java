@@ -50,7 +50,7 @@ public interface ProxyUtil {
          *
          * @return
          */
-        String vaule() default "";
+        String value() default "";
     }
 
     @Target(ElementType.FIELD)
@@ -80,7 +80,7 @@ public interface ProxyUtil {
          *
          * @return
          */
-        String vaule();
+        String value();
     }
 
     public static Map<String, List<Class<? extends ProxyUtil>>> Proxied = new HashMap<>();
@@ -108,14 +108,14 @@ public interface ProxyUtil {
                 continue;
             }
             ProxyInfo pi = cls.getAnnotation(ProxyInfo.class);
-            File file = Util.getFile(folder, pi.vaule());
+            File file = Util.getFile(folder, pi.value());
             YamlConfiguration config;
             if (!file.exists()) {
                 config = new YamlConfiguration();
             } else {
                 config = YamlConfiguration.loadConfiguration(file);
             }
-            String[] patharr = pi.vaule().split("\\.");
+            String[] patharr = pi.value().split("\\.");
             String root = patharr[patharr.length - 1];
             boolean edit = false;
             for (Field f : Util.getAllDeclaredFields(cls)) {
@@ -161,7 +161,7 @@ public interface ProxyUtil {
                     continue;
                 }
                 Proxy p = f.getAnnotation(Proxy.class);
-                String path = root + '.' + (p.vaule().isEmpty() ? f.getName() : p.vaule());
+                String path = root + '.' + (p.value().isEmpty() ? f.getName() : p.value());
                 try {
                     if (config.contains(path)) {
                         f.set(config.get(path), null);
