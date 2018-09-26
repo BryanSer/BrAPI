@@ -8,6 +8,7 @@ package Br.API.GUI;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.bukkit.entity.Player;
@@ -18,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
  * @author Bryan_lzh
  */
 
-@Deprecated
 public abstract class Item implements Cloneable {
 
     public static class ItemBuilder extends Item {
@@ -407,4 +407,47 @@ public abstract class Item implements Cloneable {
         return new ItemBuilder();
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + Objects.hashCode(this.display);
+        hash = 73 * hash + (this.keepopen ? 1 : 0);
+        hash = 73 * hash + (this.update ? 1 : 0);
+        hash = 73 * hash + this.Colddown;
+        hash = 73 * hash + Objects.hashCode(this.LastUseTime);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Item other = (Item) obj;
+        if (this.keepopen != other.keepopen) {
+            return false;
+        }
+        if (this.update != other.update) {
+            return false;
+        }
+        if (this.Colddown != other.Colddown) {
+            return false;
+        }
+        if (!Objects.equals(this.display, other.display)) {
+            return false;
+        }
+        if (!Objects.equals(this.LastUseTime, other.LastUseTime)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+    
 }

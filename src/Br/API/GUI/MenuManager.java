@@ -6,6 +6,8 @@
  */
 package Br.API.GUI;
 
+import Br.API.GUI.Ex.BaseUI;
+import Br.API.GUI.Ex.SnapshotFactory;
 import Br.API.PluginData;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -25,8 +28,6 @@ import org.bukkit.scheduler.BukkitRunnable;
  *
  * @author Bryan_lzh
  */
-
-@Deprecated
 public class MenuManager {
 
     public static Map<String, Menu> Menus = new HashMap<>();
@@ -77,18 +78,78 @@ public class MenuManager {
         }
     }
 
+    /**
+     * 注册菜单
+     *
+     * @param m 菜单
+     * @param old 是否采用旧监听方式
+     */
+    public static void RegisterMenu(Menu m, boolean old) {
+        if (old) {
+            if (!registered) {
+                registerListener();
+                registered = true;
+            }
+            Menus.put(m.getName(), m);
+            if (m.getOpenItem_Mate() != null) {
+                CheckItem ci = new CheckItem();
+                ci.m = m.OpenItem_Mate;
+                ci.s = m.OpenItem_Dam;
+                MenuItems.put(ci, m);
+            }
+        } else {
+            BaseUI ui = new BaseUI() {
+                private SnapshotFactory factory = SnapshotFactory.getDefaultSnapshotFactory(this);
+                private Map<Item, Br.API.GUI.Ex.Item> otn = new HashMap<>();
+
+                {
+                    super.Rows = m.getSize();
+                    super.Name = m.getName();
+                    super.DisplayName = m.getDisplayName();
+                    super.AllowShift = false;
+                }
+
+                @Override
+                public Br.API.GUI.Ex.Item getItem(Player p, int slot) {
+                    List<Item> contains = m.getContains(p);
+                    if (slot >= contains.size()) {
+                        return null;
+                    }
+                    Item get = contains.get(slot);
+                    Br.API.GUI.Ex.Item i = otn.get(get);
+                    if (i != null) {
+                        return i;
+                    }
+                    i = Br.API.GUI.Ex.Item
+                            .getNewInstance(get::getDisplay)
+                            .setKeepOpen(get.isKeepopen())
+                            .setClick(ClickType.LEFT, get::Use)
+                            .setClick(ClickType.RIGHT, get::Use_Right)
+                            .setClick(ClickType.MIDDLE, get::Use_Middle)
+                            .setClick(ClickType.SHIFT_LEFT, get::Use_Shift_Left)
+                            .setClick(ClickType.SHIFT_RIGHT, get::Use_Shift_Right)
+                            .setClick(ClickType.DROP, get::Use_Drop)
+                            .setClick(ClickType.CONTROL_DROP, get::Use_Drop_Ctrl)
+                            .setUpdateIcon(get.isNeedUpdate());
+                    otn.put(get, i);
+                    return i;
+                }
+
+                @Override
+                public SnapshotFactory getSnapshotFactory() {
+                    return factory;
+                }
+            };
+        }
+    }
+
+    /**
+     * 注册菜单 默认采用Ex版完成UI处理
+     *
+     * @param m
+     */
     public static void RegisterMenu(Menu m) {
-        if (!registered) {
-            registerListener();
-            registered = true;
-        }
-        Menus.put(m.getName(), m);
-        if (m.getOpenItem_Mate() != null) {
-            CheckItem ci = new CheckItem();
-            ci.m = m.OpenItem_Mate;
-            ci.s = m.OpenItem_Dam;
-            MenuItems.put(ci, m);
-        }
+        RegisterMenu(m, false);
     }
 
     public static Menu getMenu(Inventory inv) {

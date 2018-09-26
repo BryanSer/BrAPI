@@ -15,7 +15,9 @@ import org.bukkit.entity.Player;
  *
  * @author Bryan_lzh
  * @version 1.0
+ * @deprecated 已托管给旧UI操作
  */
+@Deprecated
 public class UIBuilder extends BaseUI {
 
     protected List<Item> Contains = new ArrayList<>();

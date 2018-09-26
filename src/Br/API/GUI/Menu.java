@@ -23,14 +23,15 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author Bryan_lzh
  */
-
-@Deprecated
 public class Menu implements Cloneable {
 
     protected String Name;
     protected String DisplayName;
+    @Deprecated
     protected Material OpenItem_Mate;
+    @Deprecated
     protected String Permission = "";
+    @Deprecated
     protected short OpenItem_Dam;
     protected List<Item> Contains = new ArrayList<>();
     protected int Size = 0;
@@ -41,8 +42,7 @@ public class Menu implements Cloneable {
         protected MenuBuilder() {
         }
 
-        @Deprecated
-        public MenuBuilder setItem(Item i, int index) {
+        public MenuBuilder setItem(int index, Item i) {
             if (index >= super.Contains.size()) {
                 while (true) {
                     this.addItem(null);
@@ -55,7 +55,8 @@ public class Menu implements Cloneable {
             return this;
         }
 
-        public MenuBuilder setItem(int index, Item i) {
+        @Deprecated
+        public MenuBuilder setItem(Item i, int index) {
             if (index >= super.Contains.size()) {
                 while (true) {
                     this.addItem(null);
@@ -100,16 +101,37 @@ public class Menu implements Cloneable {
             return this;
         }
 
+        /**
+         *
+         * @param s
+         * @return
+         * @deprecated 除非采用old模式 否则不生效
+         */
+        @Deprecated
         public MenuBuilder setPermission(String s) {
             super.Permission = s;
             return this;
         }
 
+        /**
+         *
+         * @param s
+         * @return
+         * @deprecated 除非采用old模式 否则不生效
+         */
+        @Deprecated
         public MenuBuilder setOpenItem_Damage(short s) {
             super.OpenItem_Dam = s;
             return this;
         }
 
+        /**
+         *
+         * @param m
+         * @return
+         * @deprecated 除非采用old模式 否则不生效
+         */
+        @Deprecated
         public MenuBuilder setOpenItem_Mate(Material m) {
             super.OpenItem_Mate = m;
             return this;
