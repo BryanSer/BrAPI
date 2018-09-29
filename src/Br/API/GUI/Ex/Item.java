@@ -75,6 +75,12 @@ public class Item{
      public static Item getNewInstance(ItemStack display) {
         return new Item().setDisplay((p) -> display);
     }
+     
+     public static Item getNewInstanceOfSlot(){
+         return Item.getNewInstance((ItemStack) null)
+                .setButtonCellback(p -> true)
+                .setUpdateIcon(false);
+     }
 
     public Consumer<Player> getClickLambda(ClickType ct) {
         Consumer<Player> c = ClickLambdas.get(ct);

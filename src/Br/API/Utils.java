@@ -302,6 +302,9 @@ public abstract class Utils {
     }
 
     public static void safeDropItem(Player p, ItemStack is) {
+        if (is == null) {
+            return;
+        }
         if (is.getAmount() > 64) {
             do {
                 ItemStack s = is.clone();
@@ -574,7 +577,6 @@ public abstract class Utils {
         return ItemList;
     }
 
-
     /**
      * 获取方便表达的物品名称
      *
@@ -811,8 +813,8 @@ public abstract class Utils {
         public static boolean isRelease() {
             return getVersionName().contains("Release");
         }
-        
-        public static boolean isLite(){
+
+        public static boolean isLite() {
             return getVersionName().contains("Lite");
         }
 
@@ -835,7 +837,7 @@ public abstract class Utils {
                 if (ver[i] > v[i]) {
                     return true;
                 }
-                if(ver[i] < v[i]){
+                if (ver[i] < v[i]) {
                     return false;
                 }
             }

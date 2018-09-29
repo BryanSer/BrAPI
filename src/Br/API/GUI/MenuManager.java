@@ -8,6 +8,7 @@ package Br.API.GUI;
 
 import Br.API.GUI.Ex.BaseUI;
 import Br.API.GUI.Ex.SnapshotFactory;
+import Br.API.GUI.Ex.UIManager;
 import Br.API.PluginData;
 import java.util.HashMap;
 import java.util.List;
@@ -63,18 +64,21 @@ public class MenuManager {
         if (m != null) {
             Inventory inv = m.getInv(p);
             p.openInventory(inv);
+        } else {
+            UIManager.OpenUI(p, menu);
         }
     }
 
     public static void OpenMenuDelay(Player p, String menu) {
         Menu m = Menus.get(menu);
         if (m != null) {
-
             Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
                 p.closeInventory();
                 Inventory inv = m.getInv(p);
                 p.openInventory(inv);
             });
+        } else {
+            UIManager.OpenUI(p, menu);
         }
     }
 
