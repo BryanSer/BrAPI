@@ -591,6 +591,8 @@ public abstract class Utils {
                 : "物品ID为 " + re.getTypeId() + ":" + re.getDurability() + " 的物品");
     }
 
+    private static Method getOnlinePlayers_onlinePlayerMethod;
+
     /**
      * 合理的获取在线玩家~
      *
@@ -598,11 +600,13 @@ public abstract class Utils {
      */
     public static Collection<Player> getOnlinePlayers() {
         try {
-            Method onlinePlayerMethod = Server.class.getMethod("getOnlinePlayers");
-            if (onlinePlayerMethod.getReturnType().equals(Collection.class)) {
-                return (Collection<Player>) onlinePlayerMethod.invoke(Bukkit.getServer());
+            if (getOnlinePlayers_onlinePlayerMethod == null) {
+                getOnlinePlayers_onlinePlayerMethod = Server.class.getMethod("getOnlinePlayers");
+            }
+            if (getOnlinePlayers_onlinePlayerMethod.getReturnType().equals(Collection.class)) {
+                return (Collection<Player>) getOnlinePlayers_onlinePlayerMethod.invoke(Bukkit.getServer());
             } else {
-                return Arrays.asList((Player[]) onlinePlayerMethod.invoke(Bukkit.getServer()));
+                return Arrays.asList((Player[]) getOnlinePlayers_onlinePlayerMethod.invoke(Bukkit.getServer()));
             }
         } catch (Exception ex) {
         }

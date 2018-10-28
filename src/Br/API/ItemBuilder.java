@@ -36,6 +36,13 @@ public class ItemBuilder {
         this.Item.setType(m);
         return this;
     }
+    
+    public ItemBuilder unbreakable(boolean t){
+        ItemMeta im = this.Item.getItemMeta();
+        im.spigot().setUnbreakable(t);
+        this.Item.setItemMeta(im);
+        return this;
+    }
 
     public ItemBuilder name(String name) {
         ItemMeta im = this.Item.getItemMeta();
