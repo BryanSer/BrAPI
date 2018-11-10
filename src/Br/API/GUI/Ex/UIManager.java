@@ -177,6 +177,10 @@ public class UIManager {
                     slot = evt.getSlot();
                 }
                 evt.setCancelled(true);
+                if (snap == null) {
+                    Bukkit.getConsoleSender().sendMessage("BrAPI-ExUI系统处理发生异常, [" + ui.getName() + "] 的Snapshot@" + p.getName() + " 无法获得");
+                    return;
+                }
                 Item item = snap.getItem(slot);
                 if (item != null) {
                     ClickLimit.add(evt.getWhoClicked().getName());

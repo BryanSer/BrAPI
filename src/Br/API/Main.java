@@ -1,5 +1,6 @@
 package Br.API;
 
+import Br.API.Commands.CommandChannel;
 import Br.API.Data.DataManager;
 import Br.API.Data.DatabaseSerializable;
 import Br.API.Item.ItemManager;
@@ -44,6 +45,8 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
         Utils.econ = this.setupEconomy();
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, "BrAPICommandChannelIn", new CommandChannel());
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BrAPICommandChannelOut");;
     }
 
     private Economy setupEconomy() {
@@ -95,6 +98,7 @@ public class Main extends JavaPlugin {
             }
         });
         DatabaseSerializable.PreparedStatements.Close();
+        Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -124,6 +128,5 @@ public class Main extends JavaPlugin {
         }
         return false;
     }
-    
-    
+
 }
