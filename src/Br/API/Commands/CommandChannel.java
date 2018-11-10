@@ -37,7 +37,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
  */
 public class CommandChannel implements PluginMessageListener {
 
-    private static final String OUT = "BrAPICommandChannelOut";
+    private static final String OUT = "BrAPICmdCnlOut";
 
     public enum PermissionLevel {
         Player {
@@ -46,17 +46,30 @@ public class CommandChannel implements PluginMessageListener {
                 return cs instanceof Player;
             }
         },
+        OP {
+            @Override
+            public boolean canCast(CommandSender cs) {
+                return cs.isOp() && cs instanceof Player;
+            }
+        },
         Admin {//包括后台
             @Override
             public boolean canCast(CommandSender cs) {
-                return cs instanceof Player && cs.isOp();
+                return cs.isOp();
             }
         },
-        Op {
+        Console {
             @Override
             public boolean canCast(CommandSender cs) {
                 return cs instanceof ConsoleCommandSender;
             }
+        },
+        All {
+            @Override
+            public boolean canCast(CommandSender cs) {
+                return true;
+            }
+
         };
 
         public abstract boolean canCast(CommandSender cs);
@@ -125,7 +138,7 @@ public class CommandChannel implements PluginMessageListener {
             }
             String msg = sender.getName() + (sender.isOp() ? "* " : " ") + this.Fallback + ":" + this.getName();
             T:
-            if (!this.SubCommands.isEmpty()) {
+            if (!this.SubCommands.isEmpty() && args.length != 0) {
                 for (RegisterSubCommand rs : this.SubCommands) {
                     if (args[0].equalsIgnoreCase(rs.getSubCommand())) {
                         if (args.length < rs.getMinArg()) {
@@ -180,8 +193,7 @@ public class CommandChannel implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (channel.equals("BrAPICommandChannelIn")) {
-
+        if (channel.equals("BrAPICmdCnlIn")) {
             String msg = new String(message);
             JsonObject json = JSON_PARSER.parse(msg).getAsJsonObject();
             RegisterCommand rm = RegisterCommand.createRegisterCommand(json);
@@ -208,7 +220,5 @@ public class CommandChannel implements PluginMessageListener {
             Logger.getLogger(CommandChannel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 
 }
-   
