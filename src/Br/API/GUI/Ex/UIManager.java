@@ -161,7 +161,7 @@ public class UIManager {
                 int slot = evt.getSlot();
                 try {
                     if (evt.getClickedInventory() != inv) {
-                        if (evt.getClick() == ClickType.SHIFT_LEFT && !ui.isAllowShift()) {
+                        if ((evt.getClick() == ClickType.SHIFT_LEFT || evt.getClick() == ClickType.SHIFT_RIGHT) && !ui.isAllowShift()) {
                             evt.setCancelled(true);
                         }
                         return;
@@ -169,7 +169,7 @@ public class UIManager {
                 } catch (Throwable t) {//防止craftbukkit出错(一般没人用了吧)
                     slot = evt.getRawSlot();//防止1.7.10出错
                     if (slot < 0 || slot >= inv.getSize() || slot >= ui.getSize()) {
-                        if (evt.getClick() == ClickType.SHIFT_LEFT && !ui.isAllowShift()) {
+                        if ((evt.getClick() == ClickType.SHIFT_LEFT || evt.getClick() == ClickType.SHIFT_RIGHT) && !ui.isAllowShift()) {
                             evt.setCancelled(true);
                         }
                         return;

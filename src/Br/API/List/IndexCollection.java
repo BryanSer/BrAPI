@@ -103,7 +103,7 @@ public class IndexCollection<T extends Indexable> implements Collection {
         if (!(o instanceof Indexable)) {
             return false;
         }
-        return this.Data.containsValue(o);
+        return this.Data.containsValue((T) o);
     }
 
     @Override
