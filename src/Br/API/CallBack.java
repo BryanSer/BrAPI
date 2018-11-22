@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -22,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -69,6 +71,20 @@ public class CallBack implements Listener {
         p.spigot().sendMessage(comps);
         return true;
     }
+    
+    
+    private static Map<String,InputInfo> InputInfos = new ConcurrentHashMap<>();
+
+    public static boolean sendInputRequest(Player p, BiConsumer<Player, String> callback, int overtime) {
+        RegisterListener();
+        if (InputInfos.containsKey(p.getName())) {
+            return false;
+        }
+        InputInfo ii = new InputInfo(p.getName(), callback, p);
+        InputInfos.put(p.getName(), ii);
+        ii.runTaskLater(PluginData.plugin, overtime * 20);
+        return true;
+    }
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent evt) {
@@ -85,6 +101,21 @@ public class CallBack implements Listener {
             }
             bi.getCallback().accept(evt.getPlayer(), index);
             bi.cancel();
+        }
+    }
+    
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent evt){
+        InputInfo ii = InputInfos.get(evt.getPlayer().getName());
+        if(ii != null){
+            if(ii.isCancelled()){
+                InputInfos.remove(evt.getPlayer().getName());
+                return;
+            }else {
+                ii.getCallback().accept(evt.getPlayer(), evt.getMessage());
+                evt.setCancelled(true);
+                ii.cancel();
+            }
         }
     }
 
@@ -181,6 +212,51 @@ public class CallBack implements Listener {
             return Callback;
         }
 
+    }
+    
+    public static class InputInfo extends BukkitRunnable{
+        private String Name;
+        private BiConsumer<Player, String> Callback;
+        private boolean overtime = true;
+        private boolean canceled = false;
+        private Player Player;
+
+        public InputInfo(String Name, BiConsumer<Player, String> Callback, Player Player) {
+            this.Name = Name;
+            this.Callback = Callback;
+            this.Player = Player;
+        }
+        
+        
+        @Override
+        public void run() {
+            if (canceled) {
+                return;
+            }
+            if (overtime) {
+                Callback.accept(Player, null);
+            }
+            InputInfos.remove(this.Name);
+        }
+
+        @Override
+        public synchronized void cancel() throws IllegalStateException {
+            overtime = false;
+            if (!canceled) {
+                this.run();
+                this.canceled = true;
+            }
+            super.cancel();
+        }
+
+        public BiConsumer<Player, String> getCallback() {
+            return Callback;
+        }
+
+        public Player getPlayer() {
+            return Player;
+        }
+        
     }
 
     private CallBack() {

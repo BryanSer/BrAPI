@@ -176,7 +176,28 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                         Object re = m.invoke(null, args.get(path));
                         f.set(t, re);
                     } else {
-                        f.set(t, args.get(path));
+                        Object get = args.get(path);
+                        if (get instanceof Number) {
+                            Number num = (Number) get;
+                            Class<?> type = f.getType();
+                            if (type == Integer.class || type == int.class) {
+                                f.setInt(t, num.intValue());
+                            } else if (type == Double.class || type == double.class) {
+                                f.setDouble(t, num.doubleValue());
+                            } else if (type == Float.class || type == float.class) {
+                                f.setFloat(t, num.floatValue());
+                            } else if (type == Long.class || type == long.class) {
+                                f.setLong(t, num.longValue());
+                            } else if (type == Short.class || type == short.class) {
+                                f.setShort(t, num.shortValue());
+                            } else if (type == Byte.class || type == byte.class) {
+                                f.setByte(t, num.byteValue());
+                            }else {
+                                f.set(t, num);
+                            }
+                        } else {
+                            f.set(t, get);
+                        }
                     }
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(BrConfigurationSerializable.class.getName()).log(Level.SEVERE, null, ex);
