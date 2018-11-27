@@ -108,7 +108,7 @@ public class CallBack implements Listener {
     public void onChat(AsyncPlayerChatEvent evt){
         InputInfo ii = InputInfos.get(evt.getPlayer().getName());
         if(ii != null){
-            if(ii.isCancelled()){
+            if(ii.isCancel()){
                 InputInfos.remove(evt.getPlayer().getName());
                 return;
             }else {
@@ -218,7 +218,7 @@ public class CallBack implements Listener {
         private String Name;
         private BiConsumer<Player, String> Callback;
         private boolean overtime = true;
-        private boolean canceled = false;
+        private boolean cancel = false;
         private Player Player;
 
         public InputInfo(String Name, BiConsumer<Player, String> Callback, Player Player) {
@@ -230,7 +230,7 @@ public class CallBack implements Listener {
         
         @Override
         public void run() {
-            if (canceled) {
+            if (cancel) {
                 return;
             }
             if (overtime) {
@@ -242,9 +242,9 @@ public class CallBack implements Listener {
         @Override
         public synchronized void cancel() throws IllegalStateException {
             overtime = false;
-            if (!canceled) {
+            if (!cancel) {
                 this.run();
-                this.canceled = true;
+                this.cancel = true;
             }
             super.cancel();
         }
@@ -255,6 +255,10 @@ public class CallBack implements Listener {
 
         public Player getPlayer() {
             return Player;
+        }
+
+        public boolean isCancel() {
+            return cancel;
         }
         
     }
