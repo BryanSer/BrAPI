@@ -144,6 +144,7 @@ public class MenuManager {
                     return factory;
                 }
             };
+            UIManager.RegisterUI(ui);
         }
     }
 
