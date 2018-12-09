@@ -16,7 +16,7 @@ public class ActionBar {
     
     public static void sendActionBar(Player p,String msg){
         ProtocolManager pm = ProtocolLibrary.getProtocolManager();
-        PacketContainer pc = new PacketContainer(PacketType.Play.Client.CHAT);
+        PacketContainer pc = new PacketContainer(PacketType.Play.Server.CHAT);
         pc.getChatComponents().write(0, WrappedChatComponent.fromText(msg));
         pc.getChatTypes().write(0, EnumWrappers.ChatType.GAME_INFO);
         try {
