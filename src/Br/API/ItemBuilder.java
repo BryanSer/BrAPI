@@ -29,15 +29,15 @@ public class ItemBuilder {
     };
 
     public ItemBuilder type(Material m) {
-        if(this.Item == null){
+        if (this.Item == null) {
             this.Item = new ItemStack(m);
             return this;
         }
         this.Item.setType(m);
         return this;
     }
-    
-    public ItemBuilder unbreakable(boolean t){
+
+    public ItemBuilder unbreakable(boolean t) {
         ItemMeta im = this.Item.getItemMeta();
         im.spigot().setUnbreakable(t);
         this.Item.setItemMeta(im);
@@ -61,10 +61,24 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder durability(int s) {
+        this.Item.setDurability((short) s);
+        return this;
+    }
+
     public ItemBuilder lore(String... s) {
         ItemMeta im = this.Item.getItemMeta();
         List<String> lore = im.hasLore() ? im.getLore() : new ArrayList<>();
         lore.addAll(Arrays.asList(s));
+        im.setLore(lore);
+        this.Item.setItemMeta(im);
+        return this;
+    }
+
+    public ItemBuilder lore(List<String> s) {
+        ItemMeta im = this.Item.getItemMeta();
+        List<String> lore = im.hasLore() ? im.getLore() : new ArrayList<>();
+        lore.addAll(s);
         im.setLore(lore);
         this.Item.setItemMeta(im);
         return this;
