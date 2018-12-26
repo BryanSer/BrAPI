@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
  * @author Bryan_lzh
  * @version 1.0
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MainCommand {
     String command();

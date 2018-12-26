@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -217,36 +218,50 @@ public abstract class Utils {
      * @param fold 目标文件夹 若为null则默认插件配置文件夹
      * @throws IOException
      */
-    public static void OutputFile(Plugin p, String res, File fold) throws IOException {
-        InputStream is = p.getResource(res);
-        if (is == null) {
-            return;
-        }
+    public static void saveResource(Plugin p, String res, File fold) throws IOException {
+        try (InputStream is = p.getResource(res)) {
+            if (is == null) {
+                return;
+            }
 
-        if (fold == null) {
-            fold = p.getDataFolder();
+            if (fold == null) {
+                fold = p.getDataFolder();
+                if (!fold.exists()) {
+                    fold.mkdirs();
+                }
+            }
             if (!fold.exists()) {
                 fold.mkdirs();
             }
-        }
-        if (!fold.exists()) {
-            fold.mkdirs();
-        }
-        File f = new File(fold, res);
+            File f = new File(fold, res);
 
-        if (!f.exists()) {
-            f.createNewFile();
-        }
-        FileOutputStream fos = new FileOutputStream(f);
-        while (true) {
-            int i = is.read();
-            if (i == -1) {
-                break;
+            if (!f.exists()) {
+                f.createNewFile();
             }
-            fos.write(i);
+            try (FileOutputStream fos = new FileOutputStream(f)) {
+                while (true) {
+                    int i = is.read();
+                    if (i == -1) {
+                        break;
+                    }
+                    fos.write(i);
+                }
+            }
         }
-        fos.close();
-        is.close();
+    }
+
+    /**
+     * 数据插件jar里的文件
+     *
+     * @param p 插件
+     * @param res 资源文件名 如config.yml
+     * @param fold 目标文件夹 若为null则默认插件配置文件夹
+     * @throws IOException
+     * @deprecated 不标准的命名
+     */
+    @Deprecated
+    public static void OutputFile(Plugin p, String res, File fold) throws IOException {
+        saveResource(p, res, fold);
     }
 
     /**
@@ -847,6 +862,75 @@ public abstract class Utils {
             }
             return true;
         }
+    }
+
+    public static class Coordinate {
+
+        /**
+         * 创建二维->三维投影器
+         *
+         * @param loc 投影的原点
+         * @param n 投影屏幕的法向量
+         * @return
+         */
+        public static BiFunction<Double, Double, Location> create2DProjector(Location loc, Vector n) {
+            Vector t = n.clone();
+            t.setY(t.getY() + 1);
+            Vector n1 = n.clone().crossProduct(t).normalize();
+            Vector n2 = n1.clone().crossProduct(n).normalize();
+            return (x, y) -> {
+                Vector r = n1.clone().multiply(x).add(n2.clone().multiply(y));
+                return loc.clone().add(r);
+            };
+        }
+
+        public static Vector getLeft(Vector look) {
+            look = look.clone();
+            Vector left = look.crossProduct(new Vector(0, 1, 0));
+            return left.normalize();
+        }
+
+        public static Vector getRight(Vector look) {
+            return getLeft(look).multiply(-1);
+        }
+
+        /**
+         * 将向量转换为Location里使用的yaw与pitch
+         * @param v 向量
+         * @return [0]为yaw [1]为pitch
+         */
+        public static float[] toYawAndPitch(Vector v) {
+            double pitch = Math.acos(-v.getY());
+            return new float[]{(float) Math.toDegrees(Math.asin(-v.getX() / Math.acos(pitch))), (float) Math.toDegrees(pitch)};
+        }
+
+        public static LivingEntity getLookAtEntity(LivingEntity e, double maxlength, int ρ) {
+            Egg d = e.getWorld().spawn(e.getLocation().add(0, -5, 0), Egg.class);
+            d.setSilent(true);
+            Location loc = e.getEyeLocation();
+            d.setGravity(false);
+            Vector v = e.getLocation().getDirection();
+            for (double l = maxlength / ρ; l < maxlength; l += maxlength / ρ) {
+                Vector vd = v.clone().multiply(l);
+                d.teleport(loc.clone().add(vd));
+                if (d.getLocation().getBlock().getType() != Material.AIR) {
+                    d.remove();
+                    return null;
+                }
+                for (Entity eeee : d.getNearbyEntities(0.25, 0.25, 0.25)) {
+                    if (eeee == e) {
+                        continue;
+                    }
+                    if (eeee instanceof LivingEntity) {
+                        d.remove();
+                        return (LivingEntity) eeee;
+                    }
+                }
+            }
+            d.remove();
+            return null;
+        }
+
     }
 
 }

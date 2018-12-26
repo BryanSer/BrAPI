@@ -18,6 +18,7 @@ import org.bukkit.inventory.Inventory;
  *
  * @author Bryan_lzh
  * @version 1.0
+ * @param <T>
  */
 public abstract class SnapshotFactory<T extends BaseUI> {
 

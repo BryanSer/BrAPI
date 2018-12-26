@@ -27,36 +27,14 @@ public class Coordinate {
      * @param v 向量
      * @return [0]为yaw [1]为pitch
      */
+    @Deprecated
     public static float[] toYawAndPitch(Vector v) {
-        double pitch = Math.acos(-v.getY());
-        return new float[]{(float) Math.toDegrees(Math.asin(-v.getX() / Math.acos(pitch))), (float) Math.toDegrees(pitch)};
+        return Utils.Coordinate.toYawAndPitch(v);
     }
 
+    @Deprecated
     public static LivingEntity getLookAtEntity(LivingEntity e, double maxlength, int ρ) {
-        Egg d = e.getWorld().spawn(e.getLocation().add(0, -5, 0), Egg.class);
-        d.setSilent(true);
-        Location loc = e.getEyeLocation();
-        d.setGravity(false);
-        Vector v = e.getLocation().getDirection();
-        for (double l = maxlength / ρ; l < maxlength; l += maxlength / ρ) {
-            Vector vd = v.clone().multiply(l);
-            d.teleport(loc.clone().add(vd));
-            if (d.getLocation().getBlock().getType() != Material.AIR) {
-                d.remove();
-                return null;
-            }
-            for (Entity eeee : d.getNearbyEntities(0.25, 0.25, 0.25)) {
-                if (eeee == e) {
-                    continue;
-                }
-                if (eeee instanceof LivingEntity) {
-                    d.remove();
-                    return (LivingEntity) eeee;
-                }
-            }
-        }
-        d.remove();
-        return null;
+        return Utils.Coordinate.getLookAtEntity(e, maxlength, ρ);
     }
 
     private Coordinate() {

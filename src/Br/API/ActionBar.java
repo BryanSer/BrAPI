@@ -11,10 +11,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.entity.Player;
 
-
 public class ActionBar {
-    
-    public static void sendActionBar(Player p,String msg){
+
+    public static void sendActionBar(Player p, String msg) {
+        if (msg == null) {
+            return;
+        }
         ProtocolManager pm = ProtocolLibrary.getProtocolManager();
         PacketContainer pc = new PacketContainer(PacketType.Play.Server.CHAT);
         pc.getChatComponents().write(0, WrappedChatComponent.fromText(msg));
@@ -25,5 +27,5 @@ public class ActionBar {
             Logger.getLogger(ActionBar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }
