@@ -124,17 +124,19 @@ public class MenuManager {
                     if (i != null) {
                         return i;
                     }
-                    i = Br.API.GUI.Ex.Item
-                            .getNewInstance(get::getDisplay)
-                            .setKeepOpen(get.isKeepopen())
-                            .setClick(ClickType.LEFT, get::Use)
-                            .setClick(ClickType.RIGHT, get::Use_Right)
-                            .setClick(ClickType.MIDDLE, get::Use_Middle)
-                            .setClick(ClickType.SHIFT_LEFT, get::Use_Shift_Left)
-                            .setClick(ClickType.SHIFT_RIGHT, get::Use_Shift_Right)
-                            .setClick(ClickType.DROP, get::Use_Drop)
-                            .setClick(ClickType.CONTROL_DROP, get::Use_Drop_Ctrl)
-                            .setUpdateIcon(get.isNeedUpdate());
+                    if (get != null) {
+                        i = Br.API.GUI.Ex.Item
+                                .getNewInstance(get::getDisplay)
+                                .setKeepOpen(get.isKeepopen())
+                                .setClick(ClickType.LEFT, get::Use)
+                                .setClick(ClickType.RIGHT, get::Use_Right)
+                                .setClick(ClickType.MIDDLE, get::Use_Middle)
+                                .setClick(ClickType.SHIFT_LEFT, get::Use_Shift_Left)
+                                .setClick(ClickType.SHIFT_RIGHT, get::Use_Shift_Right)
+                                .setClick(ClickType.DROP, get::Use_Drop)
+                                .setClick(ClickType.CONTROL_DROP, get::Use_Drop_Ctrl)
+                                .setUpdateIcon(get.isNeedUpdate());
+                    }
                     otn.put(get, i);
                     return i;
                 }
