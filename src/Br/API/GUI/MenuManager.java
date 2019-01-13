@@ -156,7 +156,7 @@ public class MenuManager {
      * @param m
      */
     public static void RegisterMenu(Menu m) {
-        RegisterMenu(m, false);
+        RegisterMenu(m, true);
     }
 
     public static Menu getMenu(Inventory inv) {
