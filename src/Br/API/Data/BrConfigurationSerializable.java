@@ -25,6 +25,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 /**
  * 用于快捷实现ConfigurationSerializable
@@ -192,7 +193,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                                 f.setShort(t, num.shortValue());
                             } else if (type == Byte.class || type == byte.class) {
                                 f.setByte(t, num.byteValue());
-                            }else {
+                            } else {
                                 f.set(t, num);
                             }
                         } else {
@@ -265,6 +266,31 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
             }
         }
         return map;
+    }
+
+    public static Map<String, Object> serialize2Map(ConfigurationSerializable cs) {
+        Map<String, Object> map = new LinkedHashMap<>(cs.serialize());
+        String name = ConfigurationSerialization.getAlias(cs.getClass());
+        map.put(ConfigurationSerialization.SERIALIZED_TYPE_KEY, name);
+        for (Map.Entry<String, Object> e : map.entrySet()) {
+            if (e.getValue() instanceof ConfigurationSerializable) {
+                map.put(e.getKey(), serialize2Map((ConfigurationSerializable) e.getValue()));
+            }
+        }
+        return map;
+    }
+
+    public static <T extends ConfigurationSerializable> T deserializeFromMap(Map<String, Object> args) {
+        args = new LinkedHashMap<>(args);
+        for (Map.Entry<String, Object> e : args.entrySet()) {
+            if (e.getValue() instanceof Map) {
+                Map<String, Object> map = (Map) e.getValue();
+                if (map.containsKey(ConfigurationSerialization.SERIALIZED_TYPE_KEY)) {
+                    args.put(e.getKey(), deserializeFromMap((Map<String, Object>) e.getValue()));
+                }
+            }
+        }
+        return (T) ConfigurationSerialization.deserializeObject(args);
     }
 
 }
