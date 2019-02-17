@@ -3,6 +3,7 @@ package Br.API;
 import Br.API.Commands.CommandChannel;
 import Br.API.Data.DataManager;
 import Br.API.Data.DatabaseSerializable;
+import Br.API.Data.Zone;
 import Br.API.Item.ItemManager;
 import Br.API.LangUtils.Lang;
 import Br.API.NBT.AttributeModifiers;
@@ -31,6 +32,7 @@ public class Main extends JavaPlugin {
     public static Set<String> Plugins = new HashSet();
 
     public void onEnable() {
+        ConfigurationSerialization.registerClass(Zone.class);
         PluginData.plugin = this;
         File dataFolder = PluginData.plugin.getDataFolder();
         if (!dataFolder.exists()) {
