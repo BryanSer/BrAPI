@@ -52,6 +52,7 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
+    @Deprecated
     public static @interface MapTarget {
 
         public enum KeyTypes {
@@ -143,6 +144,10 @@ public interface BrConfigurationSerializable extends ConfigurationSerializable {
                 }
                 try {
                     if (f.getType().isAssignableFrom(Map.class)) {
+                        if (!f.isAnnotationPresent(MapTarget.class)) {
+                            f.set(t, args.get(path));
+                            continue;
+                        }
                         List<String> keys = (List<String>) args.get(path + "Keys");
                         Map m = new HashMap<>();
                         if (f.isAnnotationPresent(MapTarget.class)) {

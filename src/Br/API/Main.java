@@ -32,7 +32,6 @@ public class Main extends JavaPlugin {
     public static Set<String> Plugins = new HashSet();
 
     public void onEnable() {
-        ConfigurationSerialization.registerClass(Zone.class);
         PluginData.plugin = this;
         File dataFolder = PluginData.plugin.getDataFolder();
         if (!dataFolder.exists()) {
@@ -44,6 +43,7 @@ public class Main extends JavaPlugin {
         }
         //DataManager.LoadAll(true);
         ConfigurationSerialization.registerClass(AttributeModifiers.class);
+        ConfigurationSerialization.registerClass(Zone.class);
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
         Utils.econ = this.setupEconomy();
