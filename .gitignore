@@ -12,12 +12,7 @@ hs_err_pid*
 *.TXT
 /build/
 /nbproject/
-*.xml
 *.mf
 *.properties
-mysql*
-ProtocolLib*
-snakeyaml*
-spigot*
-Vault*
 /dist/
+.idea/
