@@ -6,7 +6,6 @@
  */
 package Br.API.Data;
 
-import com.mysql.jdbc.Driver;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
