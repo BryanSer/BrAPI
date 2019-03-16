@@ -18,7 +18,7 @@ public abstract class PluginData {
     public static List<ItemInfo> ItemDatas = new ArrayList<>();
     public static Main plugin;
     
-    public static ItemInfo Traversal(ItemStack is) {
+    public static ItemInfo traversal(ItemStack is) {
         if (is == null) {
             return null;
         }

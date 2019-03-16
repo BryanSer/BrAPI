@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+
 import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -47,21 +49,32 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 /**
- *
  * @author Bryan_lzh
  */
 public abstract class Utils {
-
+    @Deprecated
     public static void RemoveItem(Player p, ItemStack... items) {
+        removeItem(p, Arrays.asList(items));
+    }
+
+    public static void removeItem(Player p, ItemStack... items) {
+        removeItem(p, Arrays.asList(items));
+    }
+
+    @Deprecated
+    public static void RemoveItem(Player p, List<ItemStack> items) {
+        removeItem(p, items);
+    }
+
+    public static void removeItem(Player p, List<ItemStack> items) {
         Map<Item, Integer> map = new HashMap<>();
-        for (ItemStack is : items) {
-            Item i = new Item(is);
-            if (map.containsKey(i)) {
-                map.put(i, map.get(i) + is.getAmount());
-            } else {
-                map.put(i, is.getAmount());
-            }
-        }
+        items.forEach((is) -> {
+            checkItem(map, is);
+        });
+        checkItem(p, map);
+    }
+
+    private static void checkItem(Player p, Map<Item, Integer> map) {
         A:
         for (Map.Entry<Item, Integer> e : map.entrySet()) {
             Item cl = e.getKey();
@@ -93,56 +106,19 @@ public abstract class Utils {
         }
     }
 
-    public static void RemoveItem(Player p, List<ItemStack> items) {
-        Map<Item, Integer> map = new HashMap<>();
-        items.forEach((is) -> {
-            Item i = new Item(is);
-            if (map.containsKey(i)) {
-                map.put(i, map.get(i) + is.getAmount());
-            } else {
-                map.put(i, is.getAmount());
-            }
-        });
-        A:
-        for (Map.Entry<Item, Integer> e : map.entrySet()) {
-            Item cl = e.getKey();
-            int amount = e.getValue();
-            for (int i = 0; i < p.getInventory().getSize(); i++) {
-                ItemStack item = p.getInventory().getItem(i);
-                if (amount <= 0) {
-                    continue A;
-                }
-                if (item == null) {
-                    continue;
-                }
-                if (cl.isSame(item)) {
-                    if (amount - item.getAmount() < 0) {
-                        item.setAmount(item.getAmount() - amount);
-                        p.getInventory().setItem(i, item);
-                        continue A;
-                    }
-                    if (amount == item.getAmount()) {
-                        p.getInventory().setItem(i, null);
-                        continue A;
-                    }
-                    if (amount > item.getAmount()) {
-                        amount -= item.getAmount();
-                        p.getInventory().setItem(i, null);
-                    }
-                }
-            }
+    private static void checkItem(Map<Item, Integer> map, ItemStack is) {
+        Item i = new Item(is);
+        if (map.containsKey(i)) {
+            map.put(i, map.get(i) + is.getAmount());
+        } else {
+            map.put(i, is.getAmount());
         }
     }
 
     public static boolean hasEnoughItems(Player p, List<ItemStack> items) {
         Map<Item, Integer> map = new HashMap<>();
         items.forEach((ItemStack is) -> {
-            Item i = new Item(is);
-            if (map.containsKey(i)) {
-                map.put(i, map.get(i) + is.getAmount());
-            } else {
-                map.put(i, is.getAmount());
-            }
+            checkItem(map, is);
         });
         for (ItemStack is : p.getInventory().getContents()) {
             if (is == null || is.getAmount() == 0 || is.getType() == Material.AIR) {
@@ -159,27 +135,7 @@ public abstract class Utils {
     }
 
     public static boolean hasEnoughItems(Player p, ItemStack... items) {
-        Map<Item, Integer> map = new HashMap<>();
-        for (ItemStack is : items) {
-            Item i = new Item(is);
-            if (map.containsKey(i)) {
-                map.put(i, map.get(i) + is.getAmount());
-            } else {
-                map.put(i, is.getAmount());
-            }
-        }
-        for (ItemStack is : p.getInventory().getContents()) {
-            if (is == null || is.getAmount() == 0 || is.getType() == Material.AIR) {
-                continue;
-            }
-            for (Item item : map.keySet()) {
-                if (item.isSame(is)) {
-                    map.put(item, map.get(item) - is.getAmount());
-                    break;
-                }
-            }
-        }
-        return map.values().stream().noneMatch((a) -> (a > 0));
+        return hasEnoughItems(p, Arrays.asList(items));
     }
 
     public static boolean hasItemInMainHand(Player p) {
@@ -213,8 +169,8 @@ public abstract class Utils {
     /**
      * 数据插件jar里的文件
      *
-     * @param p 插件
-     * @param res 资源文件名 如config.yml
+     * @param p    插件
+     * @param res  资源文件名 如config.yml
      * @param fold 目标文件夹 若为null则默认插件配置文件夹
      * @throws IOException
      */
@@ -253,8 +209,8 @@ public abstract class Utils {
     /**
      * 数据插件jar里的文件
      *
-     * @param p 插件
-     * @param res 资源文件名 如config.yml
+     * @param p    插件
+     * @param res  资源文件名 如config.yml
      * @param fold 目标文件夹 若为null则默认插件配置文件夹
      * @throws IOException
      * @deprecated 不标准的命名
@@ -267,7 +223,7 @@ public abstract class Utils {
     /**
      * 安全的添加物品到玩家背包,如果玩家背包满了. 会将物品丢弃到地上
      *
-     * @param p 玩家
+     * @param p  玩家
      * @param is 物品
      */
     public static void safeGiveItem(Player p, ItemStack is) {
@@ -337,13 +293,18 @@ public abstract class Utils {
 
     //注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent
     //返回值ItemData用于判断调用事件是哪个物品
+    @Deprecated
+    public static ItemInfo RegisterUseItemEvent(ItemStack is) {
+        return registerUseItemEvent(is);
+    }
+
     /**
      * 注册物品 将在被注册物品被玩家右键互交的时候触发 PlayerUseItemEvent. 返回值ItemData用于判断调用事件是哪个物品.
      *
      * @param is 需要注册的物品
      * @return ItemData 用于判断调用事件是哪个物品
      */
-    public static ItemInfo RegisterUseItemEvent(ItemStack is) {
+    public static ItemInfo registerUseItemEvent(ItemStack is) {
         if (is == null) {
             throw new NullPointerException();
         }
@@ -356,7 +317,7 @@ public abstract class Utils {
                     }
 
                     ItemStack is = evt.getItem();
-                    ItemInfo ID = PluginData.Traversal(is.clone());
+                    ItemInfo ID = PluginData.traversal(is.clone());
                     if (ID == null) {
                         return;
                     }
@@ -383,82 +344,29 @@ public abstract class Utils {
     }
 
     //移除注册物品 利用注册时的返回值
+    public static void UnregisterUseItemEvent(ItemInfo id) {
+        unregisterUseItemEvent(id);
+    }
+
     /**
      * 移除注册物品. 利用注册时的返回值 ItemData .
      *
-     * @param ID 移除注册物品
+     * @param id 移除注册物品
      */
-    public static void UnregisterUseItemEvent(ItemInfo ID) {
-        if (PluginData.ItemDatas.contains(ID)) {
-            PluginData.ItemDatas.remove(ID);
+    public static void unregisterUseItemEvent(ItemInfo id) {
+        if (PluginData.ItemDatas.contains(id)) {
+            PluginData.ItemDatas.remove(id);
         }
-    }
-
-    //创建一个以tick计时的时钟 将在(long tick)后调用事件 CountDounEvent.
-    //仅设置时间 20tick=1s 可通过返回值取消以及获取标识ID.
-    /**
-     * 创建一个以tick计时的时钟 将在(long tick)后调用事件 CountDounEvent 仅设置时间 20tick=1s.
-     * 可通过返回值取消以及获取标识ID.
-     *
-     * @param tick 20tick=1s
-     * @return {@link CountDownTask}
-     */
-    @Deprecated
-    public static CountDownTask CreateCountDown(long tick) {
-        CountDownTask cdt = new CountDownTask(tick);
-        cdt.runTaskLater(PluginData.plugin, tick);
-        return cdt;
-    }
-
-    //设置玩家与时间  事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
-    /**
-     * 设置玩家与时间. 事件调用时可通过getPlayer()方法判断是否与设置的玩家相同
-     *
-     * @param p 玩家
-     * @param tick 20tick=1s
-     * @return {@link CountDownTask}
-     */
-    @Deprecated
-    public static CountDownTask CreateCountDown(Player p, long tick) {
-        CountDownTask cdt = new CountDownTask(p, tick);
-        cdt.runTaskLater(PluginData.plugin, tick);
-        return cdt;
-    }
-
-    //指定ID与时间   注意不要重复ID哦
-    /**
-     * 指定ID与时间 注意不要重复ID
-     *
-     * @param id ID
-     * @param tick 20tick=1s
-     * @return {@link CountDownTask}
-     */
-    @Deprecated
-    public static CountDownTask CreateCountDown(long id, long tick) {
-        CountDownTask cdt = new CountDownTask(id, tick);
-        cdt.runTaskLater(PluginData.plugin, tick);
-        return cdt;
-    }
-    //指定ID,玩家,时间
-
-    /**
-     * 指定ID,玩家,时间
-     *
-     * @param id ID
-     * @param p 玩家
-     * @param tick 20tick=1s
-     * @return {@link CountDownTask}
-     */
-    @Deprecated
-    public static CountDownTask CreateCountDown(long id, Player p, long tick) {
-        CountDownTask cdt = new CountDownTask(id, p, tick);
-        cdt.runTaskLater(PluginData.plugin, tick);
-        return cdt;
     }
 
     /* 配置文件物品解析
      * 格式: - ID 数量 损伤值 Name:名字 Lore:Lore
      */
+    @Deprecated
+    public static ItemStack AnalyticalItem_2(String s) {
+        return readItemStack(s);
+    }
+
     /**
      * 配置文件物品解析.<p>
      * 格式: ID 数量 损伤值
@@ -469,7 +377,7 @@ public abstract class Utils {
      * @param s String 字符串
      * @return ItemStack
      */
-    public static ItemStack AnalyticalItem_2(String s) {
+    public static ItemStack readItemStack(String s) {
         ItemStack item;
         try {
             item = new ItemStack(Material.getMaterial(Integer.parseInt(s.split(" ")[0])));
@@ -570,14 +478,20 @@ public abstract class Utils {
         return item;
     }
 
+    @Deprecated
+    public static List<ItemStack> AnalyticalItems_2(FileConfiguration config, String path) {
+        return readItemStack(config, path);
+    }
+
     /**
      * 批量解析
      *
      * @param config 配置文件
-     * @param path 路径
+     * @param path   路径
      * @return List 按顺序读取的ItemStack
      */
-    public static List<ItemStack> AnalyticalItems_2(FileConfiguration config, String path) {
+    @Deprecated
+    public static List<ItemStack> readItemStack(FileConfiguration config, String path) {
         if (!config.isList(path)) {
             return null;
         }
@@ -587,7 +501,7 @@ public abstract class Utils {
         }
         List<ItemStack> ItemList = new ArrayList<>();
         for (String s : StringList) {
-            ItemList.add(AnalyticalItem_2(s));
+            ItemList.add(readItemStack(s));
         }
         return ItemList;
     }
@@ -763,6 +677,7 @@ public abstract class Utils {
         now *= 1000;
         return now;
     }
+
     private static SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static String toDateFormat(long now) {
@@ -870,7 +785,7 @@ public abstract class Utils {
          * 创建二维->三维投影器
          *
          * @param loc 投影的原点
-         * @param n 投影屏幕的法向量
+         * @param n   投影屏幕的法向量
          * @return
          */
         public static BiFunction<Double, Double, Location> create2DProjector(Location loc, Vector n) {
@@ -896,6 +811,7 @@ public abstract class Utils {
 
         /**
          * 将向量转换为Location里使用的yaw与pitch
+         *
          * @param v 向量
          * @return [0]为yaw [1]为pitch
          */

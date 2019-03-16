@@ -15,6 +15,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
 import com.comphenix.protocol.wrappers.BlockPosition;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -29,7 +31,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 /**
- *
  * @author Bryan_lzh
  */
 public class SignUtils {
@@ -39,7 +40,12 @@ public class SignUtils {
     // private Set<String> Listener = new HashSet<>();
     private Map<String, String> Listener = new HashMap<>();
 
+    @Deprecated
     public void SendSignRequest(Player p, String id) {
+        sendSignRequest(p, id);
+    }
+
+    public void sendSignRequest(Player p, String id) {
         Listener.put(p.getName(), id);
         ProtocolManager pm = ProtocolLibrary.getProtocolManager();
         PacketContainer pc = new PacketContainer(PacketType.Play.Server.OPEN_SIGN_EDITOR);
@@ -54,10 +60,10 @@ public class SignUtils {
 
     private static Map<String, Map.Entry<String, BiConsumer<Player, String>>> Callbacks = new HashMap<>();
 
-    public void SendSignRequest(Player p, BiConsumer<Player, String> callback) {
+    public void sendSignRequest(Player p, BiConsumer<Player, String> callback) {
         String id = String.valueOf(System.currentTimeMillis());
         Callbacks.put(p.getName(), new AbstractMap.SimpleEntry<>(id, callback));
-        SendSignRequest(p, id);
+        sendSignRequest(p, id);
     }
 
     private SignUtils() {

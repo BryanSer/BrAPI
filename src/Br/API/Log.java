@@ -21,12 +21,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
 /**
- *
  * @author Bryan_lzh
  */
 public class Log extends Writer {
@@ -34,7 +34,7 @@ public class Log extends Writer {
     /**
      * 创建一个单独文件作为log的对象
      *
-     * @param p 插件主类
+     * @param p     插件主类
      * @param cache 缓存空间 建议填写1这样能实时生成log
      * @return
      */
@@ -45,8 +45,8 @@ public class Log extends Writer {
     /**
      * 创建一个单独文件作为log的对象
      *
-     * @param p 插件主类
-     * @param c 缓存空间
+     * @param p   插件主类
+     * @param c   缓存空间
      * @param con 是否向后台输出内容
      * @return
      */
@@ -54,15 +54,9 @@ public class Log extends Writer {
         return new OneFileLog(p, c, con);
     }
 
-    /**
-     * 将旧的.\\Log\\文件夹里的全部xxx.log合并到.\Log.log中 并且创建一个单独文件作为log的对象
-     *
-     * @param p 插件主类
-     * @param c 缓存空间
-     * @return
-     */
+    @Deprecated
     public static Log CombineOldLog(Plugin p, int c) {
-        return Log.CombineOldLog(p, c, false);
+        return combineOldLog(p, c);
     }
 
     /**
@@ -70,10 +64,26 @@ public class Log extends Writer {
      *
      * @param p 插件主类
      * @param c 缓存空间
+     * @return
+     */
+    public static Log combineOldLog(Plugin p, int c) {
+        return Log.combineOldLog(p, c, false);
+    }
+
+    @Deprecated
+    public static Log CombineOldLog(Plugin p, int c, boolean con) {
+        return combineOldLog(p, c, con);
+    }
+
+    /**
+     * 将旧的.\\Log\\文件夹里的全部xxx.log合并到.\Log.log中 并且创建一个单独文件作为log的对象
+     *
+     * @param p   插件主类
+     * @param c   缓存空间
      * @param con 是否向后台输出
      * @return
      */
-    public static Log CombineOldLog(Plugin p, int c, boolean con) {
+    public static Log combineOldLog(Plugin p, int c, boolean con) {
         Log log = new OneFileLog(p, c, con);
         File fold = p.getDataFolder();
         fold = new File(fold, File.separator + "Logs" + File.separator);
@@ -83,7 +93,7 @@ public class Log extends Writer {
                     FileReader fr = new FileReader(f);
                     BufferedReader br = new BufferedReader(fr);
                     while (br.ready()) {
-                        log.LogRaw(br.readLine());
+                        log.logRaw(br.readLine());
                     }
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,7 +101,7 @@ public class Log extends Writer {
                     Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            log.Save();
+            log.save();
             for (File f : fold.listFiles()) {
                 f.delete();
             }
@@ -107,9 +117,8 @@ public class Log extends Writer {
     boolean ConsoleSend;
 
     /**
-     *
-     * @param p 插件主类
-     * @param deleteday 多少天后删除 -1为永不删除
+     * @param p           插件主类
+     * @param deleteday   多少天后删除 -1为永不删除
      * @param cachelength
      */
     public Log(Plugin p, int deleteday, int cachelength) {
@@ -117,11 +126,10 @@ public class Log extends Writer {
     }
 
     /**
-     *
-     * @param p 插件主类
-     * @param deleteday 多少天后删除 -1为永不删除
+     * @param p           插件主类
+     * @param deleteday   多少天后删除 -1为永不删除
      * @param cachelength
-     * @param con 是否向后台输出
+     * @param con         是否向后台输出
      */
     public Log(Plugin p, int deleteday, int cachelength, boolean con) {
         this.plugin = p;
@@ -133,12 +141,22 @@ public class Log extends Writer {
         ConsoleSend = con;
     }
 
+    @Deprecated
     public void Log(String s) {
-        s = ChatColor.stripColor(s);
-        this.LogRaw("[" + this.getTime() + "] " + s);
+        log(s);
     }
 
+    public void log(String s) {
+        s = ChatColor.stripColor(s);
+        this.logRaw("[" + this.getTime() + "] " + s);
+    }
+
+    @Deprecated
     public void LogRaw(String s) {
+        logRaw(s);
+    }
+
+    public void logRaw(String s) {
         if (this.ConsoleSend) {
             if (s.matches("\\[(.*)\\] (.)*")) {
                 s = s.replaceFirst("\\[(.*)\\] ", "");
@@ -147,11 +165,16 @@ public class Log extends Writer {
         }
         LogCache.add(s);
         if (LogCache.size() >= CacheLength) {
-            this.Save();
+            this.save();
         }
     }
 
+    @Deprecated
     public void Save() {
+        save();
+    }
+
+    public void save() {
         String now = this.getDate();
         File fold = this.plugin.getDataFolder();
         fold = new File(fold, "\\Logs\\");
@@ -223,12 +246,12 @@ public class Log extends Writer {
 
     @Override
     public void flush() throws IOException {
-        this.Save();
+        this.save();
     }
 
     @Override
     public void close() throws IOException {
-        this.Save();
+        this.save();
     }
 
     public PrintWriter toPrintWriter() {
@@ -248,11 +271,12 @@ class OneFileLog extends Log {
 
     @Override
     public void Log(String s) {
-        super.LogRaw("[" + super.getDate() + " " + super.getTime() + "] " + s);;
+        super.logRaw("[" + super.getDate() + " " + super.getTime() + "] " + s);
+        ;
     }
 
     @Override
-    public void Save() {
+    public void save() {
         File fold = super.plugin.getDataFolder();
         File log = new File(fold, "log.log");
         if (!log.exists()) {

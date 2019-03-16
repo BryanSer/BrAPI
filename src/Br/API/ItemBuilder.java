@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -67,21 +68,21 @@ public class ItemBuilder {
     }
 
     public ItemBuilder lore(String... s) {
+        return setLore(Arrays.asList(s));
+    }
+
+    @NotNull
+    private ItemBuilder setLore(List<String> strings) {
         ItemMeta im = this.Item.getItemMeta();
         List<String> lore = im.hasLore() ? im.getLore() : new ArrayList<>();
-        lore.addAll(Arrays.asList(s));
+        lore.addAll(strings);
         im.setLore(lore);
         this.Item.setItemMeta(im);
         return this;
     }
 
     public ItemBuilder lore(List<String> s) {
-        ItemMeta im = this.Item.getItemMeta();
-        List<String> lore = im.hasLore() ? im.getLore() : new ArrayList<>();
-        lore.addAll(s);
-        im.setLore(lore);
-        this.Item.setItemMeta(im);
-        return this;
+        return setLore(s);
     }
 
     public ItemBuilder Do(Consumer<ItemBuilder> what) {

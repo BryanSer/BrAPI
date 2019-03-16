@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Bryan_lzh
  */
+@Deprecated
 public abstract class Lores {
 
     /**

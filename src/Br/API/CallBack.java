@@ -14,10 +14,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,17 +29,26 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
- *
  * @author Bryan_lzh
  * @version 1.0
  */
 public class CallBack implements Listener {
-
+    @Deprecated
     public static void SendSignRequest(Player p, BiConsumer<Player, String> callback) {
-        SignUtils.getSignUtils().SendSignRequest(p, callback);
+        sendSignRequest(p, callback);
     }
+
+    public static void sendSignRequest(Player p, BiConsumer<Player, String> callback) {
+        SignUtils.getSignUtils().sendSignRequest(p, callback);
+    }
+
     private static boolean Register = false;
-    public static Map<String, ButtonInfo> ButtonInfos = new HashMap<>();
+    private static Map<String, ButtonInfo> ButtonInfos = new HashMap<>();
+
+    @Deprecated
+    public static boolean SendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime) {
+        return sendButtonRequest(p, msg, callback, overtime);
+    }
 
     /**
      * 向玩家发送一堆按钮 按钮的的内容将由msg决定,最后通过BiConsumer来返回执行玩家按下的按钮<p>
@@ -49,7 +60,7 @@ public class CallBack implements Listener {
      * @param overtime 超时时间 单位秒
      * @return true时表示 请求成功 false时表示 上个处理还未完成
      */
-    public static boolean SendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime) {
+    public static boolean sendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime) {
         RegisterListener();
         if (ButtonInfos.containsKey(p.getName())) {
             return false;
@@ -69,9 +80,9 @@ public class CallBack implements Listener {
         p.spigot().sendMessage(comps);
         return true;
     }
-    
-    
-    private static Map<String,InputInfo> InputInfos = new ConcurrentHashMap<>();
+
+
+    private static Map<String, InputInfo> InputInfos = new ConcurrentHashMap<>();
 
     public static boolean sendInputRequest(Player p, BiConsumer<Player, String> callback, int overtime) {
         RegisterListener();
@@ -101,15 +112,15 @@ public class CallBack implements Listener {
             bi.cancel();
         }
     }
-    
+
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent evt){
+    public void onChat(AsyncPlayerChatEvent evt) {
         InputInfo ii = InputInfos.get(evt.getPlayer().getName());
-        if(ii != null){
-            if(ii.isCancel()){
+        if (ii != null) {
+            if (ii.isCancel()) {
                 InputInfos.remove(evt.getPlayer().getName());
                 return;
-            }else {
+            } else {
                 ii.getCallback().accept(evt.getPlayer(), evt.getMessage());
                 evt.setCancelled(true);
                 ii.cancel();
@@ -127,6 +138,7 @@ public class CallBack implements Listener {
         }
         Register = true;
     }
+
     private static final int CHARAMOUNT = 26 + 26 + 10;
     private static final int LENGTH = 6;
     private static final char[] CHAR = new char[CHARAMOUNT];
@@ -211,8 +223,8 @@ public class CallBack implements Listener {
         }
 
     }
-    
-    public static class InputInfo extends BukkitRunnable{
+
+    public static class InputInfo extends BukkitRunnable {
         private String Name;
         private BiConsumer<Player, String> Callback;
         private boolean overtime = true;
@@ -224,8 +236,8 @@ public class CallBack implements Listener {
             this.Callback = Callback;
             this.Player = Player;
         }
-        
-        
+
+
         @Override
         public void run() {
             if (cancel) {
@@ -258,7 +270,7 @@ public class CallBack implements Listener {
         public boolean isCancel() {
             return cancel;
         }
-        
+
     }
 
     private CallBack() {
