@@ -13,6 +13,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -154,10 +156,14 @@ public class ExUIBuilder {
         return this;
     }
 
+    @NotNull
+    @Contract(" -> new")
     public static ExUIBuilder create() {
         return new ExUIBuilder();
     }
 
+    @NotNull
+    @Contract("_ -> new")
     public static ExUIBuilder create(SnapshotFactory snapshotFactory) {
         return new ExUIBuilder(snapshotFactory);
     }

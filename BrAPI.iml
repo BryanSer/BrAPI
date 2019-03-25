@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" version="4">
   <component name="AutoImportedSourceRoots">
     <option name="directories">
       <list>
-        <option value="E:\git\BrAPI/src/" />
+        <option value="./src/" />
       </list>
     </option>
   </component>
   <component name="FacetManager">
-    <facet type="minecraft" name="Minecraft">
-      <configuration>
-        <autoDetectTypes>
-          <platformType>SPIGOT</platformType>
-        </autoDetectTypes>
-      </configuration>
-    </facet>
     <facet type="kotlin-language" name="Kotlin">
       <configuration version="3" platform="JVM 1.8" useProjectSettings="false">
         <compilerSettings />
@@ -32,6 +25,13 @@
             <ArgumentParseErrors />
           </option>
         </compilerArguments>
+      </configuration>
+    </facet>
+    <facet type="minecraft" name="Minecraft">
+      <configuration>
+        <autoDetectTypes>
+          <platformType>SPIGOT</platformType>
+        </autoDetectTypes>
       </configuration>
     </facet>
   </component>
