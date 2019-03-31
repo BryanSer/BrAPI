@@ -20,7 +20,11 @@ public class ActionBar {
         ProtocolManager pm = ProtocolLibrary.getProtocolManager();
         PacketContainer pc = new PacketContainer(PacketType.Play.Server.CHAT);
         pc.getChatComponents().write(0, WrappedChatComponent.fromText(msg));
-        pc.getChatTypes().write(0, EnumWrappers.ChatType.GAME_INFO);
+        try {
+            pc.getChatTypes().write(0, EnumWrappers.ChatType.GAME_INFO);
+        } catch (Throwable e) {
+            pc.getBytes().write(0, (byte) 2);
+        }
         try {
             pm.sendServerPacket(p, pc);
         } catch (InvocationTargetException ex) {
