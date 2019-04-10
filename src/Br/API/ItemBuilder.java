@@ -70,6 +70,13 @@ public class ItemBuilder {
     public ItemBuilder lore(String... s) {
         return setLore(Arrays.asList(s));
     }
+    
+    public ItemBuilder clearLore(){
+        ItemMeta im = this.Item.getItemMeta();
+        im.setLore(new ArrayList<>());
+        this.Item.setItemMeta(im);
+        return this;
+    }
 
     @NotNull
     private ItemBuilder setLore(List<String> strings) {

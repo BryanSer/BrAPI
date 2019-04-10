@@ -49,6 +49,15 @@ public class CallBack implements Listener {
     public static boolean SendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime) {
         return sendButtonRequest(p, msg, callback, overtime);
     }
+    
+    public static void cancelButtonRequest(Player p){
+        ButtonInfo bi = ButtonInfos.remove(p.getName());
+        if(bi != null){
+            bi.canceled = true;
+            bi.cancel();
+            bi.Callback.accept(p, null);
+        }
+    }
 
     /**
      * 向玩家发送一堆按钮 按钮的的内容将由msg决定,最后通过BiConsumer来返回执行玩家按下的按钮<p>
@@ -83,7 +92,7 @@ public class CallBack implements Listener {
 
 
     private static Map<String, InputInfo> InputInfos = new ConcurrentHashMap<>();
-
+    //聊天输入
     public static boolean sendInputRequest(Player p, BiConsumer<Player, String> callback, int overtime) {
         RegisterListener();
         if (InputInfos.containsKey(p.getName())) {

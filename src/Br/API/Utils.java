@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -52,6 +55,18 @@ import org.bukkit.util.Vector;
  * @author Bryan_lzh
  */
 public abstract class Utils {
+    
+    /**
+     * 发送带命令的按钮 如果要执行命令请在字符串前带上/
+     * @param p
+     * @param msg
+     * @param command
+     */
+    public static void sendCommandButton(Player p,String msg,String command){
+        BaseComponent[] bc = new ComponentBuilder(msg).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)).create();
+        p.spigot().sendMessage(bc);
+    }
+    
     @Deprecated
     public static void RemoveItem(Player p, ItemStack... items) {
         removeItem(p, Arrays.asList(items));
