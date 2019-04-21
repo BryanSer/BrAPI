@@ -55,18 +55,19 @@ import org.bukkit.util.Vector;
  * @author Bryan_lzh
  */
 public abstract class Utils {
-    
+
     /**
      * 发送带命令的按钮 如果要执行命令请在字符串前带上/
+     *
      * @param p
      * @param msg
      * @param command
      */
-    public static void sendCommandButton(Player p,String msg,String command){
+    public static void sendCommandButton(Player p, String msg, String command) {
         BaseComponent[] bc = new ComponentBuilder(msg).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)).create();
         p.spigot().sendMessage(bc);
     }
-    
+
     @Deprecated
     public static void RemoveItem(Player p, ItemStack... items) {
         removeItem(p, Arrays.asList(items));
@@ -184,8 +185,8 @@ public abstract class Utils {
     /**
      * 数据插件jar里的文件
      *
-     * @param p    插件
-     * @param res  资源文件名 如config.yml
+     * @param p 插件
+     * @param res 资源文件名 如config.yml
      * @param fold 目标文件夹 若为null则默认插件配置文件夹
      * @throws IOException
      */
@@ -224,8 +225,8 @@ public abstract class Utils {
     /**
      * 数据插件jar里的文件
      *
-     * @param p    插件
-     * @param res  资源文件名 如config.yml
+     * @param p 插件
+     * @param res 资源文件名 如config.yml
      * @param fold 目标文件夹 若为null则默认插件配置文件夹
      * @throws IOException
      * @deprecated 不标准的命名
@@ -238,7 +239,7 @@ public abstract class Utils {
     /**
      * 安全的添加物品到玩家背包,如果玩家背包满了. 会将物品丢弃到地上
      *
-     * @param p  玩家
+     * @param p 玩家
      * @param is 物品
      */
     public static void safeGiveItem(Player p, ItemStack is) {
@@ -502,7 +503,7 @@ public abstract class Utils {
      * 批量解析
      *
      * @param config 配置文件
-     * @param path   路径
+     * @param path 路径
      * @return List 按顺序读取的ItemStack
      */
     @Deprecated
@@ -800,7 +801,7 @@ public abstract class Utils {
          * 创建二维->三维投影器
          *
          * @param loc 投影的原点
-         * @param n   投影屏幕的法向量
+         * @param n 投影屏幕的法向量
          * @return
          */
         public static BiFunction<Double, Double, Location> create2DProjector(Location loc, Vector n) {
@@ -836,29 +837,23 @@ public abstract class Utils {
         }
 
         public static LivingEntity getLookAtEntity(LivingEntity e, double maxlength, int ρ) {
-            Egg d = e.getWorld().spawn(e.getLocation().add(0, -5, 0), Egg.class);
-            d.setSilent(true);
             Location loc = e.getEyeLocation();
-            d.setGravity(false);
             Vector v = e.getLocation().getDirection();
             for (double l = maxlength / ρ; l < maxlength; l += maxlength / ρ) {
                 Vector vd = v.clone().multiply(l);
-                d.teleport(loc.clone().add(vd));
-                if (d.getLocation().getBlock().getType() != Material.AIR) {
-                    d.remove();
+                Location nloc = loc.clone().add(vd);
+                if (nloc.getBlock().getType() != Material.AIR) {
                     return null;
                 }
-                for (Entity eeee : d.getNearbyEntities(0.25, 0.25, 0.25)) {
+                for (Entity eeee : nloc.getWorld().getNearbyEntities(nloc, 0.25, 0.25, 0.25)) {
                     if (eeee == e) {
                         continue;
                     }
                     if (eeee instanceof LivingEntity) {
-                        d.remove();
                         return (LivingEntity) eeee;
                     }
                 }
             }
-            d.remove();
             return null;
         }
 

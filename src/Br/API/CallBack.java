@@ -70,6 +70,10 @@ public class CallBack implements Listener {
      * @return true时表示 请求成功 false时表示 上个处理还未完成
      */
     public static boolean sendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime) {
+        return sendButtonRequest(p, msg,callback, overtime, "§r[%s§r]");
+    }
+
+    public static boolean sendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime,String format) {
         RegisterListener();
         if (ButtonInfos.containsKey(p.getName())) {
             return false;
@@ -79,7 +83,7 @@ public class CallBack implements Listener {
         List<BaseComponent> bs = new ArrayList<>();
         for (int i = 0; i < msg.length; i++) {
             String key = msg[i];
-            bs.addAll(Arrays.asList(getButton(String.format("§r[%s§r]", key), bi.getKeys().get(i))));
+            bs.addAll(Arrays.asList(getButton(String.format(format, key), bi.getKeys().get(i))));
             bs.add(new TextComponent("    "));
         }
         BaseComponent[] comps = new BaseComponent[bs.size()];
@@ -89,7 +93,6 @@ public class CallBack implements Listener {
         p.spigot().sendMessage(comps);
         return true;
     }
-
 
     private static Map<String, InputInfo> InputInfos = new ConcurrentHashMap<>();
     //聊天输入
