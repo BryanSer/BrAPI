@@ -7,10 +7,10 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-typealias SnapshotFactoryInit = (Player, MutableMap<String, Any>) -> Unit
+typealias SnapshotFactoryInit = (Player, MutableMap<String, Any?>) -> Unit
 
 operator fun Snapshot<*>.get(key: String): Any = this.getData(key)
-
+operator fun Snapshot<*>.set(key: String, data: Any) = this.setData(key, data)
 class KtUIBuilder private constructor(
         val name: String,
         val displayName: String,
