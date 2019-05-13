@@ -7,11 +7,13 @@
 package Br.API.GUI.Ex;
 
 import Br.API.PluginData;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +26,6 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 
 /**
- *
  * @author Bryan_lzh
  * @version 1.0
  */
@@ -67,7 +68,12 @@ public class UIManager {
         RegisteredUI.put(ui.getName(), ui);
     }
 
+    @Deprecated
     public static void OpenUI(Player p, BaseUI ui) {
+        openUI(p, ui);
+    }
+
+    public static void openUI(Player p, BaseUI ui) {
         Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
             p.closeInventory();
             Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
@@ -75,9 +81,15 @@ public class UIManager {
                 Inventory inv = Bukkit.createInventory(p, ui.getSize(), ui.getDisplayName() + UICODE + UIManager.encode(ui.getName()));
                 s.setInventory(inv);
                 for (int i = 0; i < ui.getSize(); i++) {
-                    Item item = s.getItem(i);
+                    ExItem item = s.getItem(i);
                     if (item != null) {
-                        inv.setItem(i, item.getDisplayItem(p));
+                        try {
+                            inv.setItem(i, item.getDisplayItem(p, s));
+                        } catch (Throwable t) {
+                            Bukkit.getConsoleSender().sendMessage("BrAPI-ExUI系统处理发生异常, [" + ui.getName() + ": " + ui.getClass().getName() + "]");
+                            t.printStackTrace();
+                            return;
+                        }
                     }
                 }
                 p.openInventory(inv);
@@ -85,14 +97,24 @@ public class UIManager {
         });
     }
 
+    @Deprecated
     public static void OpenUI(Player p, String name) {
+        openUI(p, name);
+    }
+
+    public static void openUI(Player p, String name) {
         BaseUI ui = RegisteredUI.get(name);
         if (ui != null) {
-            OpenUI(p, ui);
+            openUI(p, ui);
         }
     }
 
+    @Deprecated
     public static void UpdateUI(Player p) {
+        updateUI(p);
+    }
+
+    public static void updateUI(Player p) {
         Inventory inv = p.getOpenInventory().getTopInventory();
         if (inv.getName() == null || !inv.getName().contains(UICODE)) {
             return;
@@ -104,15 +126,16 @@ public class UIManager {
         }
         Snapshot s = ui.getSnapshot(p);
         for (int i = 0; i < ui.getSize(); i++) {
-            Item item = s.getItem(i);
+            ExItem item = s.getItem(i);
             if (item != null) {
                 if (item.isUpdateIcon()) {
-                    inv.setItem(i, item.Update(p, s));
+                    inv.setItem(i, item.update(p, s));
                 }
             }
         }
         Bukkit.getScheduler().runTask(PluginData.plugin, p::updateInventory);
     }
+
 
     private static void RegisterListener() {
         Bukkit.getPluginManager().registerEvents(new Listener() {
@@ -169,7 +192,8 @@ public class UIManager {
                 } catch (Throwable t) {//防止craftbukkit出错(一般没人用了吧)
                     slot = evt.getRawSlot();//防止1.7.10出错
                     if (slot < 0 || slot >= inv.getSize() || slot >= ui.getSize()) {
-                        if ((evt.getClick() == ClickType.SHIFT_LEFT || evt.getClick() == ClickType.SHIFT_RIGHT) && !ui.isAllowShift()) {
+                        if ((evt.getClick() == ClickType.SHIFT_LEFT ||
+                                evt.getClick() == ClickType.SHIFT_RIGHT) && !ui.isAllowShift()) {
                             evt.setCancelled(true);
                         }
                         return;
@@ -178,17 +202,14 @@ public class UIManager {
                 }
                 evt.setCancelled(true);
                 if (snap == null) {
-                    Bukkit.getConsoleSender().sendMessage("BrAPI-ExUI系统处理发生异常, [" + ui.getName() + "] 的Snapshot@" + p.getName() + " 无法获得");
+                    Bukkit.getConsoleSender().sendMessage("BrAPI-ExUI系统处理发生异常, [" + ui.getName() + ": " + ui.getClass().getName() + "] 的Snapshot@" + p.getName() + " 无法获得");
                     return;
                 }
-                Item item = snap.getItem(slot);
+                ExItem item = snap.getItem(slot);
                 if (item != null) {
                     ClickLimit.add(evt.getWhoClicked().getName());
-                    Consumer<Player> c = item.getClickLambda(evt.getClick());
-                    if (c != null) {
-                        c.accept(p);
-                    }
-                    if (item.getOnClickNotCancel().apply(p)) {
+                    item.getClickLambda(evt.getClick(), p);
+                    if (item.getButtonPlaceable(p)) {
                         evt.setCancelled(false);
                     }
                     if (!item.isKeepOpen()) {
@@ -201,6 +222,7 @@ public class UIManager {
                             try {
                                 UpdateUI(p);
                             } catch (Throwable e) {//修正BUG
+                                Bukkit.getConsoleSender().sendMessage("BrAPI-ExUI系统处理发生异常, [" + ui.getName() + ": " + ui.getClass().getName() + "]");
                                 e.printStackTrace();
                             }
                             ClickLimit.remove(p.getName());

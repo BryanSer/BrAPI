@@ -8,6 +8,7 @@ package Br.API.GUI.Ex;
 
 import org.bukkit.entity.Player;
 
+
 /**
  *
  * @author Bryan_lzh
@@ -51,7 +52,7 @@ public abstract class BaseUI {
      * @param slot 位置
      * @return Item
      */
-    public abstract Item getItem(Player p, int slot);
+    public abstract ExItem getItem(Player p, int slot);
 
     /**
      *

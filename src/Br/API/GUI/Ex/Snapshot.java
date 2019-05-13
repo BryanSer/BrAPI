@@ -20,12 +20,12 @@ public interface Snapshot<T extends BaseUI> {
     String getPlayerName();
     
     void Delete();
-    
-    Item[] getContains();
+
+    ExItem[] getContains();
     
     T getUI();
-    
-    Item getItem(int solt);
+
+    ExItem getItem(int solt);
     
     void setData(String key,Object value);
     

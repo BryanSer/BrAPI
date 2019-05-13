@@ -53,77 +53,13 @@ public abstract class SnapshotFactory<T extends BaseUI> {
     }
 
     public static <T extends BaseUI> SnapshotFactory<T> getDefaultSnapshotFactory(T ui) {
-        return new SnapshotFactory<T>(ui.getName()) {
-            @Override
-            protected Snapshot<T> createSnapshot(Player p, T ui) {
-                Item[] items = new Item[ui.getSize()];
-                for (int i = 0; i < ui.getSize(); i++) {
-                    items[i] = ui.getItem(p, i);
-                }
-                return new Snapshot<T>() {
-                    private Map<String, Object> data = new HashMap<>();
-
-                    @Override
-                    public String getPlayerName() {
-                        return p.getName();
-                    }
-
-                    @Override
-                    public void Delete() {
-                        data = null;
-                        inv = null;
-                    }
-
-                    @Override
-                    public Item[] getContains() {
-                        return items;
-                    }
-
-                    @Override
-                    public T getUI() {
-                        return ui;
-                    }
-
-                    @Override
-                    public Item getItem(int solt) {
-                        return items[solt];
-                    }
-
-                    @Override
-                    public void setData(String key, Object value) {
-                        data.put(key, value);
-                    }
-
-                    @Override
-                    public Object getData(String key) {
-                        return data.get(key);
-                    }
-
-                    @Override
-                    public void removeData(String key) {
-                        data.remove(key);
-                    }
-
-                    private Inventory inv;
-
-                    @Override
-                    public Inventory getInventory() {
-                        return inv;
-                    }
-
-                    @Override
-                    public void setInventory(Inventory inv) {
-                        this.inv = inv;
-                    }
-                };
-            }
-        };
+        return getDefaultSnapshotFactory();
     }
     public static <T extends BaseUI> SnapshotFactory<T> getDefaultSnapshotFactory() {
         return new SnapshotFactory<T>() {
             @Override
             protected Snapshot<T> createSnapshot(Player p, T ui) {
-                Item[] items = new Item[ui.getSize()];
+                ExItem[] items = new ExItem[ui.getSize()];
                 for (int i = 0; i < ui.getSize(); i++) {
                     items[i] = ui.getItem(p, i);
                 }
@@ -142,7 +78,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     }
 
                     @Override
-                    public Item[] getContains() {
+                    public ExItem[] getContains() {
                         return items;
                     }
 
@@ -152,7 +88,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     }
 
                     @Override
-                    public Item getItem(int solt) {
+                    public ExItem getItem(int solt) {
                         return items[solt];
                     }
 
@@ -191,7 +127,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
         return new SnapshotFactory<T>(ui.getName()) {
             @Override
             protected Snapshot<T> createSnapshot(Player p, T ui) {
-                Item[] items = new Item[ui.getSize()];
+                ExItem[] items = new ExItem[ui.getSize()];
                 for (int i = 0; i < ui.getSize(); i++) {
                     items[i] = ui.getItem(p, i);
                 }
@@ -216,7 +152,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     }
 
                     @Override
-                    public Item[] getContains() {
+                    public ExItem[] getContains() {
                         return items;
                     }
 
@@ -226,7 +162,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     }
 
                     @Override
-                    public Item getItem(int solt) {
+                    public ExItem getItem(int solt) {
                         return items[solt];
                     }
 
@@ -264,7 +200,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
         return new SnapshotFactory<T>() {
             @Override
             protected Snapshot<T> createSnapshot(Player p, T ui) {
-                Item[] items = new Item[ui.getSize()];
+                ExItem[] items = new ExItem[ui.getSize()];
                 for (int i = 0; i < ui.getSize(); i++) {
                     items[i] = ui.getItem(p, i);
                 }
@@ -289,7 +225,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     }
 
                     @Override
-                    public Item[] getContains() {
+                    public ExItem[] getContains() {
                         return items;
                     }
 
@@ -299,7 +235,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
                     }
 
                     @Override
-                    public Item getItem(int solt) {
+                    public ExItem getItem(int solt) {
                         return items[solt];
                     }
 

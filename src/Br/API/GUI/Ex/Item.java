@@ -12,16 +12,16 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 /**
- *
  * @author Bryan_lzh
  * @version 1.0
  */
-public class Item{
+public class Item implements ExItem {
 
     /**
      * 玩家点击之后是否保持开启界面
@@ -32,7 +32,7 @@ public class Item{
      * 玩家点击之后是更新 前提是keepopen == true
      */
     protected boolean Update = true;
-    
+
     /**
      * 更新时是否也更新图标
      */
@@ -47,12 +47,13 @@ public class Item{
      * 显示物品用
      */
     protected Function<Player, ItemStack> DisplayLambda;
-    
+
     /**
      * 用于更新时的Lambda 若为null将调用
+     *
      * @see Item#DisplayLambda
      */
-    protected BiFunction<Player,Snapshot,ItemStack> UpadteDisplayLambda = null;
+    protected BiFunction<Player, Snapshot, ItemStack> UpadteDisplayLambda = null;
 
     /**
      * 全部的点击事件储存于此
@@ -65,41 +66,48 @@ public class Item{
     /**
      * <p>创建一个新的Item</p>
      * <p>若不通过此方法创建 请继承该类实现相关功能</p>
+     *
      * @param display
      * @return Item
      */
     public static Item getNewInstance(Function<Player, ItemStack> display) {
         return new Item().setDisplay(display);
     }
-    
-     public static Item getNewInstance(ItemStack display) {
+
+    public static Item getNewInstance(ItemStack display) {
         return new Item().setDisplay((p) -> display);
     }
-     
-     public static Item getNewInstanceOfSlot(){
-         return Item.getNewInstance((ItemStack) null)
+
+    public static Item getNewInstanceOfSlot() {
+        return Item.getNewInstance((ItemStack) null)
                 .setButtonCellback(p -> true)
                 .setUpdateIcon(false);
-     }
-
-    public Consumer<Player> getClickLambda(ClickType ct) {
-        Consumer<Player> c = ClickLambdas.get(ct);
-        while (c == null && ct != ClickType.LEFT) {
-            c = ClickLambdas.get(ct);
-            ct = UIManager.getSuperClickType(ct);
-        }
-        return c;
     }
 
+    @Override
+    public boolean getClick(ClickType ct, Player p) {
+        Consumer<Player> c = ClickLambdas.get(ct);
+        if (c == null) {
+            return false;
+        } else {
+            c.accept(p);
+            return true;
+        }
+    }
+
+
+    @Override
     public boolean isKeepOpen() {
         return KeepOpen;
     }
 
+    @Override
     public boolean isUpdate() {
         return Update;
     }
 
-    public ItemStack getDisplayItem(Player p) {
+    @Override
+    public ItemStack getDisplayItem(Player p, Snapshot s) {
         return this.DisplayLambda.apply(p);
     }
 
@@ -108,12 +116,9 @@ public class Item{
         return this;
     }
 
-    public Function<Player, Boolean> getOnClickNotCancel() {
-        return onClickNotCancel;
-    }
-
-    public Function<Player, ItemStack> getDisplayLambda() {
-        return DisplayLambda;
+    @Override
+    public boolean getButtonPlaceable(Player p) {
+        return onClickNotCancel.apply(p);
     }
 
     public Item setKeepOpen(boolean ko) {
@@ -126,6 +131,7 @@ public class Item{
         return this;
     }
 
+    @Override
     public boolean isUpdateIcon() {
         return UpdateIcon;
     }
@@ -139,7 +145,7 @@ public class Item{
         this.onClickNotCancel = b;
         return this;
     }
-    
+
     public Item setButtonPutable(Function<Player, Boolean> b) {
         this.onClickNotCancel = b;
         return this;
@@ -154,9 +160,10 @@ public class Item{
         this.UpadteDisplayLambda = UpadteDisplayLambda;
         return this;
     }
-    
-    public ItemStack Update(Player p,Snapshot s){
-        return this.UpadteDisplayLambda == null ? this.getDisplayItem(p) : this.UpadteDisplayLambda.apply(p, s);
+
+    @Override
+    public ItemStack update(Player p, Snapshot s) {
+        return this.UpadteDisplayLambda == null ? this.getDisplayItem(p, s) : this.UpadteDisplayLambda.apply(p, s);
     }
 
 }
