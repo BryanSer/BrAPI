@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-typealias SnapshotFactoryInit = (Player, Map<String, Any>) -> Unit
+typealias SnapshotFactoryInit = (Player, MutableMap<String, Any>) -> Unit
 
 class KtUIBuilder private constructor(
         val name: String,
@@ -97,7 +97,7 @@ class KtItem(
 ) : ExItem {
     val clicks: MutableMap<ClickType, Click> = EnumMap(ClickType::class.java)
     var buttonPlaceable: ButtonPlaceable? = null
-    var display: Display = { p, s -> null }
+    var display: Display = { _, _ -> null }
     var updateDisplay: Display? = null
 
     companion object {
