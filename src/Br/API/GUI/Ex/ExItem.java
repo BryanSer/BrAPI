@@ -4,16 +4,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 public interface ExItem {
-    boolean getClick(ClickType ct,Player p);
+    boolean getClick(ClickType ct, Player p, Snapshot s);
 
-    default boolean getClickLambda(ClickType ct,Player p) {
-        boolean t = getClick(ct,p);
+    default boolean getClickLambda(ClickType ct, Player p, Snapshot s) {
+        boolean t = getClick(ct, p, s);
         while (!t && ct != ClickType.LEFT) {
-            t = getClick(ct, p);
+            t = getClick(ct, p, s);
             ct = UIManager.getSuperClickType(ct);
         }
         return t;

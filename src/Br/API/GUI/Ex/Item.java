@@ -6,16 +6,15 @@
  */
 package Br.API.GUI.Ex;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Bryan_lzh
@@ -85,7 +84,7 @@ public class Item implements ExItem {
     }
 
     @Override
-    public boolean getClick(ClickType ct, Player p) {
+    public boolean getClick(ClickType ct, Player p, Snapshot s) {
         Consumer<Player> c = ClickLambdas.get(ct);
         if (c == null) {
             return false;

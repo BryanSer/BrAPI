@@ -1,7 +1,6 @@
 package Br.API.GUI.Ex.kt
 
 import Br.API.GUI.Ex.ExItem
-import Br.API.GUI.Ex.Item
 import Br.API.GUI.Ex.Snapshot
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -9,6 +8,8 @@ import org.bukkit.inventory.ItemStack
 import java.util.*
 
 typealias SnapshotFactoryInit = (Player, MutableMap<String, Any>) -> Unit
+
+operator fun Snapshot<*>.get(key: String): Any = this.getData(key)
 
 class KtUIBuilder private constructor(
         val name: String,
@@ -85,8 +86,18 @@ class KtUIBuilder private constructor(
     operator fun plusAssign(item: KtItem?) {
         this add item
     }
+
+    operator fun inc(): KtUIBuilder {
+        this.currencyIndex++
+        return this
+    }
+
+    operator fun dec(): KtUIBuilder {
+        this.currencyIndex--
+        return this
+    }
 }
-typealias Click = (Player) -> Unit
+typealias Click = (Player, Snapshot<*>) -> Unit
 typealias ButtonPlaceable = (Player) -> Boolean
 typealias Display = (Player, Snapshot<*>) -> ItemStack?
 
@@ -95,6 +106,16 @@ class KtItem(
         var update: Boolean = true,//玩家点击之后是更新 前提是keepopen == true
         var updateIcon: Boolean = true//更新时是否也更新图标
 ) : ExItem {
+    override fun getClick(ct: ClickType, p: Player, s: Snapshot<*>): Boolean {
+        val click = clicks[ct]
+        if (click != null) {
+            click(p, s)
+            return true
+        } else {
+            return false
+        }
+    }
+
     val clicks: MutableMap<ClickType, Click> = EnumMap(ClickType::class.java)
     var buttonPlaceable: ButtonPlaceable? = null
     var display: Display = { _, _ -> null }
@@ -133,15 +154,6 @@ class KtItem(
         return buttonPlaceable?.invoke(p) ?: false
     }
 
-    override fun getClick(ct: ClickType?, p: Player): Boolean {
-        val click = clicks[ct]
-        if (click != null) {
-            click(p)
-            return true
-        } else {
-            return false
-        }
-    }
 
     infix fun placeable(bp: ButtonPlaceable): KtItem {
         this.buttonPlaceable = bp

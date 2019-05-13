@@ -6,14 +6,6 @@
  */
 package Br.API.GUI.Ex;
 
-import Br.API.PluginData;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +16,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import Br.API.PluginData;
 
 /**
  * @author Bryan_lzh
@@ -208,7 +207,7 @@ public class UIManager {
                 ExItem item = snap.getItem(slot);
                 if (item != null) {
                     ClickLimit.add(evt.getWhoClicked().getName());
-                    item.getClickLambda(evt.getClick(), p);
+                    item.getClickLambda(evt.getClick(), p, snap);
                     if (item.getButtonPlaceable(p)) {
                         evt.setCancelled(false);
                     }
