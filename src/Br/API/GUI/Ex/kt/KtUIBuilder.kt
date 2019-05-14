@@ -165,9 +165,18 @@ class KtItem(
         return this
     }
 
+    infix fun click(clk: Click): KtItem {
+        this.clicks[ClickType.LEFT] = clk
+        return this
+    }
+
     infix fun display(dis: Display): KtItem {
         this.display = dis
         return this
+    }
+
+    infix fun display(item: ItemStack?): KtItem {
+        return this display { _, _ -> item }
     }
 
     infix fun update(dis: Display): KtItem {
