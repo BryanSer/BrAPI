@@ -31,7 +31,12 @@ public abstract class SnapshotFactory<T extends BaseUI> {
 
     protected abstract Snapshot<T> createSnapshot(Player p, T ui);
 
+    @Deprecated
     public void deleteSanpshop(Player p) {
+        deleteSnapshot(p);
+    }
+
+    public void deleteSnapshot(Player p) {
         Snapshot<T> v = LastSnapshot.remove(p.getName());
         if (v != null) {
             v.Delete();
