@@ -52,7 +52,11 @@ public abstract class BaseUI {
      * @param slot 位置
      * @return Item
      */
-    public abstract ExItem getItem(Player p, int slot);
+    public abstract Item getItem(Player p, int slot);
+
+    public ExItem getExItem(Player p, int slot) {
+        return this.getItem(p, slot);
+    }
 
     /**
      *

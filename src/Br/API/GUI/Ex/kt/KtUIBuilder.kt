@@ -1,6 +1,7 @@
 package Br.API.GUI.Ex.kt
 
 import Br.API.GUI.Ex.ExItem
+import Br.API.GUI.Ex.Item
 import Br.API.GUI.Ex.Snapshot
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -39,10 +40,13 @@ class KtUIBuilder private constructor(
     }
 
     fun build(): KtUI = object : KtUI(this) {
-        override fun getItem(p: Player?, slot: Int): KtItem? {
-            return contains[slot]
+        override fun getItem(p: Player?, slot: Int): Item? {
+            return null
         }
 
+        override fun getExItem(p: Player?, slot: Int): ExItem? {
+            return contains[slot]
+        }
     }
 
     var currencyIndex: Int = 0
