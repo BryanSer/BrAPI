@@ -39,7 +39,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
     public void deleteSnapshot(Player p) {
         Snapshot<T> v = LastSnapshot.remove(p.getName());
         if (v != null) {
-            v.Delete();
+            v.delete();
         }
     }
 
@@ -272,7 +272,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
             Snapshot<T> s = createSnapshot(p, ui);
             Snapshot<T> v = LastSnapshot.put(p.getName(), s);
             if (v != null) {
-                v.Delete();
+                v.delete();
             }
             return s;
         } catch (AbstractMethodError e) {

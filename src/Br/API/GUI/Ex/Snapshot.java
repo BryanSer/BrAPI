@@ -8,7 +8,6 @@
 package Br.API.GUI.Ex;
 
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -18,8 +17,13 @@ import org.bukkit.inventory.ItemStack;
 public interface Snapshot<T extends BaseUI> {
     
     String getPlayerName();
-    
+
+    @Deprecated
     void Delete();
+
+    default void delete() {
+        this.Delete();
+    }
 
     ExItem[] getContains();
     
