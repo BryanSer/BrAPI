@@ -4,10 +4,15 @@
  */
 package Br.API;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketContainer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -55,6 +62,10 @@ import org.bukkit.util.Vector;
  * @author Bryan_lzh
  */
 public abstract class Utils {
+    
+    public static void setCooldown(Player p,ItemStack item,int tick){
+        p.setCooldown(item.getType(), tick);
+    }
 
     /**
      * 发送带命令的按钮 如果要执行命令请在字符串前带上/

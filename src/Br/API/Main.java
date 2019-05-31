@@ -5,7 +5,6 @@ import Br.API.Data.DataManager;
 import Br.API.Data.DatabaseSerializable;
 import Br.API.Data.Zone;
 import Br.API.Item.ItemManager;
-import Br.API.LangUtils.Lang;
 import Br.API.NBT.AttributeModifiers;
 import java.io.File;
 import java.io.IOException;
@@ -92,13 +91,6 @@ public class Main extends JavaPlugin {
         DataManager.SaveAll();
         ItemManager.saveData();
         HandlerList.unregisterAll(this);
-        Lang.LangDatas.forEach((l) -> {
-            try {
-                l.Save();
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
         DatabaseSerializable.PreparedStatements.Close();
         Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
     }
