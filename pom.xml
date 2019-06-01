@@ -6,7 +6,7 @@
 
     <groupId>br.bukkit</groupId>
     <artifactId>BrAPI</artifactId>
-    <version>Release-4.1.1</version>
+    <version>Release-4.1.2</version>
     <packaging>jar</packaging>
 
     <name>BrAPI</name>
