@@ -12,6 +12,7 @@ object ItemBuilder {
     data class Building(
             val material: Material
     ) {
+        var amount:Int = 1
         var displayName: String? = null
         var lore: MutableList<String>? = null
         var unbreakable = false
@@ -19,7 +20,7 @@ object ItemBuilder {
         var ench: MutableMap<Enchantment, Int>? = null
 
         fun build(): ItemStack {
-            val item = ItemStack(material)
+            val item = ItemStack(material, amount, durability)
             val im = +item
             if (displayName != null) im.displayName = displayName
             if (lore != null) im.lore = lore
@@ -37,6 +38,11 @@ object ItemBuilder {
                 }
             }
             return item
+        }
+
+        infix fun amount(v:Int):Building{
+            this.amount = v
+            return this
         }
 
         infix fun name(name: String): Building {

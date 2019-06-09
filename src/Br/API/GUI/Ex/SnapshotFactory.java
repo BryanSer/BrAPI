@@ -25,6 +25,7 @@ public abstract class SnapshotFactory<T extends BaseUI> {
 
     protected SnapshotFactory(String name) {
     }
+    
 
     protected SnapshotFactory() {
     }

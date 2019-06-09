@@ -27,7 +27,7 @@ class KtUIBuilder private constructor(
 
     public var snapshotInit: SnapshotFactoryInit? = null
         private set
-    public var onClose: Close? = null
+    public var close: Close? = null
         private set
     val contains: Array<KtItem?> = arrayOfNulls<KtItem?>(rows * 9)
 
@@ -50,15 +50,18 @@ class KtUIBuilder private constructor(
             return contains[slot]
         }
 
-        override fun onClose(p: Player?, s: Snapshot<*>?) {
-            onClose(p, s)
+        override fun onClose(p: Player, s: Snapshot<*>) {
+            if (close != null){
+                close!!(p, s)
+            }
+
         }
     }
 
     var currencyIndex: Int = 0
 
     infix fun onClose(close: Close): KtUIBuilder {
-        onClose = close
+        this.close = close
         return this
     }
 

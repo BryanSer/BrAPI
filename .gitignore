@@ -15,4 +15,5 @@ hs_err_pid*
 *.mf
 *.properties
 /dist/
-.idea/
+.idea/*
+target/*

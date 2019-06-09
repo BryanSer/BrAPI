@@ -202,6 +202,7 @@ public class UIManager {
                 evt.setCancelled(true);
                 if (snap == null) {
                     Bukkit.getConsoleSender().sendMessage("BrAPI-ExUI系统处理发生异常, [" + ui.getName() + ": " + ui.getClass().getName() + "] 的Snapshot@" + p.getName() + " 无法获得");
+                    Bukkit.getScheduler().runTask(PluginData.plugin, p::closeInventory);
                     return;
                 }
                 ExItem item = snap.getItem(slot);
