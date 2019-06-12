@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import org.bukkit.plugin.Plugin;
 
 /**
@@ -88,6 +89,10 @@ public class ScriptLoader {
         Thread.currentThread().setContextClassLoader(p.getClass().getClassLoader());
         ScriptEngineManager EngineManager = new ScriptEngineManager(p.getClass().getClassLoader());
         NashornScriptEngine ns = (NashornScriptEngine) EngineManager.getEngineByName("nashorn");
+        if(ns == null){
+            NashornScriptEngineFactory nsef = new NashornScriptEngineFactory();
+            ns = (NashornScriptEngine) nsef.getScriptEngine();
+        }
         c.accept(ns);
         Thread.currentThread().setContextClassLoader(backup);
         return ns;
