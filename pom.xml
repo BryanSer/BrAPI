@@ -86,6 +86,7 @@
                     <noJdkLink>false</noJdkLink>
                     <noStdlibLink>false</noStdlibLink>
                     <outputDir>${project.basedir}/dokka</outputDir>
+                    <outputFormat>gfm</outputFormat>
                 </configuration>
                 <executions>
                     <execution>
@@ -102,11 +103,6 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <destDir>JavaDoc</destDir>
-                    <externalDocumentationLinks>
-                        <link>
-                            <url>https://hub.spigotmc.org/javadocs/spigot/</url>
-                        </link>
-                    </externalDocumentationLinks>
 
                     <reportOutputDirectory>${project.basedir}/</reportOutputDirectory>
                 </configuration>
