@@ -4,9 +4,9 @@ Br.API.Data
 Br.API.GUI
 Br.API.GUI.Ex
 Br.API.Item
-Br.API.LangUtils
 Br.API.List
 Br.API.Lore
 Br.API.Map
 Br.API.NBT
+Br.API.ParticleEffect
 Br.API.Scripts

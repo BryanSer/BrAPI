@@ -10,14 +10,6 @@
     <packaging>jar</packaging>
 
     <name>BrAPI</name>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.3.31</kotlin.version>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <lib.path>${project.basedir}/libs</lib.path>
-    </properties>
-
-
     <build>
         <sourceDirectory>${project.basedir}/src</sourceDirectory>
         <defaultGoal>clean package</defaultGoal>
@@ -80,6 +72,48 @@
                 </executions>
             </plugin>
             <plugin>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <configuration>
+                    <externalDocumentationLinks>
+                        <link>
+                            <url>https://hub.spigotmc.org/javadocs/spigot/</url>
+                        </link>
+                    </externalDocumentationLinks>
+                    <includes>
+                        <include>README.md</include>
+                    </includes>
+                    <jdkVersion>8</jdkVersion>
+                    <noJdkLink>false</noJdkLink>
+                    <noStdlibLink>false</noStdlibLink>
+                    <outputDir>${project.basedir}/dokka</outputDir>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>dokka</goal>
+                        </goals>
+                        <phase>pre-site</phase>
+                    </execution>
+                </executions>
+                <groupId>org.jetbrains.dokka</groupId>
+                <version>0.9.18</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <destDir>JavaDoc</destDir>
+                    <externalDocumentationLinks>
+                        <link>
+                            <url>https://hub.spigotmc.org/javadocs/spigot/</url>
+                        </link>
+                    </externalDocumentationLinks>
+
+                    <reportOutputDirectory>${project.basedir}/</reportOutputDirectory>
+                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>2.9.1</version>
+            </plugin>
+            <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin.version}</version>
@@ -117,6 +151,21 @@
             </resource>
         </resources>
     </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin.version>1.3.31</kotlin.version>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <lib.path>${project.basedir}/libs</lib.path>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
 
     <repositories>
         <repository>

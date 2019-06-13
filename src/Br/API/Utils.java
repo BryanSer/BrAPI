@@ -809,7 +809,7 @@ public abstract class Utils {
     public static class Coordinate {
 
         /**
-         * 创建二维->三维投影器
+         * 创建二维→三维投影器
          *
          * @param loc 投影的原点
          * @param n 投影屏幕的法向量
