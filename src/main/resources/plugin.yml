@@ -1,7 +1,7 @@
 name: BrAPI
 author: Bryan_lzh
-authors: ['Bryan_lzh','龚明秋','DarkBlade12']
-main: Br.API.Main
+authors: ['Bryan_lzh','DarkBlade12']
+main: com.github.bryanser.brapi
 description: '开发者QQ:390807154'
 softdepend: [Vault,ProtocolLib]
 version: ${project.version}
