@@ -7,6 +7,7 @@ package Br.API;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
@@ -16,7 +17,7 @@ public abstract class PluginData {
     
 
     public static List<ItemInfo> ItemDatas = new ArrayList<>();
-    public static Main plugin;
+    public static JavaPlugin plugin;
     
     public static ItemInfo traversal(ItemStack is) {
         if (is == null) {
