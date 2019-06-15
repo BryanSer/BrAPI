@@ -2,4 +2,4 @@
 
 # getPlugin
 
-`fun getPlugin(): `[`Main`](index.md) [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Main.kt#L24)
+`fun getPlugin(): `[`Main`](index.md) [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Main.kt#L27)

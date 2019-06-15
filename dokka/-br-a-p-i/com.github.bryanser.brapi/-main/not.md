@@ -2,4 +2,4 @@
 
 # not
 
-`operator fun not(): `[`Main`](index.md) [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Main.kt#L25)
+`operator fun not(): `[`Main`](index.md) [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Main.kt#L28)

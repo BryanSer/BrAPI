@@ -6,12 +6,8 @@
 
 | Name | Summary |
 |---|---|
-| [ItemBuilder](-item-builder/index.md) | `object ItemBuilder`
-
-# 使用范例:
-
- |
-| [Main](-main/index.md) | `class Main : `[`JavaPlugin`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/plugin/java/JavaPlugin.html) |
+| [ItemBuilder](-item-builder/index.md) | `object ItemBuilder`<br>构造物品工具 |
+| [Main](-main/index.md) | `class Main : `[`JavaPlugin`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/plugin/java/JavaPlugin.html)<br>插件主类 |
 | [Utils](-utils/index.md) | `object Utils` |
 
 ### Type Aliases

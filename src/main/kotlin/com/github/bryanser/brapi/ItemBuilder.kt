@@ -5,7 +5,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 
 /**
- *  # 使用范例:
+ * 构造物品工具
  * ```
  *  val item = (ItemBuilder create Material.STONE name "§6物品名" lore "lore")()
  * ```

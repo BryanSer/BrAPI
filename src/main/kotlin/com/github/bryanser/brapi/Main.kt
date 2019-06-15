@@ -6,7 +6,10 @@ import java.io.File
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 
-
+/**
+ * 插件主类
+ *
+ */
 class Main : JavaPlugin() {
     override fun onEnable() {
         PLGUIN = this

@@ -93,7 +93,7 @@
                     <noJdkLink>false</noJdkLink>
                     <noStdlibLink>false</noStdlibLink>
                     <outputDir>${project.basedir}/dokka</outputDir>
-                    <outputFormat>html</outputFormat>
+                    <outputFormat>gfm</outputFormat>
                 </configuration>
                 <executions>
                     <execution>
