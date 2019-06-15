@@ -11,7 +11,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.File;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -37,7 +36,9 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
  */
 public class CommandChannel implements PluginMessageListener {
 
-    private static final String OUT = "BrAPICmdCnlOut";
+    public static final String CHANNEL_OUT = "brapi:commandout";
+    public static final String CHANNEL_IN = "brapi:commandin";
+
 
     public enum PermissionLevel {
         Player {
@@ -154,7 +155,7 @@ public class CommandChannel implements PluginMessageListener {
                 }
                 return false;
             }
-            Bukkit.getServer().sendPluginMessage(PluginData.plugin, OUT, msg.getBytes());
+            Bukkit.getServer().sendPluginMessage(PluginData.plugin, CHANNEL_OUT, msg.getBytes());
             return true;
         }
 
@@ -193,7 +194,7 @@ public class CommandChannel implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (channel.equals("BrAPICmdCnlIn")) {
+        if (channel.equals(CHANNEL_IN)) {
             String msg = new String(message);
             JsonObject json = JSON_PARSER.parse(msg).getAsJsonObject();
             RegisterCommand rm = RegisterCommand.createRegisterCommand(json);

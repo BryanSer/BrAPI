@@ -46,8 +46,8 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         ItemManager.loadConfig();
         Utils.econ = this.setupEconomy();
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, "BrAPICmdCnlIn", new CommandChannel());
-        Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BrAPICmdCnlOut");
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, CommandChannel.CHANNEL_IN, new CommandChannel());
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, CommandChannel.CHANNEL_OUT);
     }
 
     private Economy setupEconomy() {
