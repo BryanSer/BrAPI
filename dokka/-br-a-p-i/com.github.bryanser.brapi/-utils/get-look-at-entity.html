@@ -1,0 +1,26 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Utils.getLookAtEntity - BrAPI</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">BrAPI</a>&nbsp;/&nbsp;<a href="../index.html">com.github.bryanser.brapi</a>&nbsp;/&nbsp;<a href="index.html">Utils</a>&nbsp;/&nbsp;<a href="./get-look-at-entity.html">getLookAtEntity</a><br/>
+<br/>
+<h1>getLookAtEntity</h1>
+<a name="com.github.bryanser.brapi.Utils$getLookAtEntity(org.bukkit.entity.LivingEntity, kotlin.Double, kotlin.Int, kotlin.Function1((org.bukkit.block.Block, kotlin.Boolean)))"></a>
+<code><span class="identifier">@JvmStatic</span> <span class="keyword">fun </span><span class="identifier">getLookAtEntity</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.Utils$getLookAtEntity(org.bukkit.entity.LivingEntity, kotlin.Double, kotlin.Int, kotlin.Function1((org.bukkit.block.Block, kotlin.Boolean)))/e">e</span><span class="symbol">:</span>&nbsp;<a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/LivingEntity.html"><span class="identifier">LivingEntity</span></a><span class="symbol">, </span><span class="identifier" id="com.github.bryanser.brapi.Utils$getLookAtEntity(org.bukkit.entity.LivingEntity, kotlin.Double, kotlin.Int, kotlin.Function1((org.bukkit.block.Block, kotlin.Boolean)))/maxlength">maxlength</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a><span class="symbol">, </span><span class="identifier" id="com.github.bryanser.brapi.Utils$getLookAtEntity(org.bukkit.entity.LivingEntity, kotlin.Double, kotlin.Int, kotlin.Function1((org.bukkit.block.Block, kotlin.Boolean)))/ρ">ρ</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;50<span class="symbol">, </span><span class="identifier" id="com.github.bryanser.brapi.Utils$getLookAtEntity(org.bukkit.entity.LivingEntity, kotlin.Double, kotlin.Int, kotlin.Function1((org.bukkit.block.Block, kotlin.Boolean)))/exit">exit</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Block.html"><span class="identifier">Block</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;{ it.type != Material.AIR }<span class="symbol">)</span><span class="symbol">: </span><a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/LivingEntity.html"><span class="identifier">LivingEntity</span></a><span class="symbol">?</span></code> <a href="https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Utils.kt#L263">(source)</a>
+<p>获得一个实体指针指向的实体</p>
+<h3>Parameters</h3>
+<p><a name="e"></a>
+<code>e</code> - 实体</p>
+<p><a name="maxlength"></a>
+<code>maxlength</code> - 最大搜索距离</p>
+<p><a name="ρ"></a>
+<code>ρ</code> - 搜索精度(越大越好) 默认50</p>
+<p><a name="exit"></a>
+<code>exit</code> - 停止搜索的条件, 默认为遇到非空气</p>
+<p><strong>Return</strong><br/>
+</p>
+</BODY>
+</HTML>

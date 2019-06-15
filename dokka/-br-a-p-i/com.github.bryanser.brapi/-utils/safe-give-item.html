@@ -1,0 +1,22 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Utils.safeGiveItem - BrAPI</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">BrAPI</a>&nbsp;/&nbsp;<a href="../index.html">com.github.bryanser.brapi</a>&nbsp;/&nbsp;<a href="index.html">Utils</a>&nbsp;/&nbsp;<a href="./safe-give-item.html">safeGiveItem</a><br/>
+<br/>
+<h1>safeGiveItem</h1>
+<a name="com.github.bryanser.brapi.Utils$safeGiveItem(org.bukkit.entity.Player, org.bukkit.inventory.ItemStack, kotlin.Function2((org.bukkit.entity.Player, org.bukkit.inventory.ItemStack, kotlin.Unit)))"></a>
+<code><span class="identifier">@JvmStatic</span> <span class="keyword">fun </span><span class="identifier">safeGiveItem</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.Utils$safeGiveItem(org.bukkit.entity.Player, org.bukkit.inventory.ItemStack, kotlin.Function2((org.bukkit.entity.Player, org.bukkit.inventory.ItemStack, kotlin.Unit)))/p">p</span><span class="symbol">:</span>&nbsp;<a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html"><span class="identifier">Player</span></a><span class="symbol">, </span><span class="identifier" id="com.github.bryanser.brapi.Utils$safeGiveItem(org.bukkit.entity.Player, org.bukkit.inventory.ItemStack, kotlin.Function2((org.bukkit.entity.Player, org.bukkit.inventory.ItemStack, kotlin.Unit)))/item">item</span><span class="symbol">:</span>&nbsp;<a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemStack.html"><span class="identifier">ItemStack</span></a><span class="symbol">, </span><span class="identifier" id="com.github.bryanser.brapi.Utils$safeGiveItem(org.bukkit.entity.Player, org.bukkit.inventory.ItemStack, kotlin.Function2((org.bukkit.entity.Player, org.bukkit.inventory.ItemStack, kotlin.Unit)))/whenInvFull">whenInvFull</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Player.html"><span class="identifier">Player</span></a><span class="symbol">,</span>&nbsp;<a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemStack.html"><span class="identifier">ItemStack</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;::safeDropItem<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code> <a href="https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Utils.kt#L114">(source)</a>
+<p>安全的添加物品到玩家背包,如果玩家背包满了. 会将物品丢弃到地上</p>
+<h3>Parameters</h3>
+<p><a name="p"></a>
+<code>p</code> - 玩家</p>
+<p><a name="item"></a>
+<code>item</code> - 物品</p>
+<p><a name="whenInvFull"></a>
+<code>whenInvFull</code> - 当背包满了的时候执行的操作 默认丢弃到附近:<a href="safe-drop-item.html">safeDropItem</a></p>
+</BODY>
+</HTML>

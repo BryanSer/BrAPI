@@ -1,0 +1,6 @@
+$dokka.format:gfm
+$dokka.linkExtension:md
+$dokka.location:com.github.bryanser.brapi$msg(org.bukkit.entity.Player, kotlin.String)com.github.bryanser.brapi/org.bukkit.entity.-player/msg.md
+$dokka.location:com.github.bryanser.brapi$plusAssign(org.bukkit.inventory.ItemStack, org.bukkit.inventory.meta.ItemMeta)com.github.bryanser.brapi/org.bukkit.inventory.-item-stack/plus-assign.md
+$dokka.location:com.github.bryanser.brapi$unaryPlus(org.bukkit.inventory.ItemStack)com.github.bryanser.brapi/org.bukkit.inventory.-item-stack/unary-plus.md
+com.github.bryanser.brapi

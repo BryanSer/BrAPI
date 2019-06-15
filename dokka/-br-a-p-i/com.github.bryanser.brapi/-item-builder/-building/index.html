@@ -1,0 +1,177 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ItemBuilder.Building - BrAPI</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">BrAPI</a>&nbsp;/&nbsp;<a href="../../index.html">com.github.bryanser.brapi</a>&nbsp;/&nbsp;<a href="../index.html">ItemBuilder</a>&nbsp;/&nbsp;<a href="./index.html">Building</a><br/>
+<br/>
+<h1>Building</h1>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Building</span></code> <a href="https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L57">(source)</a>
+<p>物品构造器</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">Building</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$<init>(org.bukkit.Material)/material">material</span><span class="symbol">:</span>&nbsp;<a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html"><span class="identifier">Material</span></a><span class="symbol">)</span></code>
+<p>物品构造器</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="amount.html">amount</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">amount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<p>物品数量</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="display-name.html">displayName</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">displayName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code>
+<p>物品显示名</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="durability.html">durability</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">durability</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-short/index.html"><span class="identifier">Short</span></a></code>
+<p>物品损伤值</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="ench.html">ench</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">ench</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html"><span class="identifier">Enchantment</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code>
+<p>物品附魔</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="lore.html">lore</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">lore</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code>
+<p>物品Lore</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="material.html">material</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">material</span><span class="symbol">: </span><a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html"><span class="identifier">Material</span></a></code>
+<p>物品类型</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="unbreakable.html">unbreakable</a></p>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">unbreakable</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code>
+<p>是否不可破坏</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="amount.html">amount</a></p>
+</td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">amount</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$amount(kotlin.Int)/v">v</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="build.html">build</a></p>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemStack.html"><span class="identifier">ItemStack</span></a></code>
+<p>构造物品</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="durability.html">durability</a></p>
+</td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">durability</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$durability(kotlin.Int)/dur">dur</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="ench.html">ench</a></p>
+</td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">ench</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$ench(kotlin.Pair((org.bukkit.enchantments.Enchantment, kotlin.Int)))/pair">pair</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html"><span class="identifier">Enchantment</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="invoke.html">invoke</a></p>
+</td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">invoke</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemStack.html"><span class="identifier">ItemStack</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="lore.html">lore</a></p>
+</td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">lore</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$lore(kotlin.String)/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code><br/>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">lore</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$lore(kotlin.Array((kotlin.String)))/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code><br/>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">lore</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$lore(kotlin.Function1((kotlin.collections.MutableList((kotlin.String)), kotlin.Unit)))/func">func</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="name.html">name</a></p>
+</td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">name</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$name(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="plus.html">plus</a></p>
+</td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">plus</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$plus(kotlin.Array((kotlin.String)))/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code><br/>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">plus</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$plus(kotlin.String)/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="plus-assign.html">plusAssign</a></p>
+</td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">plusAssign</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$plusAssign(kotlin.Array((kotlin.String)))/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">plusAssign</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$plusAssign(kotlin.String)/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<p><a href="unbreakable.html">unbreakable</a></p>
+</td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">unbreakable</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder.Building$unbreakable(kotlin.Boolean)/u">u</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ItemBuilder.Building</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

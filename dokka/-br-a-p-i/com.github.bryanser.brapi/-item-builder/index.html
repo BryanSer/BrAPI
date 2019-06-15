@@ -1,0 +1,55 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ItemBuilder - BrAPI</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">BrAPI</a>&nbsp;/&nbsp;<a href="../index.html">com.github.bryanser.brapi</a>&nbsp;/&nbsp;<a href="./index.html">ItemBuilder</a><br/>
+<br/>
+<h1>ItemBuilder</h1>
+<code><span class="keyword">object </span><span class="identifier">ItemBuilder</span></code> <a href="https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L13">(source)</a>
+<h1>使用范例:</h1>
+<pre><code>val item = (ItemBuilder create Material.STONE name "§6物品名" lore "lore")()
+</code></pre>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-building/index.html">Building</a></p>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Building</span></code>
+<p>物品构造器</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="create.html">create</a></p>
+</td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">create</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder$create(kotlin.Int)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-building/index.html"><span class="identifier">ItemBuilder.Building</span></a></code><br/>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="identifier">create</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder$create(org.bukkit.Material)/material">material</span><span class="symbol">:</span>&nbsp;<a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html"><span class="identifier">Material</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-building/index.html"><span class="identifier">ItemBuilder.Building</span></a></code>
+<p>创建一个物品构造器</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="times.html">times</a></p>
+</td>
+<td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">times</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder$times(org.bukkit.Material)/material">material</span><span class="symbol">:</span>&nbsp;<a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html"><span class="identifier">Material</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-building/index.html"><span class="identifier">ItemBuilder.Building</span></a></code><br/>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">times</span><span class="symbol">(</span><span class="identifier" id="com.github.bryanser.brapi.ItemBuilder$times(kotlin.Int)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-building/index.html"><span class="identifier">ItemBuilder.Building</span></a></code>
+<p>创建一个物品构造器</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
