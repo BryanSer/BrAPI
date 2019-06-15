@@ -1,4 +1,4 @@
-package Br.API.ktsuger
+package com.github.bryanser.brapi
 
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

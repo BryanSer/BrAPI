@@ -1,24 +1,74 @@
-package Br.API.ktsuger
+package com.github.bryanser.brapi
 
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 
+/**
+ *  # 使用范例:
+ * ```
+ *  val item = (ItemBuilder create Material.STONE name "§6物品名" lore "lore")()
+ * ```
+ */
 object ItemBuilder {
+    /**
+     * 创建一个物品构造器
+     *
+     * @param id 物品ID
+     * @return 构造器
+     */
+    infix fun create(id: Int): Building = Building(Material.getMaterial(id))
+
+    /**
+     * 创建一个物品构造器
+     *
+     * @param material 物品类型
+     * @return 构造器
+     */
     infix fun create(material: Material): Building = Building(material)
 
+    /**
+     * 创建一个物品构造器
+     *
+     * @param material 物品类型
+     * @return 构造器
+     */
     operator fun times(material: Material): Building = Building(material)
 
+    /**
+     * 创建一个物品构造器
+     *
+     * @param id 物品ID
+     * @return 构造器
+     */
+    operator fun times(id: Int): Building = Building(Material.getMaterial(id))
+
+    /**
+     * 物品构造器
+     *
+     * @property material 物品类型
+     * @property amount 物品数量
+     * @property displayName 物品显示名
+     * @property lore 物品Lore
+     * @property unbreakable 是否不可破坏
+     * @property durability 物品损伤值
+     * @property ench 物品附魔
+     */
     data class Building(
             val material: Material
     ) {
-        var amount:Int = 1
+        var amount: Int = 1
         var displayName: String? = null
         var lore: MutableList<String>? = null
         var unbreakable = false
         var durability: Short = 0
         var ench: MutableMap<Enchantment, Int>? = null
 
+        /**
+         * 构造物品
+         *
+         * @return 物品
+         */
         fun build(): ItemStack {
             val item = ItemStack(material, amount, durability)
             val im = +item
@@ -40,7 +90,7 @@ object ItemBuilder {
             return item
         }
 
-        infix fun amount(v:Int):Building{
+        infix fun amount(v: Int): Building {
             this.amount = v
             return this
         }

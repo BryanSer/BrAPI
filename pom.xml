@@ -11,7 +11,7 @@
 
     <name>BrAPI</name>
     <build>
-        <sourceDirectory>${project.basedir}/src</sourceDirectory>
+        <sourceDirectory>${project.basedir}/src/main/kotlin/</sourceDirectory>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
@@ -74,19 +74,26 @@
             <plugin>
                 <artifactId>dokka-maven-plugin</artifactId>
                 <configuration>
+                    <sourceLinks>
+                        <link>
+                            <dir>src/main/kotlin</dir>
+                            <url>https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/</url>
+                            <urlSuffix>#L</urlSuffix>
+                        </link>
+                    </sourceLinks>
                     <externalDocumentationLinks>
                         <link>
                             <url>https://hub.spigotmc.org/javadocs/spigot/</url>
                         </link>
                     </externalDocumentationLinks>
                     <includes>
-                        <include>README.md</include>
+                        <include>${project.basedir}/README.md</include>
                     </includes>
                     <jdkVersion>8</jdkVersion>
                     <noJdkLink>false</noJdkLink>
                     <noStdlibLink>false</noStdlibLink>
                     <outputDir>${project.basedir}/dokka</outputDir>
-                    <outputFormat>gfm</outputFormat>
+                    <outputFormat>html</outputFormat>
                 </configuration>
                 <executions>
                     <execution>
@@ -99,16 +106,24 @@
                 <groupId>org.jetbrains.dokka</groupId>
                 <version>0.9.18</version>
             </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <destDir>JavaDoc</destDir>
-
-                    <reportOutputDirectory>${project.basedir}/</reportOutputDirectory>
-                </configuration>
-                <groupId>org.apache.maven.plugins</groupId>
-                <version>2.9.1</version>
-            </plugin>
+<!--            <plugin>-->
+<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <links>-->
+<!--                        <link>https://hub.spigotmc.org/javadocs/spigot/</link>-->
+<!--                    </links>-->
+<!--                    <destDir>JavaDoc</destDir>-->
+<!--                    <javaApiLinks>-->
+<!--                        <property>-->
+<!--                            <name>api_1.8</name>-->
+<!--                            <value>https://docs.oracle.com/javase/8/docs/api/</value>-->
+<!--                        </property>-->
+<!--                    </javaApiLinks>-->
+<!--                    <reportOutputDirectory>${project.basedir}/</reportOutputDirectory>-->
+<!--                </configuration>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <version>2.9.1</version>-->
+<!--            </plugin>-->
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
