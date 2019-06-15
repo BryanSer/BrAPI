@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack
 
 /**
  * 构造物品工具
+ * 用法:
  * ```
  *  val item = (ItemBuilder create Material.STONE name "§6物品名" lore "lore")()
  * ```
