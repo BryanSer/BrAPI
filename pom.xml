@@ -204,7 +204,7 @@
         <dependency>
             <groupId>br.bukkit</groupId>
             <artifactId>BrAPI</artifactId>
-            <version>Release-4.1.2</version>
+            <version>Release-4.1.2-NoPlugin</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jetbrains.kotlin</groupId>
