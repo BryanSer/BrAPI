@@ -159,6 +159,9 @@
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>/resources/plugin.yml</exclude>
+                </excludes>
             </resource>
         </resources>
     </build>
@@ -202,6 +205,12 @@
             <groupId>br.bukkit</groupId>
             <artifactId>BrAPI</artifactId>
             <version>Release-4.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>org.jetbrains.kotlin</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>

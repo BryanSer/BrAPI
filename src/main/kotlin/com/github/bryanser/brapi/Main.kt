@@ -14,6 +14,7 @@ class Main : JavaPlugin() {
     override fun onEnable() {
         PLGUIN = this
         compOld()
+        ScriptManager.test()
     }
 
     override fun onDisable() {
