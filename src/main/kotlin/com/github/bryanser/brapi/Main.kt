@@ -50,8 +50,8 @@ class Main : JavaPlugin() {
         ConfigurationSerialization.registerClass(Br.API.Data.Zone::class.java)
         Br.API.Item.ItemManager.loadConfig()
         Bukkit.getPluginManager().registerEvents(Br.API.EventListener(), this)
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, "BrAPICmdCnlIn", Br.API.Commands.CommandChannel())
-        Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BrAPICmdCnlOut")
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, Br.API.Commands.CommandChannel.CHANNEL_IN, Br.API.Commands.CommandChannel())
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, Br.API.Commands.CommandChannel.CHANNEL_OUT)
 
         val econ = Br.API.Utils::class.java.getDeclaredField("econ")
         econ.isAccessible = true
