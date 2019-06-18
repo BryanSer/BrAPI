@@ -2,7 +2,7 @@
 
 # getLookAtEntity
 
-`@JvmStatic fun getLookAtEntity(e: `[`LivingEntity`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/LivingEntity.html)`, maxlength: `[`Double`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html)`, ρ: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)` = 50, exit: (`[`Block`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Block.html)`) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)` = { it.type != Material.AIR }): `[`LivingEntity`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/LivingEntity.html)`?` [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Utils.kt#L263)
+`@JvmStatic fun getLookAtEntity(e: `[`LivingEntity`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/LivingEntity.html)`, maxlength: `[`Double`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html)`, ρ: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)` = 50, exit: (`[`Block`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Block.html)`) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)` = { it.type != Material.AIR }): `[`LivingEntity`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/LivingEntity.html)`?` [(source)](https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Utils.kt#L263)
 
 获得一个实体指针指向的实体
 

@@ -2,7 +2,7 @@
 
 # saveResource
 
-`@JvmStatic fun saveResource(p: `[`Plugin`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/plugin/Plugin.html)`, res: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, fold: `[`File`](https://docs.oracle.com/javase/8/docs/api/java/io/File.html)`? = null): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Utils.kt#L74)
+`@JvmStatic fun saveResource(p: `[`Plugin`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/plugin/Plugin.html)`, res: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, fold: `[`File`](https://docs.oracle.com/javase/8/docs/api/java/io/File.html)`? = null): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) [(source)](https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Utils.kt#L74)
 
 数据插件jar里的文件
 

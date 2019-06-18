@@ -2,7 +2,7 @@
 
 # Utils
 
-`object Utils` [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Utils.kt#L24)
+`object Utils` [(source)](https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/Utils.kt#L24)
 
 ### Properties
 

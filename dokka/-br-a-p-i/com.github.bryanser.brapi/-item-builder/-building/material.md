@@ -2,7 +2,7 @@
 
 # material
 
-`val material: `[`Material`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L58)
+`val material: `[`Material`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html) [(source)](https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L59)
 
 物品类型
 

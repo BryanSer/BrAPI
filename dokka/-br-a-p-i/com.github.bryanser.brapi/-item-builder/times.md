@@ -2,7 +2,7 @@
 
 # times
 
-`operator fun times(material: `[`Material`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)`): `[`ItemBuilder.Building`](-building/index.md) [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L36)
+`operator fun times(material: `[`Material`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)`): `[`ItemBuilder.Building`](-building/index.md) [(source)](https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L37)
 
 创建一个物品构造器
 
@@ -13,7 +13,7 @@
 **Return**
 构造器
 
-`operator fun times(id: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): `[`ItemBuilder.Building`](-building/index.md) [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L44)
+`operator fun times(id: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): `[`ItemBuilder.Building`](-building/index.md) [(source)](https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L45)
 
 创建一个物品构造器
 

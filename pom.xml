@@ -77,7 +77,7 @@
                     <sourceLinks>
                         <link>
                             <dir>src/main/kotlin</dir>
-                            <url>https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/</url>
+                            <url>https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/</url>
                             <urlSuffix>#L</urlSuffix>
                         </link>
                     </sourceLinks>

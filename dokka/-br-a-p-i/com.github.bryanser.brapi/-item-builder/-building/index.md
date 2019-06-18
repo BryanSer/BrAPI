@@ -2,7 +2,7 @@
 
 # Building
 
-`data class Building` [(source)](https://github.com/BryanSer/BrAPI/raw/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L57)
+`data class Building` [(source)](https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/com/github/bryanser/brapi/ItemBuilder.kt#L58)
 
 物品构造器
 

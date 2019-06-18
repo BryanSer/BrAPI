@@ -6,8 +6,9 @@
 
 | Name | Summary |
 |---|---|
-| [ItemBuilder](-item-builder/index.md) | `object ItemBuilder`<br>构造物品工具 |
+| [ItemBuilder](-item-builder/index.md) | `object ItemBuilder`<br>构造物品工具 用法: |
 | [Main](-main/index.md) | `class Main : `[`JavaPlugin`](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/plugin/java/JavaPlugin.html)<br>插件主类 |
+| [ScriptManager](-script-manager/index.md) | `object ScriptManager` |
 | [Utils](-utils/index.md) | `object Utils` |
 
 ### Type Aliases
