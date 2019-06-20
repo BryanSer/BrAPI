@@ -9,18 +9,6 @@ import java.net.URLClassLoader
 
 
 object ScriptManager {
-    fun test(){
-        val folder = Main.getPlugin().dataFolder
-        val f = File(folder,"nashorn.jar")
-        if(f.exists()){
-            val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
-            method.isAccessible = true
-            val classLoader = this.javaClass.classLoader as URLClassLoader
-            val url = f.toURI().toURL()
-            method.invoke(classLoader, url);
-            return
-        }
-    }
 
     fun checkClass() {
         try {
