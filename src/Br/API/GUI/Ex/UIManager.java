@@ -34,8 +34,10 @@ public class UIManager {
 
     public static ClickType getSuperClickType(ClickType t) {
         switch (t) {
+            case SHIFT_LEFT:
+                return ClickType.LEFT;
             case SHIFT_RIGHT:
-                return ClickType.SHIFT_LEFT;
+                return ClickType.RIGHT;
             case CONTROL_DROP:
                 return ClickType.DROP;
             default:

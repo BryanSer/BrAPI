@@ -114,6 +114,10 @@ class KtUIBuilder private constructor(
         this.currencyIndex--
         return this
     }
+    operator fun set(index: Int,item:KtItem): KtUIBuilder{
+        contains[index] = item
+        return this
+    }
 }
 typealias Close = (Player, Snapshot<*>) -> Unit
 typealias Click = (Player, Snapshot<*>) -> Unit
