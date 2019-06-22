@@ -104,7 +104,7 @@ class ColorData(
 
     override fun write(packet: PacketContainer, type: ParticleType?) {
         super.write(packet, type)
-        if (isVer14() && type?.bukkitType == Particle.ITEM_CRACK) {
+        if (isVer14()) {
             val redstone = MinecraftReflection.getMinecraftClass("ParticleParamRedstone")
             val con = redstone.getConstructor(java.lang.Float.TYPE, java.lang.Float.TYPE, java.lang.Float.TYPE, java.lang.Float.TYPE)
             val rd = con.newInstance(offsetX, offsetY, offsetZ, scale)
