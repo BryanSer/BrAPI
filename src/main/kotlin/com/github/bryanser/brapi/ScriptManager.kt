@@ -15,6 +15,7 @@ import java.net.URLClassLoader
 
 
 object ScriptManager {
+    var hasNashorn:Boolean = false
 
     class ScriptListener(
             val script: ScriptObjectMirror
@@ -79,6 +80,7 @@ object ScriptManager {
     fun checkClass() {
         try {
             Class.forName("jdk.nashorn.api.scripting.NashornScriptEngine")
+            hasNashorn = true
             return
         } catch (e: ClassNotFoundException) {
             val folder = Main.getPlugin().dataFolder
@@ -89,6 +91,7 @@ object ScriptManager {
                 val classLoader = this.javaClass.classLoader as URLClassLoader
                 val url = f.toURI().toURL()
                 method.invoke(classLoader, url);
+                hasNashorn = true
                 return
             }
             val log = Bukkit.getLogger()

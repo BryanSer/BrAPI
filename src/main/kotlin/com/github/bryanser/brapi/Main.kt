@@ -11,7 +11,8 @@ import org.bukkit.event.HandlerList
 import Br.API.Main.PluginsAmount
 import Br.API.Main.Plugins
 import Br.API.Main.RegisterMetrics
-
+import com.github.bryanser.brapi.test.TestManager
+import org.bukkit.ChatColor
 
 
 /**
@@ -19,9 +20,12 @@ import Br.API.Main.RegisterMetrics
  *
  */
 class Main : JavaPlugin() {
+
     override fun onEnable() {
         PLGUIN = this
         compOld()
+        ScriptManager.checkClass()
+        TestManager.init()
     }
 
     override fun onDisable() {
@@ -37,7 +41,8 @@ class Main : JavaPlugin() {
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        if(args.isEmpty()){
+        sender.sendMessage("???")
+        if (args.size == 0) {
             if (EventListener.Reg) {
                 RegisterMetrics()
                 EventListener.Reg = false
@@ -46,9 +51,32 @@ class Main : JavaPlugin() {
             for (s in Plugins) {
                 plugins = "$plugins$s|"
             }
-            sender.sendMessage(arrayOf(ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------"), ChatColor.translateAlternateColorCodes('&', "&aBrAPI已安装 版本: " + description.version), "§b当前依赖的插件数:$PluginsAmount", plugins, ChatColor.translateAlternateColorCodes('&', "&aBrAPI has been installed, Version: " + description.version), ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------")))
+            sender.sendMessage(arrayOf(ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------"),
+                    ChatColor.translateAlternateColorCodes('&', "&aBrAPI已安装 版本: " + description.version),
+                    "§b当前依赖的插件数:$PluginsAmount",
+                    plugins,
+                    ChatColor.translateAlternateColorCodes('&', "&aBrAPI has been installed, Version: " + description.version),
+                    ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------")))
+            return true
         }
-
+        if (args[0].equals("test", true) && args.size > 1) {
+            if(!TestManager.enable){
+                return true
+            }
+            val test = TestManager.tests[args[1]]
+            if (test == null) {
+                sender.sendMessage("§c找不到名为${args[1]}的测试脚本")
+                return true
+            }
+            val sargs = if (args.size <= 2) Array<String>(0) { "" } else args.copyOfRange(2, args.size)
+            val r = test.test(sender, *sargs)
+            if (r.isEmpty()) {
+                sender.sendMessage("§6测试脚本执行成功")
+            } else {
+                sender.sendMessage("§c测试脚本执行失败: $r")
+            }
+            return true
+        }
         return true
     }
 
