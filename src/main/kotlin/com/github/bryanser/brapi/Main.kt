@@ -1,10 +1,18 @@
 package com.github.bryanser.brapi
 
+import Br.API.EventListener
 import org.bukkit.configuration.serialization.ConfigurationSerialization
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import org.bukkit.Bukkit
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
 import org.bukkit.event.HandlerList
+import Br.API.Main.PluginsAmount
+import Br.API.Main.Plugins
+import Br.API.Main.RegisterMetrics
+
+
 
 /**
  * 插件主类
@@ -28,6 +36,21 @@ class Main : JavaPlugin() {
         operator fun not(): Main = PLGUIN
     }
 
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+        if(args.isEmpty()){
+            if (EventListener.Reg) {
+                RegisterMetrics()
+                EventListener.Reg = false
+            }
+            var plugins = "§a"
+            for (s in Plugins) {
+                plugins = "$plugins$s|"
+            }
+            sender.sendMessage(arrayOf(ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------"), ChatColor.translateAlternateColorCodes('&', "&aBrAPI已安装 版本: " + description.version), "§b当前依赖的插件数:$PluginsAmount", plugins, ChatColor.translateAlternateColorCodes('&', "&aBrAPI has been installed, Version: " + description.version), ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------")))
+        }
+
+        return true
+    }
 
     //////////////////////////////////////////////////////////////////////////////以下为遗留代码
     private fun compOldDisable() {

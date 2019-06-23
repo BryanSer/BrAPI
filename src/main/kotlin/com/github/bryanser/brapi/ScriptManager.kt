@@ -1,10 +1,13 @@
 package com.github.bryanser.brapi
 
+import jdk.nashorn.api.scripting.NashornScriptEngine
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory
 import jdk.nashorn.api.scripting.ScriptObjectMirror
 import org.bukkit.Bukkit
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.plugin.Plugin
 import java.io.File
 import java.net.URL
 import java.util.logging.Level
@@ -20,6 +23,7 @@ object ScriptManager {
             script.call(script, evt)
         }
     }
+
     fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
         if (listener.isFunction) {
             val evt = Class.forName(event) ?: return null
@@ -32,6 +36,7 @@ object ScriptManager {
         }
         return null
     }
+
     fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener? {
         if (listener.isFunction) {
             val evt = Class.forName(event) ?: return null
@@ -57,6 +62,7 @@ object ScriptManager {
         }
         return null
     }
+
     fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener? {
         if (listener.isFunction) {
             val evt = Class.forName(event) ?: return null
@@ -93,5 +99,11 @@ object ScriptManager {
             log.log(Level.WARNING, "并将jar放入 /plugins/BrAPI 目录下")
             log.log(Level.WARNING, "=================================================================")
         }
+    }
+
+    fun createScriptEngine(plugin: Plugin): NashornScriptEngine {
+        val factory = NashornScriptEngineFactory()
+        val eng = factory.getScriptEngine(plugin.javaClass.classLoader) as NashornScriptEngine
+        return eng
     }
 }

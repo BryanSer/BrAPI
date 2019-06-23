@@ -1,19 +1,29 @@
 #开发用测试选项
 EnableTest: false
 Global: |
-    var namespace = 'com.github.bryanser.brapi'
+    var sender //全局变量, 发送测试请求的玩家或控制台对象
+    var namespace = 'com.github.bryanser.brapi';
     fun type(name){
-        return Java.type(namespace + '.' + name)
+        return Java.type(namespace + '.' + name);
     }
-    var Utils = type('Utils')
+    fun double(str){
+        var Double = Java.type('java.lang.Double');
+        return Double.parseDouble(str);
+    }
+    var Utils = type('Utils');
 Test:
     dust:
         Args: 3
         Function: test
         Script: |
-            var ParticleType = type('particle.ParticleType')
-            var ParticleInfo = type('particle.ParticleInfo')
-            function test(r,g,b){
-                var info = new ParticleInfo()
-                
+            var ParticleType = type('particle.ParticleType');
+            var ParticleInfo = type('particle.ParticleInfo');
+            var ColorData = type('particle.ColorData');
+            var Float = Java.type('java.lang.Float');
+            function test(r, g, b){
+                r = double(r);
+                g = double(g);
+                b = double(b);
+                var info = new ParticleInfo(ParticleType.COLORFUL_DUST, new ColorData(r, g, b, Float.parseFloat('0.1')), 5);
+                info.playParticle(sender.getLocation(), 50, true);
             }
