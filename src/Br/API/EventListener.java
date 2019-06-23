@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
  */
 public class EventListener implements Listener {
 
-    static boolean Reg = true;
+    public static boolean Reg = true;
 
     @EventHandler
     public void onJoin(PlayerJoinEvent evt) {
