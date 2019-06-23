@@ -1,0 +1,19 @@
+#开发用测试选项
+EnableTest: false
+Global: |
+    var namespace = 'com.github.bryanser.brapi'
+    fun type(name){
+        return Java.type(namespace + '.' + name)
+    }
+    var Utils = type('Utils')
+Test:
+    dust:
+        Args: 3
+        Function: test
+        Script: |
+            var ParticleType = type('particle.ParticleType')
+            var ParticleInfo = type('particle.ParticleInfo')
+            function test(r,g,b){
+                var info = new ParticleInfo()
+                
+            }
