@@ -3,10 +3,10 @@ EnableTest: false
 Global: |
     var sender //全局变量, 发送测试请求的玩家或控制台对象
     var namespace = 'com.github.bryanser.brapi';
-    fun type(name){
+    function type(name){
         return Java.type(namespace + '.' + name);
     }
-    fun double(str){
+    function double(str){
         var Double = Java.type('java.lang.Double');
         return Double.parseDouble(str);
     }
