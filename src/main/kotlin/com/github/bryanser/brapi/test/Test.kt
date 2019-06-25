@@ -25,8 +25,7 @@ class Test(config: ConfigurationSection) {
         if (args.size != this.args) {
             return "参数长度不正确 需求参数长度:${this.args}"
         }
-        script.context.setAttribute("sender", sender, ScriptContext.GLOBAL_SCOPE)
-        script.invokeFunction(function, *args)
+        script.invokeFunction(function, sender, *args)
         return ""
     }
 }

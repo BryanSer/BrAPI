@@ -1,14 +1,9 @@
 #开发用测试选项
 EnableTest: false
 Global: |
-    var sender //全局变量, 发送测试请求的玩家或控制台对象
     var namespace = 'com.github.bryanser.brapi';
     function type(name){
         return Java.type(namespace + '.' + name);
-    }
-    function double(str){
-        var Double = Java.type('java.lang.Double');
-        return Double.parseDouble(str);
     }
     var Utils = type('Utils');
 Test:
@@ -19,11 +14,11 @@ Test:
             var ParticleType = type('particle.ParticleType');
             var ParticleInfo = type('particle.ParticleInfo');
             var ColorData = type('particle.ColorData');
-            var Float = Java.type('java.lang.Float');
-            function test(r, g, b){
-                r = double(r);
-                g = double(g);
-                b = double(b);
-                var info = new ParticleInfo(ParticleType.COLORFUL_DUST, new ColorData(r, g, b, Float.parseFloat('0.1')), 5);
-                info.playParticle(sender.getLocation(), 50, true);
+            function test(sender, r, g, b){
+                r = r / 255.0;
+                g = g / 255.0;
+                b = b / 255.0;
+                var info = new ParticleInfo(ParticleType.COLORFUL_DUST, new ColorData(r, g, b, 0.1), 1.0, 0);
+                for(var i = 0; i < 10; i++)
+                    info.playParticle(sender.getLocation(), 50, true);
             }
