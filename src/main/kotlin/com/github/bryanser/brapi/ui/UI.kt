@@ -1,64 +1,70 @@
 package com.github.bryanser.brapi.ui
 
+import Br.API.GUI.Ex.Snapshot
+import org.bukkit.entity.Player
+import org.bukkit.event.inventory.ClickType
+import org.bukkit.inventory.ItemStack
 
-fun ui(init: UI.() -> Unit): UI {
-    val ui = UI()
+
+fun ui(name: String, displayName: String, rows: Int = 6, allowShift: Boolean = false, init: UI.() -> Unit): UI {
+    val ui = UI(name, displayName, rows, allowShift)
     ui.init()
     return ui
 }
 
 fun test() {
-    ui {
-        name("test")
-        displayName { "测试" }
-        rows { 1 }
+    ui("test", "测试") {
+
     }
 }
 
 
-class UI : UIBase() {
-    lateinit var name: String
-    lateinit var displayName: String
-    var rows: Int = 6
-    var allowShift: Boolean = false
-    fun allowShift(shift: Boolean): UI {
-        this.allowShift = shift
-        return this
-    }
+@UIMaker
+class UI(
+        val name: String,
+        val displayName: String,
+        val rows: Int,
+        val allowShift: Boolean
+) : UIBase() {
 
-    fun allowShift(allowShift: () -> Boolean): UI {
-        allowShift(allowShift())
-        return this
-    }
+}
 
-    fun name(name: String): UI {
-        this.name = name
-        return this
-    }
+typealias Display = (Player, Snapshot<*>) -> ItemStack?
 
-    fun name(name: () -> String): UI {
-        name(name())
-        return this
-    }
+@UIMaker
+class Item : Br.API.GUI.Ex.ExItem {
+    var initDisplay: Display? = null
+    var updateDisplay: Display? = null
+    var update: Boolean = true
+    var keepOpen: Boolean = true
 
 
-    fun displayName(name: String): UI {
-        displayName = name
-        return this
+    override fun update(p0: Player?, p1: Snapshot<*>?): ItemStack {
+        TODO("not implemented")
     }
 
-    fun displayName(displayName: () -> String): UI {
-        displayName(displayName())
-        return this
+    override fun getDisplayItem(p0: Player?, p1: Snapshot<*>?): ItemStack {
+        TODO("not implemented")
     }
 
-    fun rows(r: Int): UI {
-        this.rows = r
-        return this
+    override fun getClick(p0: ClickType?, p1: Player?, p2: Snapshot<*>?): Boolean {
+        TODO("not implemented")
     }
 
-    fun rows(rows: () -> Int): UI {
-        rows(rows())
-        return this
+    override fun isUpdate(): Boolean {
+        TODO("not implemented")
     }
+
+    override fun isKeepOpen(): Boolean {
+        TODO("not implemented")
+    }
+
+    override fun getButtonPlaceable(p0: Player?): Boolean {
+        TODO("not implemented")
+    }
+
+    override fun isUpdateIcon(): Boolean {
+        TODO("not implemented")
+    }
+
 }
