@@ -94,7 +94,7 @@ public class CallBack implements Listener {
         return true;
     }
 
-    private static Map<String, InputInfo> InputInfos = new HashMap<>();
+    private static Map<String, InputInfo> InputInfos = new ConcurrentHashMap<>();
 
     //聊天输入
     public static boolean sendInputRequest(Player p, BiConsumer<Player, String> callback, int overtime) {
