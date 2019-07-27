@@ -49,10 +49,10 @@ public class CallBack implements Listener {
     public static boolean SendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime) {
         return sendButtonRequest(p, msg, callback, overtime);
     }
-    
-    public static void cancelButtonRequest(Player p){
+
+    public static void cancelButtonRequest(Player p) {
         ButtonInfo bi = ButtonInfos.remove(p.getName());
-        if(bi != null){
+        if (bi != null) {
             bi.canceled = true;
             bi.cancel();
             bi.Callback.accept(p, null);
@@ -70,10 +70,10 @@ public class CallBack implements Listener {
      * @return true时表示 请求成功 false时表示 上个处理还未完成
      */
     public static boolean sendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime) {
-        return sendButtonRequest(p, msg,callback, overtime, "§r[%s§r]");
+        return sendButtonRequest(p, msg, callback, overtime, "§r[%s§r]");
     }
 
-    public static boolean sendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime,String format) {
+    public static boolean sendButtonRequest(Player p, String[] msg, BiConsumer<Player, Integer> callback, int overtime, String format) {
         RegisterListener();
         if (ButtonInfos.containsKey(p.getName())) {
             return false;
@@ -94,16 +94,19 @@ public class CallBack implements Listener {
         return true;
     }
 
-    private static Map<String, InputInfo> InputInfos = new ConcurrentHashMap<>();
+    private static Map<String, InputInfo> InputInfos = new HashMap<>();
+
     //聊天输入
     public static boolean sendInputRequest(Player p, BiConsumer<Player, String> callback, int overtime) {
         RegisterListener();
-        if (InputInfos.containsKey(p.getName())) {
-            return false;
-        }
-        InputInfo ii = new InputInfo(p.getName(), callback, p);
-        InputInfos.put(p.getName(), ii);
-        ii.runTaskLater(PluginData.plugin, overtime * 20);
+        Bukkit.getScheduler().runTaskAsynchronously(PluginData.plugin, () -> {
+            if (InputInfos.containsKey(p.getName())) {
+                return;
+            }
+            InputInfo ii = new InputInfo(p.getName(), callback, p);
+            InputInfos.put(p.getName(), ii);
+            ii.runTaskLater(PluginData.plugin, overtime * 20);
+        });
         return true;
     }
 
@@ -238,14 +241,18 @@ public class CallBack implements Listener {
 
     public static class InputInfo extends BukkitRunnable {
         private String Name;
-        private BiConsumer<Player, String> Callback;
+        private final BiConsumer<Player, String> Callback;
         private boolean overtime = true;
         private boolean cancel = false;
         private Player Player;
 
         public InputInfo(String Name, BiConsumer<Player, String> Callback, Player Player) {
             this.Name = Name;
-            this.Callback = Callback;
+            this.Callback = (p, s) -> {
+                Bukkit.getScheduler().runTask(PluginData.plugin, () -> {
+                    Callback.accept(p, s);
+                });
+            };
             this.Player = Player;
         }
 
