@@ -180,6 +180,10 @@ public class UIManager {
                 if (ui == null) {
                     return;
                 }
+                if(evt.getClick() == ClickType.DOUBLE_CLICK){
+                    evt.setCancelled(true);
+                    return;
+                }
                 Player p = (Player) evt.getWhoClicked();
                 Snapshot snap = ui.getSnapshotFactory().getSnapshot(p);
                 int slot = evt.getSlot();
