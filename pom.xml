@@ -202,7 +202,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>br.bukkit</groupId>
+            <groupId>com.github.bryanser</groupId>
             <artifactId>BrAPI</artifactId>
             <version>Release-4.1.4-NoPlugin</version>
             <exclusions>
