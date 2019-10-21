@@ -204,7 +204,7 @@
         <dependency>
             <groupId>com.github.bryanser</groupId>
             <artifactId>BrAPI</artifactId>
-            <version>Release-4.1.4-NoPlugin</version>
+            <version>4.1.5-NoPlugin</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jetbrains.kotlin</groupId>

@@ -3,6 +3,9 @@ package com.github.bryanser.brapi
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * 构造物品工具
@@ -12,6 +15,15 @@ import org.bukkit.inventory.ItemStack
  * ```
  */
 object ItemBuilder {
+
+    inline fun createItem(material: Material, amount: Int = 1, durability: Int = 0, init: StackBuilder.() -> Unit): ItemStack {
+        val sb = StackBuilder(material)
+        sb.amount = amount
+        sb.durability = durability.toShort()
+        sb.init()
+        return sb.build()
+    }
+
     /**
      * 创建一个物品构造器
      *
@@ -158,5 +170,105 @@ object ItemBuilder {
             this.ench!! += pair
             return this
         }
+    }
+}
+
+
+
+@DslMarker
+annotation class ItemStackBuilder
+
+@ItemStackBuilder
+class StackBuilder(
+        val material: Material
+) {
+    var amount: Int = 1
+    var name: String? = null
+    val loreHolder = LoreHolder()
+    var unbreakable = false
+    var durability: Short = 0
+    var ench: MutableMap<Enchantment, Int>? = null
+    var onBuild: (ItemStack.() -> ItemStack)? = null
+
+
+    infix fun amount(v: Int) {
+        this.amount = v
+    }
+
+    infix fun name(name: String) {
+        this.name = name
+    }
+
+    fun unbreakable(ub: Boolean = true) {
+        this.unbreakable = ub
+    }
+
+    fun lore(vararg lore:String){
+        this.loreHolder.lore.addAll(Arrays.asList(*lore))
+    }
+
+    inline fun lore(init: LoreHolder.() -> Unit) {
+        this.loreHolder.init()
+    }
+
+    infix fun durability(dur: Int) {
+        this.durability = dur.toShort()
+    }
+
+    infix fun ench(pair: Pair<Enchantment, Int>) {
+        if (this.ench == null) {
+            this.ench = HashMap()
+        }
+        this.ench!! += pair
+    }
+
+    infix fun onBuild(build: ItemStack.() -> ItemStack) {
+        this.onBuild = build
+    }
+
+    @ItemStackBuilder
+    inner class LoreHolder {
+        val lore = mutableListOf<String>()
+
+        operator fun String.unaryPlus() {
+            lore += this
+        }
+
+        operator fun String.unaryMinus() {
+            lore -= this
+        }
+
+        operator fun set(index: Int, lore: String) {
+            while (this.lore.size <= index) {
+                +""
+            }
+            this.lore[index] = lore
+        }
+
+        operator fun get(index: Int): String = lore[index]
+    }
+
+    fun build(): ItemStack {
+        val item = ItemStack(material, amount, durability)
+        val im = +item
+        if (name != null) im.displayName = name
+        im.lore = loreHolder.lore
+        if (unbreakable) {
+            try {
+                im.isUnbreakable = true
+            } catch (t: Throwable) {
+                im.spigot().isUnbreakable = true
+            }
+        }
+        item += im
+        if (ench != null) {
+            for ((e, l) in ench!!) {
+                item.addUnsafeEnchantment(e, l)
+            }
+        }
+        if (onBuild != null) {
+            return onBuild!!.invoke(item)
+        }
+        return item
     }
 }
