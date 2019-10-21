@@ -3,6 +3,9 @@ package Br.API.ktsuger
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 object ItemBuilder {
     infix fun create(material: Material): Building = Building(material)
@@ -55,6 +58,14 @@ object ItemBuilder {
                 this.lore = ArrayList()
             }
             this.lore!! += s
+            return this
+        }
+
+        fun lores(vararg lore:String):Building{
+            if(this.lore == null){
+                this.lore = ArrayList()
+            }
+            this.lore!!.addAll(Arrays.asList(*lore))
             return this
         }
 

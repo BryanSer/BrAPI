@@ -6,7 +6,7 @@
 
     <groupId>com.github.bryanser</groupId>
     <artifactId>BrAPI</artifactId>
-    <version>Release-4.1.4</version>
+    <version>4.1.5</version>
     <packaging>jar</packaging>
 
     <name>BrAPI</name>
