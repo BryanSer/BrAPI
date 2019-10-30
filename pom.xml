@@ -139,6 +139,10 @@
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                             </sourceDirs>
                             <jvmTarget>1.8</jvmTarget>
+                            <args>
+                                <arg>-Xjvm-default=enable</arg>
+                            </args>
+
                         </configuration>
                     </execution>
                     <execution>
