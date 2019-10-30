@@ -206,17 +206,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.bryanser</groupId>
-            <artifactId>BrAPI</artifactId>
-            <version>4.1.5-NoPlugin</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <artifactId>org.jetbrains.kotlin</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>

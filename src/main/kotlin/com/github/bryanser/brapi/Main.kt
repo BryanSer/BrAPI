@@ -41,7 +41,6 @@ class Main : JavaPlugin() {
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        sender.sendMessage("???")
         if (args.size == 0) {
             if (EventListener.Reg) {
                 RegisterMetrics()
