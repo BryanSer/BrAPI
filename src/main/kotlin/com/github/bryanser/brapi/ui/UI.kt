@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
 
-
+@Deprecated("过时的工具 请使用KView")
 fun ui(name: String, displayName: String, rows: Int = 6, allowShift: Boolean = false, init: UI.() -> Unit): UI {
     val ui = UI(name, displayName, rows, allowShift)
     ui.init()
@@ -39,6 +39,7 @@ fun ui(name: String, displayName: String, rows: Int = 6, allowShift: Boolean = f
 //}
 
 
+@Deprecated("过时的工具 请使用KView")
 @UIMaker
 class UI(
         val name: String,
@@ -83,8 +84,10 @@ class UI(
     operator fun invoke(): BaseUI = this.build()
 }
 
+@Deprecated("过时的工具 请使用KView")
 typealias Display = (Player, Snapshot<*>) -> ItemStack?
 
+@Deprecated("过时的工具 请使用KView")
 @UIMaker
 class Item : ExItem {
     private var initDisplay: Display? = null
