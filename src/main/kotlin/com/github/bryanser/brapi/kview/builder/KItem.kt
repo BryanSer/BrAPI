@@ -17,6 +17,7 @@ class KItem<H : KViewHolder>(
     private var update: (H) -> ItemStack? = { this.initDisplay.invoke(it) }
     private val clicks: MutableMap<ClickType, (H) -> Unit> = EnumMap(ClickType::class.java)
     private var numberClick: ((H, Int) -> Unit)? = null
+    private var cancelClick: ((H) -> Boolean)? = null
 
     constructor(
             keepOpen: Boolean,
@@ -27,23 +28,27 @@ class KItem<H : KViewHolder>(
         this.initDisplay = { initDisplay }
     }
 
-    fun initDisplay(func: (H) -> ItemStack?) {
+    fun cancelClick(func: H.() -> Boolean) {
+        cancelClick = func
+    }
+
+    fun initDisplay(func: H.() -> ItemStack?) {
         initDisplay = func
     }
 
-    fun update(func: (H) -> ItemStack?) {
+    fun update(func: H.() -> ItemStack?) {
         update = func
     }
 
-    fun click(func: (H) -> Unit) {
+    fun click(func: H.() -> Unit) {
         clicks[ClickType.LEFT] = func
     }
 
-    fun click(click: ClickType, func: (H) -> Unit) {
+    fun click(click: ClickType, func: H.() -> Unit) {
         clicks[click] = func
     }
 
-    fun number(func:(H, Int) -> Unit){
+    fun number(func: H.(Int) -> Unit) {
         numberClick = func
     }
 
@@ -66,6 +71,10 @@ class KItem<H : KViewHolder>(
 
     override fun numberClick(holder: H, key: Int) {
         numberClick?.invoke(holder, key)
+    }
+
+    override fun cancelClickEvent(holder: H): Boolean {
+        return this.cancelClick?.invoke(holder) ?: super.cancelClickEvent(holder)
     }
 
     companion object {

@@ -11,6 +11,7 @@ import org.bukkit.event.HandlerList
 import Br.API.Main.PluginsAmount
 import Br.API.Main.Plugins
 import Br.API.Main.RegisterMetrics
+import com.github.bryanser.brapi.kview.KViewHandler
 import com.github.bryanser.brapi.test.TestManager
 import org.bukkit.ChatColor
 
@@ -29,6 +30,7 @@ class Main : JavaPlugin() {
     }
 
     override fun onDisable() {
+        KViewHandler.closeAll()
         compOldDisable()
         HandlerList.unregisterAll(this)
         Bukkit.getMessenger().unregisterIncomingPluginChannel(this)

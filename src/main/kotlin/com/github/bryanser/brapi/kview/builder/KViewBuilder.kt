@@ -8,15 +8,15 @@ import org.bukkit.entity.Player
 @KViewMaker
 class KViewBuilder<H : KViewHolder>(
         name: String,
-        displayName: String,
         rows: Int,
         holderFactory: (Player) -> H
-) : KView<H>(name, displayName, rows, holderFactory) {
+) : KView<H>(name, rows, holderFactory) {
+
     private var close: ((H) -> Unit)? = null
     val contents: Array<KIcon<H>?> = arrayOfNulls(rows * 9)
     private var currIndex: Int = 0
 
-    fun onClose(func: (H) -> Unit) {
+    fun onClose(func: H.() -> Unit) {
         this.close = func
     }
 

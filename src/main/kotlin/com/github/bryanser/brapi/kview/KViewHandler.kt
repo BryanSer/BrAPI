@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.injector.GamePhase
 import com.github.bryanser.brapi.ItemBuilder
 import com.github.bryanser.brapi.Main
+import com.github.bryanser.brapi.Utils
 import com.github.bryanser.brapi.kview.builder.KViewBuilder
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -62,14 +63,12 @@ object KViewHandler : Listener {
 
     inline fun <H : KViewHolder> createKView(
             name: String,
-            displayName: String,
             rows: Int,
             noinline holderFactory: (Player) -> H,
             init: KViewBuilder<H>.() -> Unit
     ): KViewBuilder<H> {
         val view = KViewBuilder<H>(
                 name,
-                displayName,
                 rows,
                 holderFactory
         )
@@ -77,7 +76,7 @@ object KViewHandler : Listener {
         return view
     }
 
-    fun openUI(p: Player, view: KView<KViewHolder>) {
+    fun openUI(p: Player, view: KView<out KViewHolder>) {
         Bukkit.getScheduler().runTask(Main.getPlugin()) {
             p.closeInventory()
             val inv = view.createInventory(p)
@@ -93,6 +92,15 @@ object KViewHandler : Listener {
         Bukkit.getScheduler().runTask(Main.getPlugin()) {
             view.updateInventory(holder)
             p.updateInventory()
+        }
+    }
+
+    fun closeAll(){
+        for(p in Utils.getOnlinePlayers()){
+            val top = p.openInventory?.topInventory ?: continue
+            if(top.holder is KViewHolder){
+                p.closeInventory()
+            }
         }
     }
 

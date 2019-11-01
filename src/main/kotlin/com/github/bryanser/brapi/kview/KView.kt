@@ -9,7 +9,6 @@ import java.util.logging.Level
 
 abstract class KView<H : KViewHolder>(
         val name: String,
-        val displayName: String,
         val rows: Int,
         val holderFactory: (Player) -> H
 ) {
@@ -42,12 +41,13 @@ abstract class KView<H : KViewHolder>(
 
     abstract fun onClose(holder: H)
 
-
     open fun createInventory(p: Player): Inventory {
         val holder = holderFactory(p)
         holder.kView = this as KView<KViewHolder>
         holder.player = p
-        val inv = Bukkit.createInventory(holder, rows * 9, displayName)
+
+        val inv = Bukkit.createInventory(holder, rows * 9, holder.title)
+        holder.inv = inv
         for (i in 0 until (rows * 9)) {
             try {
                 val item = getIcon(i, holder)
