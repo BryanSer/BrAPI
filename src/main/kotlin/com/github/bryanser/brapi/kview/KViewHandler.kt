@@ -51,11 +51,11 @@ object KViewHandler : Listener {
 
     fun updateUI(p: Player) {
         val inv = p.openInventory.topInventory ?: return
-        val holder = inv.holder as? KViewContext ?: return
-        val view = holder.kView
+        val context = inv.holder as? KViewContext ?: return
+        val view = context.kView
 
         Bukkit.getScheduler().runTask(Main.getPlugin()) {
-            view.updateInventory(holder)
+            view.updateInventory(context)
             p.updateInventory()
         }
     }
@@ -77,30 +77,30 @@ object KViewHandler : Listener {
     fun onDrug(evt: InventoryDragEvent) {
         val p = evt.whoClicked as?  Player ?: return
         val inv = p.openInventory.topInventory ?: return
-        val holder = inv.holder as? KViewContext ?: return
-        evt.isCancelled = !holder.kView.allowDrug
+        val context = inv.holder as? KViewContext ?: return
+        evt.isCancelled = !context.kView.allowDrug
     }
 
     @EventHandler
     fun onClose(evt: InventoryCloseEvent) {
         val p = evt.player as?  Player ?: return
         val inv = p.openInventory.topInventory ?: return
-        val holder = inv.holder as? KViewContext ?: return
+        val context = inv.holder as? KViewContext ?: return
         clickLimit -= p.name
-        val view = holder.kView
-        view.onClose(holder)
+        val view = context.kView
+        view.onClose(context)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onClick(evt: InventoryClickEvent) {
         val p = evt.whoClicked as?  Player ?: return
         val inv = p.openInventory.topInventory ?: return
-        val holder = inv.holder as? KViewContext ?: return
+        val context = inv.holder as? KViewContext ?: return
         if (clickLimit.contains(evt.whoClicked.name)) {
             evt.isCancelled = true
             return
         }
-        val view = holder.kView
+        val view = context.kView
         if (evt.isCancelled && view.ignoreEventCancel) {
             return
         }
@@ -139,7 +139,7 @@ object KViewHandler : Listener {
             return
         }
         val slot = evt.slot
-        val icon = view.getIcon(slot, holder)
+        val icon = view.getIcon(slot, context)
         if (icon == null) {
             evt.isCancelled = true
             return
@@ -149,7 +149,7 @@ object KViewHandler : Listener {
             ClickType.NUMBER_KEY -> {
                 if (enableNumberKey) {
                     try {
-                        icon.numberClick(holder, numberKey[p.name]!!)
+                        icon.numberClick(context, numberKey[p.name]!!)
                     } catch (e: NullPointerException) {
                         Bukkit.getLogger().log(Level.INFO, "KView捕获到无数字点击 丢弃处理", e)
                         evt.isCancelled = true
@@ -161,11 +161,11 @@ object KViewHandler : Listener {
                 evt.isCancelled = true
             }
             else -> {
-                icon.onClick(click, holder)
+                icon.onClick(click, context)
             }
         }
         try {
-            evt.isCancelled = icon.cancelClickEvent(holder)
+            evt.isCancelled = icon.cancelClickEvent(context)
         } catch (e: Throwable) {
             evt.isCancelled = true
             Bukkit.getLogger().log(Level.INFO, "KView点击处理事件取消异常", e)
