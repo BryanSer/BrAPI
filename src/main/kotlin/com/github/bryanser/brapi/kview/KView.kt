@@ -7,10 +7,10 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import java.util.logging.Level
 
-abstract class KView<H : KViewHolder>(
+abstract class KView<C : KViewContext>(
         val name: String,
         val rows: Int,
-        val holderFactory: (Player) -> H
+        val contextFactory: (Player) -> C
 ) {
     init {
         if (rows !in 1..6) {
@@ -37,21 +37,21 @@ abstract class KView<H : KViewHolder>(
     open var allowDrug: Boolean = false
     open var ignoreEventCancel: Boolean = true
 
-    abstract fun getIcon(index: Int, holder: H): KIcon<H>?
+    abstract fun getIcon(index: Int, context: C): KIcon<C>?
 
-    abstract fun onClose(holder: H)
+    abstract fun onClose(context: C)
 
     open fun createInventory(p: Player): Inventory {
-        val holder = holderFactory(p)
-        holder.kView = this as KView<KViewHolder>
-        holder.player = p
+        val context = contextFactory(p)
+        context.kView = this as KView<KViewContext>
+        context.player = p
 
-        val inv = Bukkit.createInventory(holder, rows * 9, holder.title)
-        holder.inv = inv
+        val inv = Bukkit.createInventory(context, rows * 9, context.title)
+        context.inv = inv
         for (i in 0 until (rows * 9)) {
             try {
-                val item = getIcon(i, holder)
-                inv.setItem(i, item?.initDisplay(holder))
+                val item = getIcon(i, context)
+                inv.setItem(i, item?.initDisplay(context))
             } catch (e: Throwable) {
                 Bukkit.getLogger().log(Level.INFO, "KView系统创建${this.name}时发生错误 ", e)
             }
@@ -59,20 +59,20 @@ abstract class KView<H : KViewHolder>(
         return inv
     }
 
-    open fun updateInventory(holder: H) {
-        val inv = holder.inventory
+    open fun updateInventory(context: C) {
+        val inv = context.inventory
         for (i in 0 until (rows * 9)) {
-            val item = getIcon(i, holder)
+            val item = getIcon(i, context)
             if (item?.updateIcon == false) {
                 continue
             }
-            inv.setItem(i, item?.update(holder))
+            inv.setItem(i, item?.update(context))
         }
     }
 //
-//    val contents: Array<KIcon<H>?> = arrayOfNulls(rows * 9)
+//    val contents: Array<KIcon<C>?> = arrayOfNulls(rows * 9)
 //
-//    open fun getIcon(index: Int, holder: H): KIcon<H>? {
+//    open fun getIcon(index: Int, holder: C): KIcon<C>? {
 //        return contents[index]
 //    }
 //

@@ -2,11 +2,11 @@ package com.github.bryanser.brapi.kview.builder
 
 import com.github.bryanser.brapi.kview.KIcon
 import com.github.bryanser.brapi.kview.KView
-import com.github.bryanser.brapi.kview.KViewHolder
+import com.github.bryanser.brapi.kview.KViewContext
 import org.bukkit.entity.Player
 
 @KViewMaker
-class KViewBuilder<H : KViewHolder>(
+class KViewBuilder<H : KViewContext>(
         name: String,
         rows: Int,
         holderFactory: (Player) -> H
@@ -56,11 +56,11 @@ class KViewBuilder<H : KViewHolder>(
         return icon
     }
 
-    override fun onClose(holder: H) {
-        close?.invoke(holder)
+    override fun onClose(context: H) {
+        close?.invoke(context)
     }
 
-    override fun getIcon(index: Int, holder: H): KIcon<H>? {
+    override fun getIcon(index: Int, context: H): KIcon<H>? {
         return contents[index]
     }
 }

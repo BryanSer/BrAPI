@@ -1,13 +1,13 @@
 package com.github.bryanser.brapi.kview.builder
 
 import com.github.bryanser.brapi.kview.KIcon
-import com.github.bryanser.brapi.kview.KViewHolder
+import com.github.bryanser.brapi.kview.KViewContext
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
 @KViewMaker
-class KItem<H : KViewHolder>(
+class KItem<H : KViewContext>(
         override var keepOpen: Boolean,
         override var updateAll: Boolean,
         override var updateIcon: Boolean
@@ -52,29 +52,29 @@ class KItem<H : KViewHolder>(
         numberClick = func
     }
 
-    override fun initDisplay(holder: H): ItemStack? {
-        return initDisplay.invoke(holder)
+    override fun initDisplay(context: H): ItemStack? {
+        return initDisplay.invoke(context)
     }
 
-    override fun update(holder: H): ItemStack? {
-        return update.invoke(holder)
+    override fun update(context: H): ItemStack? {
+        return update.invoke(context)
     }
 
-    override fun onClick(type: ClickType, holder: H) {
+    override fun onClick(type: ClickType, context: H) {
         val func = clicks[type]
         if (func != null) {
-            func(holder)
+            func(context)
         } else if (type != ClickType.LEFT) {
-            onClick(getSuperClickType(type), holder)
+            onClick(getSuperClickType(type), context)
         }
     }
 
-    override fun numberClick(holder: H, key: Int) {
-        numberClick?.invoke(holder, key)
+    override fun numberClick(context: H, key: Int) {
+        numberClick?.invoke(context, key)
     }
 
-    override fun cancelClickEvent(holder: H): Boolean {
-        return this.cancelClick?.invoke(holder) ?: super.cancelClickEvent(holder)
+    override fun cancelClickEvent(context: H): Boolean {
+        return this.cancelClick?.invoke(context) ?: super.cancelClickEvent(context)
     }
 
     companion object {

@@ -6,12 +6,10 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.injector.GamePhase
-import com.github.bryanser.brapi.ItemBuilder
 import com.github.bryanser.brapi.Main
 import com.github.bryanser.brapi.Utils
 import com.github.bryanser.brapi.kview.builder.KViewBuilder
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -28,55 +26,22 @@ object KViewHandler : Listener {
         Bukkit.getPluginManager().registerEvents(this, Main.getPlugin())
     }
 
-//    class TestHolder : KViewHolder() {
-//        var page = 0
-//    }
-//
-//    fun test() {
-//        val ui = KViewHandler.createKView<TestHolder>(
-//                "test",
-//                "§6测试",
-//                1,
-//                {
-//                    TestHolder()
-//                }
-//        ) {
-//            allowShift = false
-//            0 += icon {
-//                initDisplay {
-//                    val page = it.page
-//                    ItemBuilder.createItem(Material.STAINED_GLASS_PANE) {
-//                        name("§6当前页数: $page")
-//                    }
-//                }
-//                click{
-//                    it.player.sendMessage("§6你在第${it.page}点击了")
-//                }
-//                number { testHolder, i ->
-//
-//                }
-//
-//            }
-//        }
-//
-//    }
-
-    inline fun <H : KViewHolder> createKView(
+    inline fun <C : KViewContext> createKView(
             name: String,
             rows: Int,
-            noinline holderFactory: (Player) -> H,
-            init: KViewBuilder<H>.() -> Unit
-    ): KViewBuilder<H> {
-        val view = KViewBuilder<H>(
+            noinline contextFactory: (Player) -> C,
+            init: KViewBuilder<C>.() -> Unit
+    ): KViewBuilder<C> {
+        val view = KViewBuilder<C>(
                 name,
                 rows,
-                holderFactory
+                contextFactory
         )
         view.init()
         return view
     }
 
-    fun openUI(p: Player, view: KView<out KViewHolder>) {
+    fun openUI(p: Player, view: KView<out KViewContext>) {
         Bukkit.getScheduler().runTask(Main.getPlugin()) {
             p.closeInventory()
             val inv = view.createInventory(p)
@@ -86,7 +51,7 @@ object KViewHandler : Listener {
 
     fun updateUI(p: Player) {
         val inv = p.openInventory.topInventory ?: return
-        val holder = inv.holder as? KViewHolder ?: return
+        val holder = inv.holder as? KViewContext ?: return
         val view = holder.kView
 
         Bukkit.getScheduler().runTask(Main.getPlugin()) {
@@ -98,7 +63,7 @@ object KViewHandler : Listener {
     fun closeAll(){
         for(p in Utils.getOnlinePlayers()){
             val top = p.openInventory?.topInventory ?: continue
-            if(top.holder is KViewHolder){
+            if(top.holder is KViewContext){
                 p.closeInventory()
             }
         }
@@ -112,7 +77,7 @@ object KViewHandler : Listener {
     fun onDrug(evt: InventoryDragEvent) {
         val p = evt.whoClicked as?  Player ?: return
         val inv = p.openInventory.topInventory ?: return
-        val holder = inv.holder as? KViewHolder ?: return
+        val holder = inv.holder as? KViewContext ?: return
         evt.isCancelled = !holder.kView.allowDrug
     }
 
@@ -120,7 +85,7 @@ object KViewHandler : Listener {
     fun onClose(evt: InventoryCloseEvent) {
         val p = evt.player as?  Player ?: return
         val inv = p.openInventory.topInventory ?: return
-        val holder = inv.holder as? KViewHolder ?: return
+        val holder = inv.holder as? KViewContext ?: return
         clickLimit -= p.name
         val view = holder.kView
         view.onClose(holder)
@@ -130,7 +95,7 @@ object KViewHandler : Listener {
     fun onClick(evt: InventoryClickEvent) {
         val p = evt.whoClicked as?  Player ?: return
         val inv = p.openInventory.topInventory ?: return
-        val holder = inv.holder as? KViewHolder ?: return
+        val holder = inv.holder as? KViewContext ?: return
         if (clickLimit.contains(evt.whoClicked.name)) {
             evt.isCancelled = true
             return

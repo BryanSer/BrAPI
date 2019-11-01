@@ -4,12 +4,12 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 
-abstract class KViewHolder(
+abstract class KViewContext(
         val title: String
 ) : InventoryHolder {
 
 
-    lateinit var kView: KView<KViewHolder>
+    lateinit var kView: KView<KViewContext>
     lateinit var player: Player
     internal lateinit var inv: Inventory
 
