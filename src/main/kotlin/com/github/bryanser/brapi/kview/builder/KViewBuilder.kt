@@ -56,6 +56,24 @@ class KViewBuilder<H : KViewContext>(
         return icon
     }
 
+    inline fun slotIcon(init: KItem<H>.() -> Unit): KIcon<H> {
+        return icon(true, true, false){
+            cancelClick {
+                false
+            }
+            init(this)
+        }
+    }
+
+    inline fun slotIcon(slot: Int, init: KItem<H>.() -> Unit) {
+        icon(slot, true, true, false){
+            cancelClick {
+                false
+            }
+            init(this)
+        }
+    }
+
     override fun onClose(context: H) {
         close?.invoke(context)
     }
