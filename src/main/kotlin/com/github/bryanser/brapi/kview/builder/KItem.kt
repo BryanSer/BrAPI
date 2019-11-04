@@ -32,6 +32,10 @@ class KItem<H : KViewContext>(
         cancelClick = func
     }
 
+    fun initDisplay(display:ItemStack){
+        initDisplay = {display}
+    }
+
     fun initDisplay(func: H.() -> ItemStack?) {
         initDisplay = func
     }
