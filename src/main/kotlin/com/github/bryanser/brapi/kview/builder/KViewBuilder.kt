@@ -16,23 +16,28 @@ class KViewBuilder<H : KViewContext>(
     val contents: Array<KIcon<H>?> = arrayOfNulls(rows * 9)
     private var currIndex: Int = 0
 
+    @KViewMaker
     fun onClose(func: H.() -> Unit) {
         this.close = func
     }
 
 
+    @KViewMaker
     operator fun Int.plus(icon: KIcon<H>) {
         contents[this] = icon
     }
 
+    @KViewMaker
     operator fun Int.plusAssign(icon: KIcon<H>) {
         contents[this] = icon
     }
 
+    @KViewMaker
     operator fun KIcon<H>.unaryPlus() {
         contents[currIndex++] = this
     }
 
+    @KViewMaker
     inline fun icon(
             slot: Int,
             keepOpen: Boolean = true,
@@ -45,6 +50,7 @@ class KViewBuilder<H : KViewContext>(
         contents[slot] = icon
     }
 
+    @KViewMaker
     inline fun icon(
             keepOpen: Boolean = true,
             updateAll: Boolean = true,
@@ -56,6 +62,7 @@ class KViewBuilder<H : KViewContext>(
         return icon
     }
 
+    @KViewMaker
     inline fun slotIcon(init: KItem<H>.() -> Unit = {}): KIcon<H> {
         return icon(true, true, false){
             cancelClick {
@@ -65,6 +72,7 @@ class KViewBuilder<H : KViewContext>(
         }
     }
 
+    @KViewMaker
     inline fun slotIcon(slot: Int, init: KItem<H>.() -> Unit = {}) {
         icon(slot, true, true, false){
             cancelClick {

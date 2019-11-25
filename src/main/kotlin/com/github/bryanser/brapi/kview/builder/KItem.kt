@@ -28,30 +28,37 @@ class KItem<H : KViewContext>(
         this.initDisplay = { initDisplay }
     }
 
+    @KViewMaker
     fun cancelClick(func: H.() -> Boolean) {
         cancelClick = func
     }
 
+    @KViewMaker
     fun initDisplay(display:ItemStack){
         initDisplay = {display}
     }
 
+    @KViewMaker
     fun initDisplay(func: H.() -> ItemStack?) {
         initDisplay = func
     }
 
+    @KViewMaker
     fun update(func: H.() -> ItemStack?) {
         update = func
     }
 
+    @KViewMaker
     fun click(func: H.() -> Unit) {
         clicks[ClickType.LEFT] = func
     }
 
+    @KViewMaker
     fun click(click: ClickType, func: H.() -> Unit) {
         clicks[click] = func
     }
 
+    @KViewMaker
     fun number(func: H.(Int) -> Unit) {
         numberClick = func
     }
