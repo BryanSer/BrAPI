@@ -176,6 +176,7 @@ object ItemBuilder {
 
 
 @DslMarker
+@Retention(AnnotationRetention.BINARY)
 annotation class ItemStackBuilder
 
 @ItemStackBuilder
@@ -190,38 +191,38 @@ class StackBuilder(
     var ench: MutableMap<Enchantment, Int>? = null
     var onBuild: (ItemStack.() -> ItemStack)? = null
 
-
+    @ItemStackBuilder
     infix fun amount(v: Int) {
         this.amount = v
     }
-
+    @ItemStackBuilder
     infix fun name(name: String) {
         this.name = name
     }
-
+    @ItemStackBuilder
     fun unbreakable(ub: Boolean = true) {
         this.unbreakable = ub
     }
-
+    @ItemStackBuilder
     fun lore(vararg lore:String){
         this.loreHolder.lore.addAll(Arrays.asList(*lore))
     }
-
+    @ItemStackBuilder
     inline fun lore(init: LoreHolder.() -> Unit) {
         this.loreHolder.init()
     }
-
+    @ItemStackBuilder
     infix fun durability(dur: Int) {
         this.durability = dur.toShort()
     }
-
+    @ItemStackBuilder
     infix fun ench(pair: Pair<Enchantment, Int>) {
         if (this.ench == null) {
             this.ench = HashMap()
         }
         this.ench!! += pair
     }
-
+    @ItemStackBuilder
     infix fun onBuild(build: ItemStack.() -> ItemStack) {
         this.onBuild = build
     }
@@ -229,22 +230,22 @@ class StackBuilder(
     @ItemStackBuilder
     inner class LoreHolder {
         val lore = mutableListOf<String>()
-
+        @ItemStackBuilder
         operator fun String.unaryPlus() {
             lore += this
         }
-
+        @ItemStackBuilder
         operator fun String.unaryMinus() {
             lore -= this
         }
-
+        @ItemStackBuilder
         operator fun set(index: Int, lore: String) {
             while (this.lore.size <= index) {
                 +""
             }
             this.lore[index] = lore
         }
-
+        @ItemStackBuilder
         operator fun get(index: Int): String = lore[index]
     }
 
