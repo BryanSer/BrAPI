@@ -1,5 +1,6 @@
 package com.github.bryanser.brapi.kview
 
+import Br.API.PluginData
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.ListenerPriority
@@ -55,15 +56,23 @@ object KViewHandler : Listener {
         val view = context.kView
 
         Bukkit.getScheduler().runTask(Main.getPlugin()) {
-            view.updateInventory(context)
+            try {
+                view.updateInventory(context)
+            } catch (e: Throwable) {
+                p.closeInventory()
+                p.sendMessage("§cUI遇到致命错误 自动关闭 请联系管理员")
+                val e = Throwable("KViewHandler遇到致命错误", e)
+                e.printStackTrace()
+                return@runTask
+            }
             p.updateInventory()
         }
     }
 
-    fun closeAll(){
-        for(p in Utils.getOnlinePlayers()){
+    fun closeAll() {
+        for (p in Utils.getOnlinePlayers()) {
             val top = p.openInventory?.topInventory ?: continue
-            if(top.holder is KViewContext){
+            if (top.holder is KViewContext) {
                 p.closeInventory()
             }
         }
@@ -75,7 +84,7 @@ object KViewHandler : Listener {
 
     @EventHandler
     fun onDrug(evt: InventoryDragEvent) {
-        val p = evt.whoClicked as?  Player ?: return
+        val p = evt.whoClicked as? Player ?: return
         val inv = p.openInventory.topInventory ?: return
         val context = inv.holder as? KViewContext ?: return
         evt.isCancelled = !context.kView.allowDrug
@@ -83,7 +92,7 @@ object KViewHandler : Listener {
 
     @EventHandler
     fun onClose(evt: InventoryCloseEvent) {
-        val p = evt.player as?  Player ?: return
+        val p = evt.player as? Player ?: return
         val inv = p.openInventory.topInventory ?: return
         val context = inv.holder as? KViewContext ?: return
         clickLimit -= p.name
@@ -93,7 +102,7 @@ object KViewHandler : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onClick(evt: InventoryClickEvent) {
-        val p = evt.whoClicked as?  Player ?: return
+        val p = evt.whoClicked as? Player ?: return
         val inv = p.openInventory.topInventory ?: return
         val context = inv.holder as? KViewContext ?: return
         if (clickLimit.contains(evt.whoClicked.name)) {
@@ -139,52 +148,59 @@ object KViewHandler : Listener {
             return
         }
         val slot = evt.slot
-        val icon = view.getIcon(slot, context)
-        if (icon == null) {
-            evt.isCancelled = true
-            return
-        }
-        clickLimit += p.name
-        when (click) {
-            ClickType.NUMBER_KEY -> {
-                if (enableNumberKey) {
-                    try {
-                        icon.numberClick(context, numberKey[p.name]!!)
-                    } catch (e: NullPointerException) {
-                        Bukkit.getLogger().log(Level.INFO, "KView捕获到无数字点击 丢弃处理", e)
-                        evt.isCancelled = true
-                        return
+        try {
+            val icon = view.getIcon(slot, context)
+            if (icon == null) {
+                evt.isCancelled = true
+                return
+            }
+            clickLimit += p.name
+
+            when (click) {
+                ClickType.NUMBER_KEY -> {
+                    if (enableNumberKey) {
+                        try {
+                            icon.numberClick(context, numberKey[p.name]!!)
+                        } catch (e: NullPointerException) {
+                            Bukkit.getLogger().log(Level.INFO, "KView捕获到无数字点击 丢弃处理", e)
+                            evt.isCancelled = true
+                            return
+                        }
                     }
                 }
+                ClickType.CREATIVE, ClickType.UNKNOWN -> {
+                    evt.isCancelled = true
+                }
+                else -> {
+                    icon.onClick(click, context)
+                }
             }
-            ClickType.CREATIVE, ClickType.UNKNOWN -> {
-                evt.isCancelled = true
-            }
-            else -> {
-                icon.onClick(click, context)
-            }
-        }
-        try {
             evt.isCancelled = icon.cancelClickEvent(context)
+            if (!icon.keepOpen) {
+                Bukkit.getScheduler().runTask(Main.getPlugin()) {
+                    p.closeInventory()
+                    clickLimit -= p.name
+                }
+            } else if (icon.updateAll) {
+                Bukkit.getScheduler().runTask(Main.getPlugin()) {
+                    updateUI(p)
+                    clickLimit -= p.name
+                }
+            } else {
+                Bukkit.getScheduler().runTask(Main.getPlugin()) {
+                    clickLimit -= p.name
+                }
+            }
         } catch (e: Throwable) {
             evt.isCancelled = true
             Bukkit.getLogger().log(Level.INFO, "KView点击处理事件取消异常", e)
-            return
-        }
-        if (!icon.keepOpen) {
             Bukkit.getScheduler().runTask(Main.getPlugin()) {
                 p.closeInventory()
-                clickLimit -= p.name
+                p.sendMessage("§CKViewHandler遇到致命问题 自动关闭 请联系管理员")
             }
-        } else if (icon.updateAll) {
-            Bukkit.getScheduler().runTask(Main.getPlugin()) {
-                updateUI(p)
-                clickLimit -= p.name
-            }
-        } else {
-            Bukkit.getScheduler().runTask(Main.getPlugin()) {
-                clickLimit -= p.name
-            }
+            val e = Throwable("KViewHander遇到致命错误", e)
+            e.printStackTrace()
+            return
         }
     }
 
