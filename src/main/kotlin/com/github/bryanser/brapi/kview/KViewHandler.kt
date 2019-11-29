@@ -46,6 +46,7 @@ object KViewHandler : Listener {
         Bukkit.getScheduler().runTask(Main.getPlugin()) {
             p.closeInventory()
             val inv = view.createInventory(p)
+            clickLimit -= p.name
             p.openInventory(inv)
         }
     }
@@ -66,6 +67,7 @@ object KViewHandler : Listener {
                 return@runTask
             }
             p.updateInventory()
+            clickLimit -= p.name
         }
     }
 
@@ -100,21 +102,32 @@ object KViewHandler : Listener {
         view.onClose(context)
     }
 
+    const val DEBUG = false
+
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onClick(evt: InventoryClickEvent) {
         val p = evt.whoClicked as? Player ?: return
         val inv = p.openInventory.topInventory ?: return
         val context = inv.holder as? KViewContext ?: return
         if (clickLimit.contains(evt.whoClicked.name)) {
+            if(DEBUG){
+                Bukkit.getLogger().info("KViewHander-DEBUG: 由于点击限制,点击事件已被抛弃")
+            }
             evt.isCancelled = true
             return
         }
         val view = context.kView
         if (evt.isCancelled && view.ignoreEventCancel) {
+            if(DEBUG){
+                Bukkit.getLogger().info("KViewHander-DEBUG: 由于ignoreEventCancel,点击事件已被抛弃")
+            }
             return
         }
         val click = evt.click
         if (click == ClickType.DOUBLE_CLICK) {
+            if(DEBUG){
+                Bukkit.getLogger().info("KViewHander-DEBUG: 由于DOUBLE_CLICK,点击事件已被抛弃")
+            }
             evt.isCancelled = true
             return
         }
@@ -145,6 +158,9 @@ object KViewHandler : Listener {
                     evt.isCancelled = true
                 }
             }
+            if(DEBUG){
+                Bukkit.getLogger().info("KViewHander-DEBUG: 由于clickOtherInv,点击事件已被抛弃")
+            }
             return
         }
         val slot = evt.slot
@@ -152,6 +168,9 @@ object KViewHandler : Listener {
             val icon = view.getIcon(slot, context)
             if (icon == null) {
                 evt.isCancelled = true
+                if(DEBUG){
+                    Bukkit.getLogger().info("KViewHander-DEBUG: 由于icon == null,点击事件已被抛弃")
+                }
                 return
             }
             clickLimit += p.name
