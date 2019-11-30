@@ -1,6 +1,5 @@
 package com.github.bryanser.brapi.kview
 
-import Br.API.PluginData
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.ListenerPriority
@@ -11,14 +10,14 @@ import com.github.bryanser.brapi.Main
 import com.github.bryanser.brapi.Utils
 import com.github.bryanser.brapi.kview.builder.KViewBuilder
 import org.bukkit.Bukkit
+import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.ClickType
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryDragEvent
+import org.bukkit.event.inventory.*
+import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.InventoryView
 import java.util.logging.Level
 
 object KViewHandler : Listener {
@@ -47,7 +46,16 @@ object KViewHandler : Listener {
             p.closeInventory()
             val inv = view.createInventory(p)
             clickLimit -= p.name
-            p.openInventory(inv)
+            val view = object:InventoryView(){
+                override fun getPlayer(): HumanEntity = p
+
+                override fun getType(): InventoryType = InventoryType.CHEST
+
+                override fun getBottomInventory(): Inventory = p.inventory
+
+                override fun getTopInventory(): Inventory  = inv
+            }
+            p.openInventory(view)
         }
     }
 
@@ -94,8 +102,14 @@ object KViewHandler : Listener {
 
     @EventHandler
     fun onClose(evt: InventoryCloseEvent) {
-        val p = evt.player as? Player ?: return
-        val inv = p.openInventory.topInventory ?: return
+        val p = evt.player as? Player
+        if(p == null){
+            return
+        }
+        val inv = p.openInventory.topInventory
+        if(inv == null){
+            return
+        }
         val context = inv.holder as? KViewContext ?: return
         clickLimit -= p.name
         val view = context.kView
