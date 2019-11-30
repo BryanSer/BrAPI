@@ -61,7 +61,7 @@ class Main : JavaPlugin() {
             return true
         }
         if (args[0].equals("test", true) && args.size > 1) {
-            if(!TestManager.enable){
+            if (!TestManager.enable) {
                 return true
             }
             val test = TestManager.tests[args[1]]
@@ -105,8 +105,11 @@ class Main : JavaPlugin() {
         Bukkit.getMessenger().registerIncomingPluginChannel(this, Br.API.Commands.CommandChannel.CHANNEL_IN, Br.API.Commands.CommandChannel())
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, Br.API.Commands.CommandChannel.CHANNEL_OUT)
 
-        val econ = Br.API.Utils::class.java.getDeclaredField("econ")
-        econ.isAccessible = true
-        econ.set(null, Utils.economy)
+        try {
+            val econ = Br.API.Utils::class.java.getDeclaredField("econ")
+            econ.isAccessible = true
+            econ.set(null, Utils.economy)
+        } catch (e: Throwable) {
+        }
     }
 }
