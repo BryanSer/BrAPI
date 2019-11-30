@@ -37,6 +37,8 @@ abstract class KView<C : KViewContext>(
     open var allowDrug: Boolean = false
     open var ignoreEventCancel: Boolean = true
 
+    var debug: Boolean = false
+
     abstract fun getIcon(index: Int, context: C): KIcon<C>?
 
     abstract fun onClose(context: C)

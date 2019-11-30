@@ -102,32 +102,139 @@ object KViewHandler : Listener {
         view.onClose(context)
     }
 
-    const val DEBUG = false
+
+    private fun debugHandler(evt: InventoryClickEvent) {
+        val p = evt.whoClicked as? Player ?: return
+        val inv = p.openInventory.topInventory ?: return
+        val context = inv.holder as? KViewContext ?: return
+        Bukkit.getLogger().info("KViewHandler-DEBUG: 开始DEBUG")
+        if (clickLimit.contains(evt.whoClicked.name)) {
+            Bukkit.getLogger().info("KViewHandler-DEBUG: 由于点击限制,点击事件已被抛弃")
+            evt.isCancelled = true
+            return
+        }
+        val view = context.kView
+        if (evt.isCancelled && view.ignoreEventCancel) {
+            Bukkit.getLogger().info("KViewHandler-DEBUG: 由于ignoreEventCancel,点击事件已被抛弃")
+            return
+        }
+        val click = evt.click
+        if (click == ClickType.DOUBLE_CLICK) {
+            Bukkit.getLogger().info("KViewHandler-DEBUG: 由于DOUBLE_CLICK,点击事件已被抛弃")
+            evt.isCancelled = true
+            return
+        }
+        var clickOtherInv = false
+        try {
+            if (evt.clickedInventory != inv) {
+                clickOtherInv = true
+            }
+        } catch (e: Throwable) {
+            Bukkit.getLogger().log(Level.INFO, "KViewHandler-DEBUG:", e)
+            val raw = evt.rawSlot
+            if (raw < 0 || raw >= inv.size) {
+                clickOtherInv = true
+            }
+        }
+        if (clickOtherInv) {
+            if (!view.allowShift) {
+                if (click == ClickType.SHIFT_RIGHT || click == ClickType.SHIFT_LEFT) {
+                    evt.isCancelled = true
+                }
+            }
+            if (!view.allowDrop) {
+                if (click == ClickType.DROP || click == ClickType.CONTROL_DROP) {
+                    evt.isCancelled = true
+                }
+            }
+            if (!view.allowNumber) {
+                if (click == ClickType.NUMBER_KEY) {
+                    evt.isCancelled = true
+                }
+            }
+            Bukkit.getLogger().info("KViewHandler-DEBUG: 由于clickOtherInv,点击事件已被抛弃")
+
+            return
+        }
+        val slot = evt.slot
+        try {
+            val icon = view.getIcon(slot, context)
+            if (icon == null) {
+                evt.isCancelled = true
+                Bukkit.getLogger().info("KViewHandler-DEBUG: 由于icon == null,点击事件已被抛弃")
+
+                return
+            }
+            clickLimit += p.name
+
+            when (click) {
+                ClickType.NUMBER_KEY -> {
+                    if (enableNumberKey) {
+                        try {
+                            icon.numberClick(context, numberKey[p.name]!!)
+                        } catch (e: NullPointerException) {
+                            Bukkit.getLogger().log(Level.INFO, "KView捕获到无数字点击 丢弃处理", e)
+                            evt.isCancelled = true
+                            return
+                        }
+                    }
+                }
+                ClickType.CREATIVE, ClickType.UNKNOWN -> {
+                    evt.isCancelled = true
+                    Bukkit.getLogger().log(Level.INFO, "KView点击类型: CREATIVE|UNKNOWN 取消事件")
+                }
+                else -> {
+                    icon.onClick(click, context)
+                }
+            }
+            evt.isCancelled = icon.cancelClickEvent(context)
+            if (!icon.keepOpen) {
+                Bukkit.getScheduler().runTask(Main.getPlugin()) {
+                    p.closeInventory()
+                    clickLimit -= p.name
+                }
+            } else if (icon.updateAll) {
+                Bukkit.getScheduler().runTask(Main.getPlugin()) {
+                    updateUI(p)
+                    clickLimit -= p.name
+                }
+            } else {
+                Bukkit.getScheduler().runTask(Main.getPlugin()) {
+                    clickLimit -= p.name
+                }
+            }
+        } catch (e: Throwable) {
+            evt.isCancelled = true
+            Bukkit.getLogger().log(Level.INFO, "KView点击处理事件取消异常", e)
+            Bukkit.getScheduler().runTask(Main.getPlugin()) {
+                p.closeInventory()
+                p.sendMessage("§CKViewHandler遇到致命问题 自动关闭 请联系管理员")
+            }
+            val e = Throwable("KViewHandler遇到致命错误", e)
+            e.printStackTrace()
+            return
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onClick(evt: InventoryClickEvent) {
         val p = evt.whoClicked as? Player ?: return
         val inv = p.openInventory.topInventory ?: return
         val context = inv.holder as? KViewContext ?: return
+        if (context.kView.debug) {
+            debugHandler(evt)
+            return
+        }
         if (clickLimit.contains(evt.whoClicked.name)) {
-            if(DEBUG){
-                Bukkit.getLogger().info("KViewHander-DEBUG: 由于点击限制,点击事件已被抛弃")
-            }
             evt.isCancelled = true
             return
         }
         val view = context.kView
         if (evt.isCancelled && view.ignoreEventCancel) {
-            if(DEBUG){
-                Bukkit.getLogger().info("KViewHander-DEBUG: 由于ignoreEventCancel,点击事件已被抛弃")
-            }
             return
         }
         val click = evt.click
         if (click == ClickType.DOUBLE_CLICK) {
-            if(DEBUG){
-                Bukkit.getLogger().info("KViewHander-DEBUG: 由于DOUBLE_CLICK,点击事件已被抛弃")
-            }
             evt.isCancelled = true
             return
         }
@@ -158,9 +265,6 @@ object KViewHandler : Listener {
                     evt.isCancelled = true
                 }
             }
-            if(DEBUG){
-                Bukkit.getLogger().info("KViewHander-DEBUG: 由于clickOtherInv,点击事件已被抛弃")
-            }
             return
         }
         val slot = evt.slot
@@ -168,9 +272,6 @@ object KViewHandler : Listener {
             val icon = view.getIcon(slot, context)
             if (icon == null) {
                 evt.isCancelled = true
-                if(DEBUG){
-                    Bukkit.getLogger().info("KViewHander-DEBUG: 由于icon == null,点击事件已被抛弃")
-                }
                 return
             }
             clickLimit += p.name
