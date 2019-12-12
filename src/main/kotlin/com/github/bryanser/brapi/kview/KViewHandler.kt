@@ -24,6 +24,19 @@ object KViewHandler : Listener {
 
     init {
         Bukkit.getPluginManager().registerEvents(this, Main.getPlugin())
+        if (Bukkit.getPluginManager().getPlugin("OpenInv") != null) {
+            Bukkit.getLogger().warning("§c 警告 服务器安装了OpenInv 会导致KView完全失效 BrAPI将强制关闭OpenInv")
+            val oi = Bukkit.getPluginManager().getPlugin("OpenInv")
+            val f = oi.javaClass.getDeclaredField("accessor")
+            f.isAccessible = true
+            val acc = f.get(oi)
+            if (acc != null) {
+                val tf = acc.javaClass.getDeclaredField("supported")
+                tf.isAccessible = true
+                tf.setBoolean(acc, false)
+            }
+            Bukkit.getPluginManager().disablePlugin(oi)
+        }
     }
 
     inline fun <C : KViewContext> createKView(
@@ -46,14 +59,14 @@ object KViewHandler : Listener {
             p.closeInventory()
             val inv = view.createInventory(p)
             clickLimit -= p.name
-            val view = object:InventoryView(){
+            val view = object : InventoryView() {
                 override fun getPlayer(): HumanEntity = p
 
                 override fun getType(): InventoryType = InventoryType.CHEST
 
                 override fun getBottomInventory(): Inventory = p.inventory
 
-                override fun getTopInventory(): Inventory  = inv
+                override fun getTopInventory(): Inventory = inv
             }
             p.openInventory(view)
         }
@@ -103,11 +116,11 @@ object KViewHandler : Listener {
     @EventHandler
     fun onClose(evt: InventoryCloseEvent) {
         val p = evt.player as? Player
-        if(p == null){
+        if (p == null) {
             return
         }
         val inv = p.openInventory.topInventory
-        if(inv == null){
+        if (inv == null) {
             return
         }
         val context = inv.holder as? KViewContext ?: return

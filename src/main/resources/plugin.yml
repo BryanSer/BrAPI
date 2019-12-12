@@ -3,7 +3,7 @@ author: Bryan_lzh
 authors: ['Bryan_lzh','DarkBlade12']
 main: com.github.bryanser.brapi.Main
 description: '开发者QQ:390807154'
-softdepend: [Vault,ProtocolLib]
+softdepend: [Vault,ProtocolLib,OpenInv]
 version: ${project.version}
 
 commands:
