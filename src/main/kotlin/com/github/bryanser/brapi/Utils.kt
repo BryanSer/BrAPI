@@ -3,20 +3,20 @@ package com.github.bryanser.brapi
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.inventory.ItemStack
-import org.bukkit.entity.Player
 import org.bukkit.Material
 import org.bukkit.Server
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
-import java.io.FileOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.reflect.Method
 import java.util.*
-import org.bukkit.entity.LivingEntity
 
 
 typealias Projector = (Double, Double) -> Location
@@ -315,4 +315,82 @@ object Utils {
         }
         return list
     }
+
+    @JvmField
+    val defaultMatcher: (ItemMatcher, ItemMatcher) -> Boolean = { i1, i2 ->
+        i1.id == i2.id && i1.durability == i2.durability && Bukkit.getItemFactory().equals(i1.meta, i2.meta)
+    }
+
+    @JvmStatic
+    fun hasEnoughItems(p: Player, items: Iterable<ItemStack?>, matcher: (ItemMatcher, ItemMatcher) -> Boolean = defaultMatcher): Boolean {
+        val map: MutableMap<ItemMatcher, Int> = HashMap()
+        items.forEach { item: ItemStack? ->
+            if (item == null) {
+                return@forEach
+            }
+            val i = ItemMatcher(item, matcher)
+            if (map.containsKey(i)) {
+                map[i] = map[i]!! + item.amount
+            } else {
+                map[i] = item.amount
+            }
+        }
+        for (`is` in p.inventory.contents) {
+            if (`is` == null || `is`.amount == 0 || `is`.type == Material.AIR) {
+                continue
+            }
+            for (item in map.keys) {
+                if (item.isSame(`is`)) {
+                    map[item] = map[item]!! - `is`.amount
+                    break
+                }
+            }
+        }
+        return map.values.stream().noneMatch { a: Int -> a > 0 }
+    }
+
+    @JvmStatic
+    fun removeItem(p: Player?, items: Iterable<ItemStack?>, matcher: (ItemMatcher, ItemMatcher) -> Boolean = defaultMatcher) {
+        val map: MutableMap<ItemMatcher, Int> = HashMap()
+        items.forEach { item: ItemStack? ->
+            if (item == null) {
+                return@forEach
+            }
+            val i = ItemMatcher(item, matcher)
+            if (map.containsKey(i)) {
+                map[i] = map[i]!! + item.amount
+            } else {
+                map[i] = item.amount
+            }
+        }
+        A@ for (e in map.entries) {
+            val cl = e.key
+            var amount = e.value
+            for (i in 0 until p!!.inventory.size) {
+                val item = p.inventory.getItem(i)
+                if (amount <= 0) {
+                    continue@A
+                }
+                if (item == null) {
+                    continue
+                }
+                if (cl.isSame(item)) {
+                    if (amount - item.amount < 0) {
+                        item.amount = item.amount - amount
+                        p.inventory.setItem(i, item)
+                        continue@A
+                    }
+                    if (amount == item.amount) {
+                        p.inventory.setItem(i, null)
+                        continue@A
+                    }
+                    if (amount > item.amount) {
+                        amount -= item.amount
+                        p.inventory.setItem(i, null)
+                    }
+                }
+            }
+        }
+    }
 }
+
