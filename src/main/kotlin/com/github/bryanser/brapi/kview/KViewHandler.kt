@@ -22,20 +22,23 @@ import java.util.logging.Level
 
 object KViewHandler : Listener {
 
-    init {
+    fun init() {
         Bukkit.getPluginManager().registerEvents(this, Main.getPlugin())
-        if (Bukkit.getPluginManager().getPlugin("OpenInv") != null) {
-            Bukkit.getLogger().warning("§c 警告 服务器安装了OpenInv 会导致KView完全失效 BrAPI将强制关闭OpenInv")
-            val oi = Bukkit.getPluginManager().getPlugin("OpenInv")
-            val f = oi.javaClass.getDeclaredField("accessor")
-            f.isAccessible = true
-            val acc = f.get(oi)
-            if (acc != null) {
-                val tf = acc.javaClass.getDeclaredField("supported")
-                tf.isAccessible = true
-                tf.setBoolean(acc, false)
+        try {
+            if (Bukkit.getPluginManager().getPlugin("OpenInv") != null) {
+                Bukkit.getLogger().warning("§c 警告 服务器安装了OpenInv 会导致KView完全失效 BrAPI将强制关闭OpenInv")
+                val oi = Bukkit.getPluginManager().getPlugin("OpenInv")
+                val f = oi.javaClass.getDeclaredField("accessor")
+                f.isAccessible = true
+                val acc = f.get(oi)
+                if (acc != null) {
+                    val tf = acc.javaClass.getDeclaredField("supported")
+                    tf.isAccessible = true
+                    tf.setBoolean(acc, false)
+                }
+                Bukkit.getPluginManager().disablePlugin(oi)
             }
-            Bukkit.getPluginManager().disablePlugin(oi)
+        } catch (e: Throwable) {
         }
     }
 

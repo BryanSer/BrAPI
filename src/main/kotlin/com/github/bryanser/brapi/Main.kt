@@ -27,6 +27,7 @@ class Main : JavaPlugin() {
         compOld()
         ScriptManager.checkClass()
         TestManager.init()
+        KViewHandler.init()
     }
 
     override fun onDisable() {
