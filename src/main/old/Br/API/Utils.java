@@ -792,6 +792,7 @@ public abstract class Utils {
         public static Vector getLeft(Vector look) {
             look = look.clone();
             Vector left = look.crossProduct(new Vector(0, 1, 0));
+            left.multiply(-1);
             return left.normalize();
         }
 

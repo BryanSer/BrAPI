@@ -212,22 +212,7 @@ object Utils {
     }
 
     /**
-     * 获得一个向量的水平朝左的向量
-     * *若向量为垂直与xoz平面的向量 将无法正确返回*
-     *
-     * @param look 向量
-     * @return 朝左的向量
-     */
-    @JvmStatic
-    fun getLeft(look: Vector): Vector {
-        var look = look
-        look = look.clone()
-        val left = look.crossProduct(Vector(0, 1, 0))
-        return left.normalize()
-    }
-
-    /**
-     * 获得一个向量水平朝右的向量
+     * 获得一个向量的水平朝右的向量
      * *若向量为垂直与xoz平面的向量 将无法正确返回*
      *
      * @param look 向量
@@ -235,7 +220,22 @@ object Utils {
      */
     @JvmStatic
     fun getRight(look: Vector): Vector {
-        return getLeft(look).multiply(-1)
+        var look = look
+        look = look.clone()
+        val left = look.crossProduct(Vector(0, 1, 0))
+        return left.normalize()
+    }
+
+    /**
+     * 获得一个向量水平朝左的向量
+     * *若向量为垂直与xoz平面的向量 将无法正确返回*
+     *
+     * @param look 向量
+     * @return 朝左的向量
+     */
+    @JvmStatic
+    fun getLeft(look: Vector): Vector {
+        return getRight(look).multiply(-1)
     }
 
     /**
