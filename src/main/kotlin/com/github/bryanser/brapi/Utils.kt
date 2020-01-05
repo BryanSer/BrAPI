@@ -322,6 +322,7 @@ object Utils {
     }
 
     @JvmStatic
+    @JvmOverloads
     fun hasEnoughItems(p: Player, items: Iterable<ItemStack?>, matcher: (ItemMatcher, ItemMatcher) -> Boolean = defaultMatcher): Boolean {
         val map: MutableMap<ItemMatcher, Int> = HashMap()
         items.forEach { item: ItemStack? ->
@@ -350,7 +351,8 @@ object Utils {
     }
 
     @JvmStatic
-    fun removeItem(p: Player?, items: Iterable<ItemStack?>, matcher: (ItemMatcher, ItemMatcher) -> Boolean = defaultMatcher) {
+    @JvmOverloads
+    fun removeItem(p: Player, items: Iterable<ItemStack?>, matcher: (ItemMatcher, ItemMatcher) -> Boolean = defaultMatcher) {
         val map: MutableMap<ItemMatcher, Int> = HashMap()
         items.forEach { item: ItemStack? ->
             if (item == null) {
@@ -366,7 +368,7 @@ object Utils {
         A@ for (e in map.entries) {
             val cl = e.key
             var amount = e.value
-            for (i in 0 until p!!.inventory.size) {
+            for (i in 0 until p.inventory.size) {
                 val item = p.inventory.getItem(i)
                 if (amount <= 0) {
                     continue@A

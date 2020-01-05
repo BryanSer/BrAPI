@@ -78,11 +78,15 @@
             <plugin>
                 <artifactId>dokka-maven-plugin</artifactId>
                 <configuration>
+                    <sourceDirectories>
+                        <sourceDirectory>src/main/kotlin</sourceDirectory>
+                        <sourceDirectory>src/main/old</sourceDirectory>
+                    </sourceDirectories>
                     <sourceLinks>
                         <link>
-                            <dir>src/main/kotlin</dir>
+                            <path>src/main/kotlin</path>
                             <url>https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/</url>
-                            <urlSuffix>#L</urlSuffix>
+                            <lineSuffix>#L</lineSuffix>
                         </link>
                     </sourceLinks>
                     <externalDocumentationLinks>
@@ -108,7 +112,7 @@
                     </execution>
                 </executions>
                 <groupId>org.jetbrains.dokka</groupId>
-                <version>0.9.18</version>
+                <version>0.10.0</version>
             </plugin>
 <!--            <plugin>-->
 <!--                <artifactId>maven-javadoc-plugin</artifactId>-->
