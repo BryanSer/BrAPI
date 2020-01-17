@@ -111,8 +111,8 @@ object Utils {
      * @param whenInvFull 当背包满了的时候执行的操作 默认丢弃到附近:[safeDropItem]
      */
     @JvmStatic
-    fun safeGiveItem(p: Player, item: ItemStack, whenInvFull: (Player, ItemStack) -> Unit = ::safeDropItem) {
-        val item = item.clone()
+    fun safeGiveItem(p: Player, item: ItemStack?, whenInvFull: (Player, ItemStack) -> Unit = ::safeDropItem) {
+        val item = item?.clone() ?: return
         if (p.inventory.firstEmpty() == -1 && item.maxStackSize == 1) { // 背包满了
             whenInvFull(p, item)
             return

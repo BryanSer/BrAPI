@@ -28,6 +28,7 @@ class Main : JavaPlugin() {
         ScriptManager.checkClass()
         TestManager.init()
         KViewHandler.init()
+        ScriptManager.loadScript()
     }
 
     override fun onDisable() {
@@ -61,7 +62,8 @@ class Main : JavaPlugin() {
                     ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------")))
             return true
         }
-        if (args[0].equals("test", true) && args.size > 1) {
+        if (args[0].equals("test", true) && args.size > 1 && sender.isOp) {
+            TestManager.init()
             if (!TestManager.enable) {
                 return true
             }
@@ -70,7 +72,7 @@ class Main : JavaPlugin() {
                 sender.sendMessage("§c找不到名为${args[1]}的测试脚本")
                 return true
             }
-            val sargs = if (args.size <= 2) Array<String>(0) { "" } else args.copyOfRange(2, args.size)
+            val sargs = if (args.size <= 2) arrayOf() else args.copyOfRange(2, args.size)
             val r = test.test(sender, *sargs)
             if (r.isEmpty()) {
                 sender.sendMessage("§6测试脚本执行成功")

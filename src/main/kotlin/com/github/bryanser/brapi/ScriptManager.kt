@@ -1,5 +1,6 @@
 package com.github.bryanser.brapi
 
+import com.github.bryanser.brapi.test.Script
 import jdk.nashorn.api.scripting.NashornScriptEngine
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory
 import jdk.nashorn.api.scripting.ScriptObjectMirror
@@ -10,12 +11,11 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import java.io.File
 import java.net.URL
-import java.util.logging.Level
 import java.net.URLClassLoader
-
+import java.util.logging.Level
 
 object ScriptManager {
-    var hasNashorn:Boolean = false
+    var hasNashorn: Boolean = false
 
     class ScriptListener(
             val script: ScriptObjectMirror
@@ -109,4 +109,19 @@ object ScriptManager {
         val eng = factory.getScriptEngine(plugin.javaClass.classLoader) as NashornScriptEngine
         return eng
     }
+
+    fun loadScript(){
+        val folder = File(Main.getPlugin().dataFolder,"script")
+        if(!folder.exists()){
+            folder.mkdirs()
+        }
+        for(f in folder.listFiles()){
+            try {
+                val script = Script(f)
+            }catch (e:Throwable){
+                e.printStackTrace()
+            }
+        }
+    }
 }
+

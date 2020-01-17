@@ -16,6 +16,7 @@ object TestManager {
         if(!hasNashorn){
             return
         }
+        tests.clear()
         val f = File(Main.getPlugin().dataFolder,"testScript.yml")
         if(!f.exists()){
             Utils.saveResource(Main.getPlugin(),"testScript.yml")
