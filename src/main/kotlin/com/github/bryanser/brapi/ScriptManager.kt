@@ -14,7 +14,14 @@ import java.net.URL
 import java.net.URLClassLoader
 import java.util.logging.Level
 
-object ScriptManager {
+interface ScriptListenerRegister {
+    fun registerListener(listener: ScriptObjectMirror, event: String): Listener?
+    fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener?
+    fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener?
+    fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener?
+}
+
+object ScriptManager : ScriptListenerRegister {
     var hasNashorn: Boolean = false
 
     class ScriptListener(
@@ -25,7 +32,7 @@ object ScriptManager {
         }
     }
 
-    fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
+    override fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
         if (listener.isFunction) {
             val evt = Class.forName(event) ?: return null
             val targetevt = evt.asSubclass(Event::class.java) ?: return null
@@ -38,7 +45,7 @@ object ScriptManager {
         return null
     }
 
-    fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener? {
+    override fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener? {
         if (listener.isFunction) {
             val evt = Class.forName(event) ?: return null
             val targetevt = evt.asSubclass(Event::class.java) ?: return null
@@ -51,7 +58,7 @@ object ScriptManager {
         return null
     }
 
-    fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener? {
+    override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener? {
         if (listener.isFunction) {
             val evt = Class.forName(event) ?: return null
             val targetevt = evt.asSubclass(Event::class.java) ?: return null
@@ -64,7 +71,7 @@ object ScriptManager {
         return null
     }
 
-    fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener? {
+    override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener? {
         if (listener.isFunction) {
             val evt = Class.forName(event) ?: return null
             val targetevt = evt.asSubclass(Event::class.java) ?: return null
@@ -110,15 +117,22 @@ object ScriptManager {
         return eng
     }
 
-    fun loadScript(){
-        val folder = File(Main.getPlugin().dataFolder,"script")
-        if(!folder.exists()){
+    val scripts = mutableListOf<Script>()
+
+    fun loadScript() {
+        for (sc in scripts) {
+            sc.disable()
+        }
+        scripts.clear()
+        val folder = File(Main.getPlugin().dataFolder, "script")
+        if (!folder.exists()) {
             folder.mkdirs()
         }
-        for(f in folder.listFiles()){
+        for (f in folder.listFiles()) {
             try {
                 val script = Script(f)
-            }catch (e:Throwable){
+                scripts += script
+            } catch (e: Throwable) {
                 e.printStackTrace()
             }
         }

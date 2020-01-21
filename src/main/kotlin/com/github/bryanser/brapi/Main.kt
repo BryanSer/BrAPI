@@ -62,6 +62,19 @@ class Main : JavaPlugin() {
                     ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------")))
             return true
         }
+        if(args[0].equals("script",true) && sender.isOp){
+            if(args.size < 2){
+                sender.sendMessage("§6/$label script reload >> 重载所有脚本")
+                return true
+            }
+            if(args[1].equals("reload", true)){
+                ScriptManager.loadScript()
+                sender.sendMessage("§6重载成功")
+                return true
+            }
+            sender.sendMessage("§6/$label script reload >> 重载所有脚本")
+            return true
+        }
         if (args[0].equals("test", true) && args.size > 1 && sender.isOp) {
             TestManager.init()
             if (!TestManager.enable) {

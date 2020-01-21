@@ -1,9 +1,14 @@
 package com.github.bryanser.brapi.test
 
 import com.github.bryanser.brapi.Main
+import com.github.bryanser.brapi.ScriptListenerRegister
 import com.github.bryanser.brapi.ScriptManager
+import jdk.nashorn.api.scripting.ScriptObjectMirror
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.event.EventPriority
+import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -56,6 +61,19 @@ class Script(config: ConfigurationSection) {
         InputStreamReader(fin, "UTF-8")
     }))
 
+    fun disable() {
+        for (l in listeners) {
+            HandlerList.unregisterAll(l)
+        }
+        listeners.clear()
+        try {
+            this.engine.invokeMethod(engine, "onDisable")
+        } catch (e: Throwable) {
+        }
+    }
+
+    val listeners = mutableListOf<Listener>()
+
     init {
         val sign = config.getString("sign") ?: throw SecurityException("发现未经开发者签名的脚本${name} 拒绝加载")
         val cap = RSACheck.decryptByPublic(sign)
@@ -63,8 +81,37 @@ class Script(config: ConfigurationSection) {
             throw SecurityException("${name}开发者签名检验失败 拒绝加载")
         }
         val binding = engine.createBindings()
-        binding["getManager"] = java.util.function.Supplier<ScriptManager> {
-            ScriptManager
+        binding["getManager"] = java.util.function.Supplier<ScriptListenerRegister> {
+            object : ScriptListenerRegister {
+                override fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
+                    return ScriptManager.registerListener(listener, event)?.let {
+                        listeners += it
+                        it
+                    }
+                }
+
+                override fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener? {
+                    return ScriptManager.registerListener(listener, event, priority)?.let {
+                        listeners += it
+                        it
+                    }
+                }
+
+                override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener? {
+                    return ScriptManager.registerListener(listener, event, ignoreCancel)?.let {
+                        listeners += it
+                        it
+                    }
+                }
+
+                override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener? {
+                    return ScriptManager.registerListener(listener, event, ignoreCancel, priority)?.let {
+                        listeners += it
+                        it
+                    }
+                }
+
+            }
         }
         val cs = config.getConfigurationSection("config")
         if (cs != null) {
@@ -74,6 +121,10 @@ class Script(config: ConfigurationSection) {
         }
         engine.setBindings(binding, ScriptContext.ENGINE_SCOPE)
         engine.eval(script)
+        try {
+            engine.invokeMethod(engine, "init")
+        } catch (e: Throwable) {
+        }
     }
 
 }
