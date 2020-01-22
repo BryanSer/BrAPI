@@ -58,11 +58,11 @@ public class Zone implements BrConfigurationSerializable {
     }
 
     public Location getTop() {
-        return top;
+        return top.clone();
     }
 
     public Location getBottom() {
-        return bottom;
+        return bottom.clone();
     }
 
 }
