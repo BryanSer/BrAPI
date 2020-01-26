@@ -62,16 +62,7 @@ object KViewHandler : Listener {
             p.closeInventory()
             val inv = view.createInventory(p)
             clickLimit -= p.name
-            val view = object : InventoryView() {
-                override fun getPlayer(): HumanEntity = p
-
-                override fun getType(): InventoryType = InventoryType.CHEST
-
-                override fun getBottomInventory(): Inventory = p.inventory
-
-                override fun getTopInventory(): Inventory = inv
-            }
-            p.openInventory(view)
+            p.openInventory(inv)
         }
     }
 
