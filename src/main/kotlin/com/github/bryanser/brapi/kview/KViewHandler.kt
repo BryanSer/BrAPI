@@ -70,9 +70,12 @@ object KViewHandler : Listener {
         val inv = p.openInventory.topInventory ?: return
         val context = inv.holder as? KViewContext ?: return
         val view = context.kView
-
         Bukkit.getScheduler().runTask(Main.getPlugin()) {
             try {
+                if(context.closed){
+                    p.closeInventory()
+                    return@runTask
+                }
                 view.updateInventory(context)
             } catch (e: Throwable) {
                 p.closeInventory()
@@ -118,6 +121,10 @@ object KViewHandler : Listener {
             return
         }
         val context = inv.holder as? KViewContext ?: return
+        if(context.closed){
+            return
+        }
+        context.closed = true
         clickLimit -= p.name
         val view = context.kView
         view.onClose(context)

@@ -13,6 +13,8 @@ abstract class KViewContext(
     lateinit var player: Player
     internal lateinit var inv: Inventory
 
+    var closed = false
+
     override fun getInventory(): Inventory = inv
 
 }

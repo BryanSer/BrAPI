@@ -157,6 +157,11 @@ public class UIManager {
                     Player p = (Player) evt.getPlayer();
                     Snapshot s = ui.getSnapshot(p);
                     if (s != null) {
+                        Boolean uiManager_close = (Boolean) s.getData("UIManager_Close");
+                        if(uiManager_close != null && uiManager_close == true){
+                            return;
+                        }
+                        s.setData("UIManager_Close",true);
                         ui.onClose(p, s);
                         ui.getSnapshotFactory().deleteSanpshop(p);
                     }
