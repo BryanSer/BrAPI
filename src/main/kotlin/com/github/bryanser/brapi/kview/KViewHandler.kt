@@ -258,7 +258,7 @@ object KViewHandler : Listener {
             return
         }
         val view = context.kView
-        if (evt.isCancelled && view.ignoreEventCancel) {
+        if (evt.isCancelled && !view.ignoreEventCancel) {
             return
         }
         val click = evt.click
@@ -294,6 +294,22 @@ object KViewHandler : Listener {
                 }
             }
             return
+        }else{
+            if (!view.allowNumber) {
+                if (click == ClickType.NUMBER_KEY) {
+                    evt.isCancelled = true
+                }
+            }
+            if (!view.allowShift) {
+                if (click == ClickType.SHIFT_RIGHT || click == ClickType.SHIFT_LEFT) {
+                    evt.isCancelled = true
+                }
+            }
+            if (!view.allowDrop) {
+                if (click == ClickType.DROP || click == ClickType.CONTROL_DROP) {
+                    evt.isCancelled = true
+                }
+            }
         }
         val slot = evt.slot
         try {

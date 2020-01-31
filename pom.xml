@@ -6,7 +6,7 @@
 
     <groupId>com.github.bryanser</groupId>
     <artifactId>BrAPI</artifactId>
-    <version>Kt-1.0.1</version>
+    <version>Kt-1.0.2</version>
     <packaging>jar</packaging>
 
     <name>BrAPI</name>

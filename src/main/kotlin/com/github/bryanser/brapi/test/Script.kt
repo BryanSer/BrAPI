@@ -83,6 +83,10 @@ class Script(config: ConfigurationSection) {
         val binding = engine.createBindings()
         binding["getManager"] = java.util.function.Supplier<ScriptListenerRegister> {
             object : ScriptListenerRegister {
+                override fun getPlugin(): Main {
+                    return ScriptManager.getPlugin()
+                }
+
                 override fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
                     return ScriptManager.registerListener(listener, event)?.let {
                         listeners += it

@@ -35,7 +35,7 @@ abstract class KView<C : KViewContext>(
      * *警告 这个选项非常危险 除非你知道你在做什么 否则不要设为true*
      */
     open var allowDrug: Boolean = false
-    open var ignoreEventCancel: Boolean = true
+    open var ignoreEventCancel: Boolean = false
 
     var debug: Boolean = false
 

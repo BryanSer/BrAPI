@@ -15,6 +15,8 @@ import java.net.URLClassLoader
 import java.util.logging.Level
 
 interface ScriptListenerRegister {
+    fun getPlugin(): Main
+
     fun registerListener(listener: ScriptObjectMirror, event: String): Listener?
     fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener?
     fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener?
@@ -31,6 +33,8 @@ object ScriptManager : ScriptListenerRegister {
             script.call(script, evt)
         }
     }
+
+    override fun getPlugin(): Main = Main.getPlugin()
 
     override fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
         if (listener.isFunction) {
