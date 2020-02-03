@@ -81,41 +81,41 @@ class Script(config: ConfigurationSection) {
             throw SecurityException("${name}开发者签名检验失败 拒绝加载")
         }
         val binding = engine.createBindings()
+        val manager = object : ScriptListenerRegister {
+                    override fun getPlugin(): Main {
+                        return ScriptManager.getPlugin()
+                    }
+
+                    override fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
+                        return ScriptManager.registerListener(listener, event)?.let {
+                            listeners += it
+                            it
+                        }
+                    }
+
+                    override fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener? {
+                        return ScriptManager.registerListener(listener, event, priority)?.let {
+                            listeners += it
+                            it
+                        }
+                    }
+
+                    override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener? {
+                        return ScriptManager.registerListener(listener, event, ignoreCancel)?.let {
+                            listeners += it
+                            it
+                        }
+                    }
+
+                    override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener? {
+                        return ScriptManager.registerListener(listener, event, ignoreCancel, priority)?.let {
+                            listeners += it
+                            it
+                        }
+                    }
+                }
         binding["getManager"] = java.util.function.Supplier<ScriptListenerRegister> {
-            object : ScriptListenerRegister {
-                override fun getPlugin(): Main {
-                    return ScriptManager.getPlugin()
-                }
-
-                override fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
-                    return ScriptManager.registerListener(listener, event)?.let {
-                        listeners += it
-                        it
-                    }
-                }
-
-                override fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener? {
-                    return ScriptManager.registerListener(listener, event, priority)?.let {
-                        listeners += it
-                        it
-                    }
-                }
-
-                override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener? {
-                    return ScriptManager.registerListener(listener, event, ignoreCancel)?.let {
-                        listeners += it
-                        it
-                    }
-                }
-
-                override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener? {
-                    return ScriptManager.registerListener(listener, event, ignoreCancel, priority)?.let {
-                        listeners += it
-                        it
-                    }
-                }
-
-            }
+            manager
         }
         val cs = config.getConfigurationSection("config")
         if (cs != null) {

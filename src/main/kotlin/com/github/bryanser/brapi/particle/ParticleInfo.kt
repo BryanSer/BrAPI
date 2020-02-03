@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLib
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.wrappers.EnumWrappers
+import com.comphenix.protocol.wrappers.WrappedParticle
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -21,8 +22,9 @@ open class ParticleInfo(
         }
         val pc = ProtocolManager.createPacket(PacketType.Play.Server.WORLD_PARTICLES)
         if (isVer14()) {
-            TODO()
-            //pc.integers.write(0, type.id)
+            return
+//            pc.newParticles.write(0, WrappedParticle.)
+//            pc.integers.write(0, type.id)
         } else {
             pc.particles.write(0, EnumWrappers.Particle.getById(type.id_LEGACY))
             //pc.integers.write(0, type.id_LEGACY)

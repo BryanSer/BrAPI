@@ -116,11 +116,12 @@ public class UIManager {
     }
 
     public static void updateUI(Player p) {
+        String name = p.getOpenInventory().getTitle();
         Inventory inv = p.getOpenInventory().getTopInventory();
-        if (inv.getName() == null || !inv.getName().contains(UICODE)) {
+        if (name == null || !name.contains(UICODE)) {
             return;
         }
-        String name = UIManager.decode(inv.getName().split(UICODE)[1]);
+        name = UIManager.decode(name.split(UICODE)[1]);
         BaseUI ui = RegisteredUI.get(name);
         if (ui == null) {
             return;
@@ -143,8 +144,8 @@ public class UIManager {
 
             @EventHandler
             public void onDrug(InventoryDragEvent evt) {
-                Inventory inv = evt.getView().getTopInventory();
-                if (inv.getName() == null || !inv.getName().contains(UIManager.UICODE)) {
+                String inv = evt.getView().getTitle();
+                if (inv == null || !inv.contains(UIManager.UICODE)) {
                     return;
                 }
                 evt.setCancelled(true);
@@ -177,15 +178,21 @@ public class UIManager {
                     return;
                 }
                 Inventory inv = evt.getWhoClicked().getOpenInventory().getTopInventory();
-                if (inv.getName() == null || !inv.getName().contains(UIManager.UICODE)) {
+                String name;
+                try {
+                    name = inv.getName();
+                } catch (NoSuchMethodError e) {
+                    name = evt.getWhoClicked().getOpenInventory().getTitle();
+                }
+                if (name == null || !name.contains(UIManager.UICODE)) {
                     return;
                 }
-                String name = UIManager.decode(inv.getName().split(UIManager.UICODE)[1]);
+                name = UIManager.decode(name.split(UIManager.UICODE)[1]);
                 BaseUI ui = RegisteredUI.get(name);
                 if (ui == null) {
                     return;
                 }
-                if(evt.getClick() == ClickType.DOUBLE_CLICK){
+                if (evt.getClick() == ClickType.DOUBLE_CLICK) {
                     evt.setCancelled(true);
                     return;
                 }
