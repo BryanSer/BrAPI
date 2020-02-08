@@ -6,9 +6,26 @@
 
     <groupId>com.github.bryanser</groupId>
     <artifactId>BrAPI</artifactId>
-    <version>Kt-1.0.2</version>
+    <version>Kt-1.0.3</version>
     <packaging>jar</packaging>
-
+    <description>A bukkit/spigot plugin for develop faster with kotlin.</description>
+    <url>https://github.com/BryanSer/BrAPI</url>
+    <scm>
+        <url>https://github.com/BryanSer/BrAPI.git</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>GNU General Public License v3.0</name>
+            <url>https://github.com/BryanSer/BrAPI/blob/ver-kotlin/LICENSE</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>BryanSer</name>
+            <url>https://github.com/BryanSer</url>
+            <email>bryan_lzh@njust.edu.cn</email>
+        </developer>
+    </developers>
     <name>BrAPI</name>
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -48,8 +65,7 @@
                     <source>8</source>
                     <target>8</target>
                     <compileSourceRoots>
-                        <compileSourceRoot>${project.basedir}/src/main/kotlin</compileSourceRoot>
-                        <compileSourceRoot>${project.basedir}/src/main/old</compileSourceRoot>
+                        <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
                     </compileSourceRoots>
                 </configuration>
             </plugin>
@@ -79,13 +95,14 @@
                 <artifactId>dokka-maven-plugin</artifactId>
                 <configuration>
                     <sourceDirectories>
-                        <sourceDirectory>src/main/kotlin</sourceDirectory>
-                        <sourceDirectory>src/main/old</sourceDirectory>
+                        <sourceDirectory>src/main/java</sourceDirectory>
                     </sourceDirectories>
                     <sourceLinks>
                         <link>
                             <path>src/main/kotlin</path>
-                            <url>https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/</url>
+                            <url>
+                                https://github.com/BryanSer/BrAPI/blob/ver-kotlin/src/main/kotlin/
+                            </url>
                             <lineSuffix>#L</lineSuffix>
                         </link>
                     </sourceLinks>
@@ -114,24 +131,30 @@
                 <groupId>org.jetbrains.dokka</groupId>
                 <version>0.10.0</version>
             </plugin>
-<!--            <plugin>-->
-<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <links>-->
-<!--                        <link>https://hub.spigotmc.org/javadocs/spigot/</link>-->
-<!--                    </links>-->
-<!--                    <destDir>JavaDoc</destDir>-->
-<!--                    <javaApiLinks>-->
-<!--                        <property>-->
-<!--                            <name>api_1.8</name>-->
-<!--                            <value>https://docs.oracle.com/javase/8/docs/api/</value>-->
-<!--                        </property>-->
-<!--                    </javaApiLinks>-->
-<!--                    <reportOutputDirectory>${project.basedir}/</reportOutputDirectory>-->
-<!--                </configuration>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <version>2.9.1</version>-->
-<!--            </plugin>-->
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <links>
+                        <link>https://hub.spigotmc.org/javadocs/spigot/</link>
+                    </links>
+                    <javaApiLinks>
+                        <property>
+                            <name>api_1.8</name>
+                            <value>https://docs.oracle.com/javase/8/docs/api/</value>
+                        </property>
+                    </javaApiLinks>
+                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -144,8 +167,7 @@
                         </goals>
                         <configuration>
                             <sourceDirs>
-                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                                <sourceDir>${project.basedir}/src/main/old</sourceDir>
+                                <sourceDir>src/main/java</sourceDir>
                             </sourceDirs>
                             <jvmTarget>1.8</jvmTarget>
                             <args>
@@ -161,9 +183,51 @@
                         </goals>
                         <configuration>
                             <sourceDirs>
-                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/test/java</sourceDir>
                             </sourceDirs>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -193,6 +257,12 @@
         <lib.path>${project.basedir}/libs</lib.path>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <repositories>
         <repository>
