@@ -239,7 +239,7 @@ open class VComponentBuilder<VC : VViewContext>(
             var fullHight: Int
     ) : VComponent<VC, VexScrollingList>() {
 
-        val subCom = VComponentBuilder<VC>(this@VComponentBuilder)
+        val subCom = VComponentBuilder(this@VComponentBuilder)
 
         @VViewMaker
         fun component(init: VComponentBuilder<VC>.() -> Unit) {
@@ -333,7 +333,11 @@ open class VComponentBuilder<VC : VViewContext>(
         }
 
         override fun createComponents(context: VC): VexSlot {
-            return VexSlot(id, x, y, provider(context))
+            return VexSlot(id, x, y, provider(context)).also {
+                bindSlot.getOrPut(context){
+                    mutableListOf()
+                }.add(this to it)
+            }
         }
 
         fun getSuperClick(ct: VexSlotClickEvent.ClickType): VexSlotClickEvent.ClickType? {

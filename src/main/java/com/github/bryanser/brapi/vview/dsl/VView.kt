@@ -66,12 +66,15 @@ class VView<VC : VViewContext>(
 
     fun build(context: VC): VexGui {
         val gui = VexGui(img, x, y, w, h)
-        toComponentsList(context).forEach(gui::addComponent)
+        for (com in toComponentsList(context)) {
+            gui.addComponent(com)
+        }
         return gui
     }
 
     fun open(player: Player) {
         val context = contextFactory(player)
+        context.view = this as VView<VViewContext>
         VViewHandler.opening[player.uniqueId] = context
         if (checkOpen(context)) {
             bindCheckBox[context] = mutableListOf()
