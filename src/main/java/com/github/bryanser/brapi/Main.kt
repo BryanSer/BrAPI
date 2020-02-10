@@ -13,6 +13,7 @@ import Br.API.Main.Plugins
 import Br.API.Main.RegisterMetrics
 import com.github.bryanser.brapi.kview.KViewHandler
 import com.github.bryanser.brapi.test.TestManager
+import com.github.bryanser.brapi.vview.VViewHandler
 import org.bukkit.ChatColor
 
 
@@ -29,6 +30,7 @@ class Main : JavaPlugin() {
         TestManager.init()
         KViewHandler.init()
         ScriptManager.loadScript()
+        VViewHandler.init()
     }
 
     override fun onDisable() {
