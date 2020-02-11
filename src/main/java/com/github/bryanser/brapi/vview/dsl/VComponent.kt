@@ -23,14 +23,16 @@ abstract class VComponent<VC : VViewContext, COM : VexComponents>(
     protected abstract fun createComponents(context: VC): COM
 
     fun toVexComponents(context: VC): COM {
-        if (this is Building<*, *>) {
-            val b = this as Building<VC, VComponent<VC, COM>>
-            b.build(context, this)
+        val copy = this.copy()
+        if (copy is Building<*, *>) {
+            val b = copy as Building<VC, VComponent<VC, COM>>
+            b.build(copy, context)
         }
-//        build(context, this)
-        val com = createComponents(context)
-        comInit(context, com)
+        val com = copy.createComponents(context)
+        copy.comInit(context, com)
         return com
     }
+
+    abstract fun copy(): VComponent<VC,COM>
 }
 

@@ -3,10 +3,11 @@ package com.github.bryanser.brapi.vview.dsl
 import com.github.bryanser.brapi.vview.VViewContext
 
 interface Building<VC : VViewContext, VCOM : VComponent<VC, *>> {
-    var build: VC.(VCOM) -> Unit
+    var build: VCOM.(VC) -> Unit
 
     @JvmDefault
-    fun onBuild(func: VC.(VCOM) -> Unit) {
+    @VViewMaker
+    fun onBuild(func: VCOM.(VC) -> Unit) {
         build = func
     }
 }

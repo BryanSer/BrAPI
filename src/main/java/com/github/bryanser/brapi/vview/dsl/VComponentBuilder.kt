@@ -21,11 +21,13 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 open class VComponentBuilder<VC : VViewContext>(
-        father: VComponentBuilder<VC>? = null
-) : DynamicComponentBuilder<VC>(father), Listener {
+        father: VComponentBuilder<VC>? = null,
+        list: MutableList<VComponent<VC, *>> = mutableListOf()
+) : DynamicComponentBuilder<VC>(father, list), Listener {
 
     protected val bindCheckBox: MutableMap<VC, MutableList<Pair<CheckBox, VexCheckBox>>>
     protected val bindSlot: MutableMap<VC, MutableList<Pair<Slot, VexSlot>>>
@@ -39,6 +41,10 @@ open class VComponentBuilder<VC : VViewContext>(
             bindCheckBox = father.bindCheckBox
             bindSlot = father.bindSlot
         }
+    }
+
+    fun copy(): VComponentBuilder<VC> {
+        return VComponentBuilder(this, ArrayList(components))
     }
 
     @EventHandler
@@ -90,7 +96,7 @@ open class VComponentBuilder<VC : VViewContext>(
             val default: Boolean = false,
             override var hover: MutableList<String> = mutableListOf(),
             var change: VC.(check: Boolean) -> Unit = {},
-            override var build: VC.(CheckBox) -> Unit = {}
+            override var build: CheckBox.(VC) -> Unit = {}
     ) : VComponent<VC, VexCheckBox>(), HoverText, Building<VC, CheckBox> {
 
         var proxy: VC.(CheckBoxProxy) -> Unit = {}
@@ -125,6 +131,12 @@ open class VComponentBuilder<VC : VViewContext>(
             proxy(context, CheckBoxProxy(context))
             return vcb
         }
+
+        override fun copy(): CheckBox {
+            return CheckBox(id, x, y, w, h, img, checkImg, default, ArrayList(hover), change, build).also{
+                it.proxy = proxy
+            }
+        }
     }
 
     @VViewMaker
@@ -145,12 +157,13 @@ open class VComponentBuilder<VC : VViewContext>(
     }
 
     @VViewMaker
-    abstract inner class Draw<E, VED : VexEntityDraw>(
+    inner class Draw<E, VED : VexEntityDraw>(
             var x: Int = 0,
             var y: Int = 0,
             var scale: Int = 30,
             var see: Boolean = true,
-            override var build: VC.(Draw<E, VED>) -> Unit = {}
+            override var build: Draw<E, VED>.(VC) -> Unit = {},
+            val create: Draw<E, VED>.(VC) -> VED
     ) : VComponent<VC, VED>(), Building<VC, Draw<E, VED>> {
         lateinit var provider: VC.() -> E
 
@@ -160,6 +173,15 @@ open class VComponentBuilder<VC : VViewContext>(
         }
 
         fun getData(context: VC): E = provider(context)
+        override fun createComponents(context: VC): VED {
+            return create(this, context)
+        }
+
+        override fun copy(): Draw<E, VED> {
+            return Draw(x, y, scale, see, build, create).also {
+                it.provider = provider
+            }
+        }
     }
 
     @VViewMaker
@@ -170,12 +192,10 @@ open class VComponentBuilder<VC : VViewContext>(
             see: Boolean = true,
             init: Draw<Entity, VexEntityDraw>.() -> Unit
     ) {
-        val draw = object : Draw<Entity, VexEntityDraw>(x, y, scale, see) {
-            override fun createComponents(context: VC): VexEntityDraw {
-                val ved = VexEntityDraw(x, y, scale, getData(context))
-                ved.setSee(see)
-                return ved
-            }
+        val draw = Draw<Entity, VexEntityDraw>(x, y, scale, see) { context ->
+            val ved = VexEntityDraw(x, y, scale, getData(context))
+            ved.setSee(see)
+            ved
         }
         draw.init()
         components += draw
@@ -190,12 +210,10 @@ open class VComponentBuilder<VC : VViewContext>(
             see: Boolean = true,
             init: Draw<Player, VexPlayerDraw>.() -> Unit
     ) {
-        val draw = object : Draw<Player, VexPlayerDraw>(x, y, scale, see) {
-            override fun createComponents(context: VC): VexPlayerDraw {
-                val ved = VexPlayerDraw(x, y, scale, getData(context))
-                ved.setSee(see)
-                return ved
-            }
+        val draw = Draw<Player, VexPlayerDraw>(x, y, scale, see) { context ->
+            val ved = VexPlayerDraw(x, y, scale, getData(context))
+            ved.setSee(see)
+            ved
         }
         draw.init()
         components += draw
@@ -209,12 +227,10 @@ open class VComponentBuilder<VC : VViewContext>(
             see: Boolean = true,
             init: Draw<EntityType, VexEntityDraw>.() -> Unit
     ) {
-        val draw = object : Draw<EntityType, VexEntityDraw>(x, y, scale, see) {
-            override fun createComponents(context: VC): VexEntityDraw {
-                val ved = VexEntityDraw(x, y, scale, getData(context))
-                ved.setSee(see)
-                return ved
-            }
+        val draw = Draw<EntityType, VexEntityDraw>(x, y, scale, see) { context ->
+            val ved = VexEntityDraw(x, y, scale, getData(context))
+            ved.setSee(see)
+            ved
         }
         draw.init()
         components += draw
@@ -229,13 +245,12 @@ open class VComponentBuilder<VC : VViewContext>(
             see: Boolean = true,
             init: Draw<Any, VexPlayerDraw>.() -> Unit
     ) {
-        val draw = object : Draw<Any, VexPlayerDraw>(x, y, scale, see) {
-            override fun createComponents(context: VC): VexPlayerDraw {
-                val ved = VexPlayerDraw(x, y, scale, getData(context))
-                ved.setSee(see)
-                return ved
-            }
+        val draw = Draw<Any, VexPlayerDraw>(x, y, scale, see) { context ->
+            val ved = VexPlayerDraw(x, y, scale, getData(context))
+            ved.setSee(see)
+            ved
         }
+
         draw.init()
         components += draw
     }
@@ -247,10 +262,10 @@ open class VComponentBuilder<VC : VViewContext>(
             var w: Int,
             var h: Int,
             var fullHight: Int,
-            override var build: VC.(ScrollingList) -> Unit = {}
+            override var build: ScrollingList.(VC) -> Unit = {},
+            val subCom: VComponentBuilder<VC> = VComponentBuilder(this@VComponentBuilder)
     ) : VComponent<VC, VexScrollingList>(), Building<VC, ScrollingList> {
 
-        val subCom = VComponentBuilder(this@VComponentBuilder)
 
         @VViewMaker
         fun component(init: VComponentBuilder<VC>.() -> Unit) {
@@ -295,6 +310,10 @@ open class VComponentBuilder<VC : VViewContext>(
             proxy(context, ScrollingProxy(context))
             return vsl
         }
+
+        override fun copy(): ScrollingList {
+            return ScrollingList(x, y, w, h, fullHight, build, subCom.copy())
+        }
     }
 
 
@@ -320,9 +339,11 @@ open class VComponentBuilder<VC : VViewContext>(
             var y: Int = 0,
             var provider: VC.() -> ItemStack? = { null },
             val click: EnumMap<VexSlotClickEvent.ClickType, VC.() -> Unit> = EnumMap<VexSlotClickEvent.ClickType, VC.() -> Unit>(VexSlotClickEvent.ClickType::class.java),
-            override var build: VC.(Slot) -> Unit = {}
+            override var build: Slot.(VC) -> Unit = {}
     ) : VComponent<VC, VexSlot>(), Building<VC, Slot> {
-
+        override fun copy(): Slot {
+            return Slot(id, x, y, provider, EnumMap(click), build)
+        }
 
         @VViewMaker
         fun item(func: VC.() -> ItemStack?) {
@@ -396,11 +417,18 @@ open class VComponentBuilder<VC : VViewContext>(
     }
 
 
-    inner class BuildingTextArea(id: Int, x: Int, y: Int, w: Int, h: Int, maxLength: Int, override var build: VC.(TextArea<VexTextArea>) -> Unit = {})
+    inner class BuildingTextArea(id: Int, x: Int, y: Int, w: Int, h: Int, maxLength: Int, override var build: TextArea<VexTextArea>.(VC) -> Unit = {})
         : TextArea<VexTextArea>(id, x, y, w, h, maxLength), Building<VC, TextArea<VexTextArea>> {
 
         override fun createComponents(context: VC): VexTextArea {
             return VexTextArea(x, y, w, h, maxLength, id, text)
+        }
+
+        override fun copy(): BuildingTextArea {
+            return BuildingTextArea(id, x, y, w, h, maxLength, build).also {
+                it.text = ArrayList(text)
+                it.hover = ArrayList(hover)
+            }
         }
     }
 
@@ -451,12 +479,19 @@ open class VComponentBuilder<VC : VViewContext>(
         }
     }
 
-    inner class BuildingTextField(id: Int, x: Int, y: Int, w: Int, h: Int, maxLength: Int, text: String, override var build: VC.(TextField<VexTextField>) -> Unit = {})
+    inner class BuildingTextField(id: Int, x: Int, y: Int, w: Int, h: Int, maxLength: Int, text: String, override var build: TextField<VexTextField>.(VC) -> Unit = {})
         : TextField<VexTextField>(id, x, y, w, h, maxLength, text), Building<VC, TextField<VexTextField>> {
 
         override fun createComponents(context: VC): VexTextField {
             proxy(context, TextFieldProxy(context))
             return VexTextField(x, y, w, h, maxLength, id, text)
+        }
+
+        override fun copy(): BuildingTextField {
+            return BuildingTextField(id, x, y, w, h, maxLength, text, build).also {
+                it.hover = ArrayList(hover)
+                it.proxy = proxy
+            }
         }
     }
 
@@ -485,13 +520,13 @@ open class VComponentBuilder<VC : VViewContext>(
                 var w: Int,
                 var h: Int,
                 override var hover: MutableList<String> = mutableListOf(),
-                override var build: VC.(Base64Image) -> Unit = {}
+                override var build: Base64Image.(VC) -> Unit = {}
         ) : VComponent<VC, VexBase64Image>(), HoverText, Building<VC, Base64Image> {
-            lateinit var image: () -> InputStream
+            lateinit var imageField: () -> InputStream
 
             @VViewMaker
             fun image(image: () -> InputStream) {
-                this.image = image
+                this.imageField = image
             }
 
             @VViewMaker
@@ -510,7 +545,15 @@ open class VComponentBuilder<VC : VViewContext>(
             }
 
             override fun createComponents(context: VC): VexBase64Image {
-                return VexBase64Image(image(), id, x, y, w, h, VexHoverText(hover))
+                return VexBase64Image(imageField(), id, x, y, w, h, VexHoverText(hover))
+            }
+
+            override fun copy(): Base64Image {
+                return this@ExpandBuilder.Base64Image(id, x, y, w, h, ArrayList(hover), build).also {
+                    if (this::imageField.isInitialized) {
+                        it.imageField = imageField
+                    }
+                }
             }
         }
 
@@ -538,8 +581,8 @@ open class VComponentBuilder<VC : VViewContext>(
                 img: String,
                 var unclickableImg: String = img,
                 var clickable: Boolean = true,
-                override var build: VC.(ClickableButton) -> Unit = {}
-        ) : Button<VexClickableButton>(id, x, y, w, h, name, img) ,Building<VC,ClickableButton> {
+                override var build: ClickableButton.(VC) -> Unit = {}
+        ) : Button<VexClickableButton>(id, x, y, w, h, name, img), Building<VC, ClickableButton> {
             var proxy: VC.(ButtonClickableProxy) -> Unit = {}
 
             override fun createComponents(context: VC): VexClickableButton {
@@ -565,6 +608,12 @@ open class VComponentBuilder<VC : VViewContext>(
 
             fun proxy(func: VC.(ButtonClickableProxy) -> Unit) {
                 proxy = func
+            }
+
+            override fun copy(): ClickableButton {
+                return this@ExpandBuilder.ClickableButton(id, x, y, w, h, name, img, unclickableImg, clickable, build).also {
+                    it.proxy = proxy
+                }
             }
         }
 
@@ -595,12 +644,16 @@ open class VComponentBuilder<VC : VViewContext>(
                 maxLength: Int,
                 override var mainColor: Int = 0,
                 override var sideColor: Int = 0,
-                override var build: VC.(ColorfulTextArea) -> Unit = {}
-        ) : TextArea<VexColorfulTextArea>(id, x, y, w, h, maxLength), Colorful,Building<VC, ColorfulTextArea> {
+                override var build: ColorfulTextArea.(VC) -> Unit = {}
+        ) : TextArea<VexColorfulTextArea>(id, x, y, w, h, maxLength), Colorful, Building<VC, ColorfulTextArea> {
             override fun createComponents(context: VC): VexColorfulTextArea {
                 return VexColorfulTextArea(x, y, w, h, maxLength, id, mainColor, sideColor, text).also {
                     it.setHover(VexHoverText(hover))
                 }
+            }
+
+            override fun copy(): ColorfulTextArea {
+                return this@ExpandBuilder.ColorfulTextArea(id, x, y, w, h, maxLength, mainColor, sideColor, build)
             }
         }
 
@@ -629,12 +682,16 @@ open class VComponentBuilder<VC : VViewContext>(
                 text: String,
                 override var mainColor: Int = 0,
                 override var sideColor: Int = 0,
-                override var build: VC.(ColorfulTextField) -> Unit = {}
-        ) : TextField<VexColorfulTextField>(id, x, y, w, h, maxLength, text), Colorful,Building<VC,ColorfulTextField > {
+                override var build: ColorfulTextField.(VC) -> Unit = {}
+        ) : TextField<VexColorfulTextField>(id, x, y, w, h, maxLength, text), Colorful, Building<VC, ColorfulTextField> {
             override fun createComponents(context: VC): VexColorfulTextField {
                 return VexColorfulTextField(x, y, w, h, maxLength, id, mainColor, sideColor, text).also {
                     it.setHover(VexHoverText(hover))
                 }
+            }
+
+            override fun copy(): ColorfulTextField {
+                return this@ExpandBuilder.ColorfulTextField(id, x, y, w, h, maxLength, text, mainColor, sideColor, build)
             }
         }
 

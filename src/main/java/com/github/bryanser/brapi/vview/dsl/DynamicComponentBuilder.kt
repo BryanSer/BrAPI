@@ -6,11 +6,13 @@ import lk.vexview.gui.components.expand.VexGifImage
 import lk.vexview.gui.components.expand.VexMcImage
 import lk.vexview.gui.components.expand.VexSplitImage
 import java.util.*
+import kotlin.collections.ArrayList
 
 open class DynamicComponentBuilder<VC : VViewContext>(
-        val father: VComponentBuilder<VC>? = null
+        val father: VComponentBuilder<VC>? = null,
+        protected val components: MutableList<VComponent<VC, *>> = mutableListOf()
 ) {
-    protected val components: MutableList<VComponent<VC, *>> = mutableListOf()
+
 
     @VViewMaker
     abstract inner class Button<VB : VexButton>(
@@ -34,7 +36,7 @@ open class DynamicComponentBuilder<VC : VViewContext>(
 
     inner class BuildingButton(id: UUID, x: Int, y: Int, w: Int, h: Int, name: String, img: String, clickImg: String)
         : Button<VexButton>(id, x, y, w, h, name, img, clickImg), Building<VC, Button<VexButton>> {
-        override var build: VC.(Button<VexButton>) -> Unit = {}
+        override var build: Button<VexButton>.(VC) -> Unit = {}
 
         override fun createComponents(context: VC): VexButton {
             return VexButton(id, name, img, clickImg, x, y, w, h, {
@@ -43,6 +45,15 @@ open class DynamicComponentBuilder<VC : VViewContext>(
                 }
             }, VexHoverText(hover))
         }
+
+        override fun copy(): BuildingButton {
+            return BuildingButton(id, x, y, w, h, name, img, clickImg).also {
+                it.click = click
+                it.hover = ArrayList(hover)
+                it.build = build
+            }
+        }
+
     }
 
     @VViewMaker
@@ -75,13 +86,20 @@ open class DynamicComponentBuilder<VC : VViewContext>(
 
     inner class BuildingImage(img: String, x: Int, y: Int, xs: Int, ys: Int)
         : Image<VexImage>(img, x, y, xs, ys), Building<VC, Image<VexImage>> {
-        override var build: VC.(Image<VexImage>) -> Unit = {}
+        override var build: Image<VexImage>.(VC) -> Unit = {}
 
         override fun createComponents(context: VC): VexImage {
             if (hover.isNotEmpty()) {
                 return VexImage(img, x, y, xs, ys, VexHoverText(hover))
             } else {
                 return VexImage(img, x, y, xs, ys)
+            }
+        }
+
+        override fun copy(): BuildingImage {
+            return BuildingImage(img, x, y, xs, ys).also {
+                it.hover = ArrayList(hover)
+                it.build = build
             }
         }
     }
@@ -107,11 +125,17 @@ open class DynamicComponentBuilder<VC : VViewContext>(
             xs: Int,
             ys: Int,
             var interval: Int = 1,
-            override var build: VC.(GifImage) -> Unit = {}
+            override var build: GifImage.(VC) -> Unit = {}
     ) : Image<VexGifImage>(img, x, y, xs, ys), Building<VC, GifImage> {
         override fun createComponents(context: VC): VexGifImage {
             return VexGifImage(img, x, y, xs, ys, interval).also {
                 it.setHover(VexHoverText(hover))
+            }
+        }
+
+        override fun copy(): GifImage {
+            return GifImage(img, x, y, xs, ys, interval, build).also {
+                it.hover = ArrayList(hover)
             }
         }
     }
@@ -147,10 +171,23 @@ open class DynamicComponentBuilder<VC : VViewContext>(
 
     inner class BuildingSplitImage(img: String, x: Int, y: Int, xs: Int, ys: Int)
         : SplitImage<VexSplitImage>(img, x, y, xs, ys), Building<VC, SplitImage<VexSplitImage>> {
-        override var build: VC.(SplitImage<VexSplitImage>) -> Unit = {}
+        override var build: SplitImage<VexSplitImage>.(VC) -> Unit = {}
         override fun createComponents(context: VC): VexSplitImage {
             return VexSplitImage(img, x, y, u, v, xs, ys, uWidth, vHeight, realWidth, realHeight).also {
                 it.setHover(VexHoverText(hover))
+            }
+        }
+
+        override fun copy(): BuildingSplitImage {
+            return BuildingSplitImage(img, x, y, xs, ys).also {
+                it.u = u
+                it.v = v
+                it.uWidth = uWidth
+                it.vHeight = vHeight
+                it.realHeight = realHeight
+                it.realWidth = realWidth
+                it.hover = ArrayList(hover)
+                it.build = build
             }
         }
     }
@@ -169,13 +206,20 @@ open class DynamicComponentBuilder<VC : VViewContext>(
         components += si
     }
 
-     inner class BuildingMcImage(img: String, x: Int, y: Int, xs: Int, ys: Int)
+    inner class BuildingMcImage(img: String, x: Int, y: Int, xs: Int, ys: Int)
         : SplitImage<VexMcImage>(img, x, y, xs, ys), Building<VC, SplitImage<VexMcImage>> {
-        override var build: VC.(SplitImage<VexMcImage>) -> Unit = {}
+        override var build: SplitImage<VexMcImage>.(VC) -> Unit = {}
 
         override fun createComponents(context: VC): VexMcImage {
             return VexMcImage(img, x, y, u, v, xs, ys, uWidth, vHeight, realWidth, realHeight).also {
                 it.setHover(VexHoverText(hover))
+            }
+        }
+
+        override fun copy(): BuildingMcImage {
+            return BuildingMcImage(img, x, y, xs, ys).also {
+                it.build = build
+                it.hover = ArrayList(hover)
             }
         }
     }
@@ -200,7 +244,7 @@ open class DynamicComponentBuilder<VC : VViewContext>(
             var textWidth: Int = 10,
             var text: MutableList<String> = mutableListOf(),
             override var hover: MutableList<String> = mutableListOf(),
-            override var build: VC.(Text) -> Unit = {}
+            override var build: Text.(VC) -> Unit = {}
     ) : VComponent<VC, VexText>(), HoverText, Building<VC, Text> {
 
         @VViewMaker
@@ -211,6 +255,10 @@ open class DynamicComponentBuilder<VC : VViewContext>(
 
         override fun createComponents(context: VC): VexText {
             return VexText(x, y, text, scale, VexHoverText(hover), textWidth)
+        }
+
+        override fun copy(): Text {
+            return Text(x, y, scale, textWidth, ArrayList(text), ArrayList(hover), build)
         }
     }
 
