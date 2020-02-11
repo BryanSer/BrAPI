@@ -5,6 +5,10 @@ import com.github.bryanser.brapi.vview.VViewContext
 import lk.vexview.event.CheckBoxEvent
 import lk.vexview.event.VexSlotClickEvent
 import lk.vexview.gui.components.*
+import lk.vexview.gui.components.expand.VexBase64Image
+import lk.vexview.gui.components.expand.VexClickableButton
+import lk.vexview.gui.components.expand.VexColorfulTextArea
+import lk.vexview.gui.components.expand.VexColorfulTextField
 import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
@@ -12,6 +16,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.util.*
 
 
@@ -78,7 +86,7 @@ open class VComponentBuilder<VC : VViewContext>(
             var w: Int = 0,
             var h: Int = 0,
             var img: String,
-            var checkImg: String? = null,
+            var checkImg: String = img,
             val default: Boolean = false,
             override var hover: MutableList<String> = mutableListOf(),
             var change: VC.(check: Boolean) -> Unit = {}
@@ -126,7 +134,7 @@ open class VComponentBuilder<VC : VViewContext>(
             y: Int = 0,
             w: Int = 0,
             h: Int = 0,
-            clickImg: String? = null,
+            clickImg: String = img,
             default: Boolean = false,
             init: CheckBox.() -> Unit
     ) {
@@ -334,7 +342,7 @@ open class VComponentBuilder<VC : VViewContext>(
 
         override fun createComponents(context: VC): VexSlot {
             return VexSlot(id, x, y, provider(context)).also {
-                bindSlot.getOrPut(context){
+                bindSlot.getOrPut(context) {
                     mutableListOf()
                 }.add(this to it)
             }
@@ -364,7 +372,7 @@ open class VComponentBuilder<VC : VViewContext>(
     }
 
 
-    inner class TextArea(
+    abstract inner class TextArea<TA : VexTextArea>(
             var id: Int,
             var x: Int,
             var y: Int,
@@ -373,17 +381,13 @@ open class VComponentBuilder<VC : VViewContext>(
             var maxLength: Int,
             var text: MutableList<String> = mutableListOf(),
             override var hover: MutableList<String> = mutableListOf()
-    ) : VComponent<VC, VexTextArea>(), HoverText {
+    ) : VComponent<VC, TA>(), HoverText {
 
 
         @VViewMaker
         fun text(init: HoverText.Holder.() -> Unit) {
             val hh = HoverText.Holder(text)
             hh.init()
-        }
-
-        override fun createComponents(context: VC): VexTextArea {
-            return VexTextArea(x, y, w, h, maxLength, id, text)
         }
     }
 
@@ -395,14 +399,18 @@ open class VComponentBuilder<VC : VViewContext>(
             w: Int = 0,
             h: Int = 0,
             maxLength: Int = 100,
-            init: TextArea.() -> Unit
+            init: TextArea<VexTextArea>.() -> Unit
     ) {
-        val ta = TextArea(id, x, y, w, h, maxLength)
+        val ta = object : TextArea<VexTextArea>(id, x, y, w, h, maxLength) {
+            override fun createComponents(context: VC): VexTextArea {
+                return VexTextArea(x, y, w, h, maxLength, id, text)
+            }
+        }
         ta.init()
         components += ta
     }
 
-    inner class TextField(
+    abstract inner class TextField<TF : VexTextField>(
             var id: Int,
             var x: Int,
             var y: Int,
@@ -411,17 +419,12 @@ open class VComponentBuilder<VC : VViewContext>(
             var maxLength: Int,
             var text: String,
             override var hover: MutableList<String> = mutableListOf()
-    ) : VComponent<VC, VexTextField>(), HoverText {
+    ) : VComponent<VC, TF>(), HoverText {
 
         var proxy: VC.(TextFieldProxy) -> Unit = {}
 
         fun proxy(func: VC.(TextFieldProxy) -> Unit) {
             proxy = func
-        }
-
-        override fun createComponents(context: VC): VexTextField {
-            proxy(context, TextFieldProxy(context))
-            return VexTextField(x, y, w, h, maxLength, id, text)
         }
 
         inner class TextFieldProxy(
@@ -448,11 +451,198 @@ open class VComponentBuilder<VC : VViewContext>(
             h: Int = 0,
             maxLength: Int = 100,
             text: String = "",
-            init: TextField .() -> Unit
+            init: TextField<VexTextField> .() -> Unit
     ) {
-        val ta = TextField(id, x, y, w, h, maxLength, text)
+        val ta = object : TextField<VexTextField>(id, x, y, w, h, maxLength, text) {
+            override fun createComponents(context: VC): VexTextField {
+                proxy(context, TextFieldProxy(context))
+                return VexTextField(x, y, w, h, maxLength, id, text)
+            }
+        }
         ta.init()
         components += ta
     }
 
+    @VViewMaker
+    inner class ExpandBuilder {
+        inner class Base64Image(
+                var id: String,
+                var x: Int,
+                var y: Int,
+                var w: Int,
+                var h: Int,
+                override var hover: MutableList<String> = mutableListOf()
+        ) : VComponent<VC, VexBase64Image>(), HoverText {
+            lateinit var image: () -> InputStream
+
+            @VViewMaker
+            fun image(image: () -> InputStream) {
+                this.image = image
+            }
+
+            @VViewMaker
+            fun image(image: File) {
+                image {
+                    FileInputStream(image)
+                }
+            }
+
+            @VViewMaker
+            fun image(base64: String) {
+                val code = Base64.getDecoder().decode(base64)
+                image {
+                    ByteArrayInputStream(code)
+                }
+            }
+
+            override fun createComponents(context: VC): VexBase64Image {
+                return VexBase64Image(image(), id, x, y, w, h, VexHoverText(hover))
+            }
+        }
+
+        @VViewMaker
+        fun base64Image(
+                id: String,
+                x: Int = 0,
+                y: Int = 0,
+                w: Int = 0,
+                h: Int = 0,
+                init: Base64Image.() -> Unit
+        ) {
+            val data = Base64Image(id, x, y, w, h)
+            data.init()
+            components += data
+        }
+
+        inner class ClickableButton(
+                id: UUID,
+                x: Int,
+                y: Int,
+                w: Int,
+                h: Int,
+                name: String,
+                img: String,
+                var unclickableImg: String = img,
+                var clickable: Boolean = true
+        ) : Button<VexClickableButton>(id, x, y, w, h, name, img) {
+            var proxy: VC.(ButtonClickableProxy) -> Unit = {}
+
+            override fun createComponents(context: VC): VexClickableButton {
+                return VexClickableButton(id, name, img, clickImg, unclickableImg, x, y, w, h, {
+                    if (click != null && it.uniqueId == context.player.uniqueId) {
+                        click!!(context)
+                    }
+                }, clickable).also {
+                    it.hover = VexHoverText(hover)
+                    proxy(context, ButtonClickableProxy(context))
+                }
+            }
+
+            inner class ButtonClickableProxy(val context: VC) : (Boolean) -> Unit {
+                fun setButtonClickable(clickable: Boolean) {
+                    context.getOpenedVexGui().setButtonClickable(id, clickable)
+                }
+
+                override fun invoke(p1: Boolean) {
+                    setButtonClickable(p1)
+                }
+            }
+
+            fun proxy(func: VC.(ButtonClickableProxy) -> Unit) {
+                proxy = func
+            }
+        }
+
+
+        @VViewMaker
+        fun clickableButton(
+                name: String,
+                img: String,
+                x: Int = 0,
+                y: Int = 0,
+                w: Int = 0,
+                h: Int = 0,
+                init: ClickableButton.() -> Unit
+        ): UUID {
+            val uid = UUID.randomUUID()
+            val cb = ClickableButton(uid, x, y, w, h, name, img)
+            cb.init()
+            components += cb
+            return uid
+        }
+
+        inner class ColorfulTextArea(
+                id: Int,
+                x: Int,
+                y: Int,
+                w: Int,
+                h: Int,
+                maxLength: Int,
+                override var mainColor: Int = 0,
+                override var sideColor: Int = 0
+        ) : TextArea<VexColorfulTextArea>(id, x, y, w, h, maxLength), Colorful {
+            override fun createComponents(context: VC): VexColorfulTextArea {
+                return VexColorfulTextArea(x, y, w, h, maxLength, id, mainColor, sideColor, text).also {
+                    it.setHover(VexHoverText(hover))
+                }
+            }
+        }
+
+        @VViewMaker
+        fun colorfulTextArea(
+                id: Int,
+                x: Int = 0,
+                y: Int = 0,
+                w: Int = 0,
+                h: Int = 0,
+                maxLength: Int = 30,
+                init: ColorfulTextArea.() -> Unit
+        ) {
+            val cta = ColorfulTextArea(id, x, y, w, h, maxLength)
+            cta.init()
+            components += cta
+        }
+
+        inner class ColorfulTextField(
+                id: Int,
+                x: Int,
+                y: Int,
+                w: Int,
+                h: Int,
+                maxLength: Int,
+                text: String,
+                override var mainColor: Int = 0,
+                override var sideColor: Int = 0
+        ) : TextField<VexColorfulTextField>(id, x, y, w, h, maxLength, text), Colorful {
+            override fun createComponents(context: VC): VexColorfulTextField {
+                return VexColorfulTextField(x, y, w, h, maxLength, id, mainColor, sideColor, text).also {
+                    it.setHover(VexHoverText(hover))
+                }
+            }
+        }
+
+        fun colorfulTextField(
+                id:Int,
+                x:Int =0,
+                y:Int= 0,
+                w:Int = 0,
+                h:Int = 0,
+                maxLength: Int=30,
+                text:String="",
+                init:ColorfulTextField.()->Unit
+        ){
+            val ctf = ColorfulTextField(id,x,y,w,h,maxLength,text)
+            ctf.init()
+            components += ctf
+        }
+    }
+
+    val expand: ExpandBuilder by lazy(::ExpandBuilder)
+
+    @VViewMaker
+    fun expand(init: ExpandBuilder.() -> Unit) {
+        expand.init()
+    }
+
 }
+
