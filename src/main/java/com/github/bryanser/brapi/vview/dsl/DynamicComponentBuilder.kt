@@ -99,7 +99,9 @@ open class DynamicComponentBuilder<VC : VViewContext>(
             var interval: Int = 1
     ) : Image<VexGifImage>(img, x, y, xs, ys) {
         override fun createComponents(context: VC): VexGifImage {
-            return VexGifImage(img, x, y, xs, ys, interval)
+            return VexGifImage(img, x, y, xs, ys, interval).also {
+                it.setHover(VexHoverText(hover))
+            }
         }
     }
 
