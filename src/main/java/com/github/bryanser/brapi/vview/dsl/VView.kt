@@ -65,7 +65,11 @@ class VView<VC : VViewContext>(
     fun checkOpen(context: VC): Boolean = open(context)
 
     fun build(context: VC): VexGui {
-        val gui = VexGui(img, x, y, w, h)
+        val gui = try {
+            VexGui(img, x, y, w, h)
+        } catch (e: Throwable) {
+            VexGui(img, x, y, w, h, w, h)
+        }
         for (com in toComponentsList(context)) {
             gui.addComponent(com)
         }

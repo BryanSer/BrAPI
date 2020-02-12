@@ -43,7 +43,11 @@ open class DynamicComponentBuilder<VC : VViewContext>(
                 if (click != null && it.uniqueId == context.player.uniqueId) {
                     click!!(context)
                 }
-            }, VexHoverText(hover))
+            }, if (hover.isEmpty()) {
+                null
+            } else {
+                VexHoverText(hover)
+            })
         }
 
         override fun copy(): BuildingButton {
@@ -129,7 +133,9 @@ open class DynamicComponentBuilder<VC : VViewContext>(
     ) : Image<VexGifImage>(img, x, y, xs, ys), Building<VC, GifImage> {
         override fun createComponents(context: VC): VexGifImage {
             return VexGifImage(img, x, y, xs, ys, interval).also {
-                it.setHover(VexHoverText(hover))
+                if (hover.isNotEmpty()) {
+                    it.setHover(VexHoverText(hover))
+                }
             }
         }
 
@@ -174,7 +180,9 @@ open class DynamicComponentBuilder<VC : VViewContext>(
         override var build: SplitImage<VexSplitImage>.(VC) -> Unit = {}
         override fun createComponents(context: VC): VexSplitImage {
             return VexSplitImage(img, x, y, u, v, xs, ys, uWidth, vHeight, realWidth, realHeight).also {
-                it.setHover(VexHoverText(hover))
+                if (hover.isNotEmpty()) {
+                    it.setHover(VexHoverText(hover))
+                }
             }
         }
 
@@ -212,7 +220,9 @@ open class DynamicComponentBuilder<VC : VViewContext>(
 
         override fun createComponents(context: VC): VexMcImage {
             return VexMcImage(img, x, y, u, v, xs, ys, uWidth, vHeight, realWidth, realHeight).also {
-                it.setHover(VexHoverText(hover))
+                if (hover.isNotEmpty()) {
+                    it.setHover(VexHoverText(hover))
+                }
             }
         }
 
@@ -254,7 +264,12 @@ open class DynamicComponentBuilder<VC : VViewContext>(
         }
 
         override fun createComponents(context: VC): VexText {
-            return VexText(x, y, text, scale, VexHoverText(hover), textWidth)
+            if (hover.isEmpty()) {
+                return VexText(x, y, text, scale)
+            }
+            return VexText(x, y, text, scale,
+                    VexHoverText(hover)
+                    , textWidth)
         }
 
         override fun copy(): Text {
