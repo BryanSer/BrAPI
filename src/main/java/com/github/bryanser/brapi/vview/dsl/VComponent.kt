@@ -4,10 +4,10 @@ import com.github.bryanser.brapi.vview.VViewContext
 import lk.vexview.gui.components.VexComponents
 
 abstract class VComponent<VC : VViewContext, COM : VexComponents>(
-        var visible: VC.() -> Boolean = { true },
-        var comInit: VC.(COM) -> Unit = {}
+        protected var visible: VC.() -> Boolean = { true },
+        protected var comInit: VC.(COM) -> Unit = {}
 ) {
-//    var build: VC.(VComponent<VC, COM>) -> Unit = {}
+    //    var build: VC.(VComponent<VC, COM>) -> Unit = {}
     fun isVisible(context: VC): Boolean = visible(context)
 
     @VViewMaker
@@ -33,6 +33,6 @@ abstract class VComponent<VC : VViewContext, COM : VexComponents>(
         return com
     }
 
-    abstract fun copy(): VComponent<VC,COM>
+    abstract fun copy(): VComponent<VC, COM>
 }
 

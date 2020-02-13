@@ -24,7 +24,7 @@ open class DynamicComponentBuilder<VC : VViewContext>(
             var name: String,
             var img: String,
             var clickImg: String = img,
-            var click: (VC.() -> Unit)? = null,
+            protected var click: (VC.() -> Unit)? = null,
             override var hover: MutableList<String> = mutableListOf()
     ) : VComponent<VC, VB>(), HoverText {
 

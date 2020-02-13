@@ -9,7 +9,7 @@ import lk.vexview.gui.components.VexComponents
 import org.bukkit.entity.Player
 
 @VViewMaker
-class VView<VC : VViewContext>(
+open class VView<VC : VViewContext>(
         val img: String,
         val x: Int,
         val y: Int,
@@ -18,9 +18,9 @@ class VView<VC : VViewContext>(
         val contextFactory: (Player) -> VC
 ) : VComponentBuilder<VC>() {
 
-    var close: VC.() -> Unit = {}
-    var open: VC.() -> Boolean = { true }
-    var proxy: VC.(ViewProxy) -> Unit = {}
+    protected var close: VC.() -> Unit = {}
+    protected var open: VC.() -> Boolean = { true }
+    protected var proxy: VC.(ViewProxy) -> Unit = {}
 
     inner class ViewProxy(
             val context: VC
@@ -62,9 +62,9 @@ class VView<VC : VViewContext>(
         bindCheckBox.remove(context)
     }
 
-    fun checkOpen(context: VC): Boolean = open(context)
+    open fun checkOpen(context: VC): Boolean = open(context)
 
-    fun build(context: VC): VexGui {
+    open fun build(context: VC): VexGui {
         val gui = try {
             VexGui(img, x, y, w, h)
         } catch (e: Throwable) {
@@ -76,7 +76,7 @@ class VView<VC : VViewContext>(
         return gui
     }
 
-    fun open(player: Player) {
+    open fun open(player: Player) {
         val context = contextFactory(player)
         context.view = this as VView<VViewContext>
         VViewHandler.opening[player.uniqueId] = context

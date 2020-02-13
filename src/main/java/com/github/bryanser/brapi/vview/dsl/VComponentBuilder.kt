@@ -48,7 +48,7 @@ open class VComponentBuilder<VC : VViewContext>(
     }
 
     @EventHandler
-    fun onClick(evt: VexSlotClickEvent) {
+    open fun onClick(evt: VexSlotClickEvent) {
         if (bindSlot.isEmpty()) {
             return
         }
@@ -69,7 +69,7 @@ open class VComponentBuilder<VC : VViewContext>(
     }
 
     @EventHandler
-    fun onChangeCheckBox(evt: CheckBoxEvent) {
+    open fun onChangeCheckBox(evt: CheckBoxEvent) {
         if (bindCheckBox.isEmpty()) {
             return
         }
@@ -95,11 +95,11 @@ open class VComponentBuilder<VC : VViewContext>(
             var checkImg: String = img,
             val default: Boolean = false,
             override var hover: MutableList<String> = mutableListOf(),
-            var change: VC.(check: Boolean) -> Unit = {},
+            internal var change: VC.(check: Boolean) -> Unit = {},
             override var build: CheckBox.(VC) -> Unit = {}
     ) : VComponent<VC, VexCheckBox>(), HoverText, Building<VC, CheckBox> {
 
-        var proxy: VC.(CheckBoxProxy) -> Unit = {}
+        protected var proxy: VC.(CheckBoxProxy) -> Unit = {}
 
 
         @VViewMaker
@@ -167,7 +167,7 @@ open class VComponentBuilder<VC : VViewContext>(
             var h: Int,
             var fullHight: Int,
             override var build: ScrollingList.(VC) -> Unit = {},
-            val subCom: VComponentBuilder<VC> = VComponentBuilder(this@VComponentBuilder)
+            protected val subCom: VComponentBuilder<VC> = VComponentBuilder(this@VComponentBuilder)
     ) : VComponent<VC, VexScrollingList>(), Building<VC, ScrollingList> {
 
 
@@ -241,7 +241,7 @@ open class VComponentBuilder<VC : VViewContext>(
             var id: Int = 0,
             var x: Int = 0,
             var y: Int = 0,
-            var provider: VC.() -> ItemStack? = { null },
+            internal var provider: VC.() -> ItemStack? = { null },
             val click: EnumMap<VexSlotClickEvent.ClickType, VC.() -> Unit> = EnumMap<VexSlotClickEvent.ClickType, VC.() -> Unit>(VexSlotClickEvent.ClickType::class.java),
             override var build: Slot.(VC) -> Unit = {}
     ) : VComponent<VC, VexSlot>(), Building<VC, Slot> {
@@ -312,7 +312,7 @@ open class VComponentBuilder<VC : VViewContext>(
             override var hover: MutableList<String> = mutableListOf()
     ) : VComponent<VC, TF>(), HoverText {
 
-        var proxy: VC.(TextFieldProxy) -> Unit = {}
+        internal var proxy: VC.(TextFieldProxy) -> Unit = {}
 
         fun proxy(func: VC.(TextFieldProxy) -> Unit) {
             proxy = func
@@ -386,7 +386,6 @@ open class VComponentBuilder<VC : VViewContext>(
                 override var hover: MutableList<String> = mutableListOf()
         ) : VComponent<VC, TA>(), HoverText {
 
-
             @VViewMaker
             fun text(init: HoverText.Holder.() -> Unit) {
                 val hh = HoverText.Holder(text)
@@ -436,7 +435,7 @@ open class VComponentBuilder<VC : VViewContext>(
                 var scale: Int = 30,
                 var see: Boolean = true,
                 override var build: Draw<E, VED>.(VC) -> Unit = {},
-                val create: Draw<E, VED>.(VC) -> VED
+                internal val create: Draw<E, VED>.(VC) -> VED
         ) : VComponent<VC, VED>(), Building<VC, Draw<E, VED>> {
             lateinit var provider: VC.() -> E
 
@@ -603,7 +602,7 @@ open class VComponentBuilder<VC : VViewContext>(
                 var clickable: Boolean = true,
                 override var build: ClickableButton.(VC) -> Unit = {}
         ) : Button<VexClickableButton>(id, x, y, w, h, name, img), Building<VC, ClickableButton> {
-            var proxy: VC.(ButtonClickableProxy) -> Unit = {}
+            internal var proxy: VC.(ButtonClickableProxy) -> Unit = {}
 
             override fun createComponents(context: VC): VexClickableButton {
                 return VexClickableButton(id, name, img, clickImg, unclickableImg, x, y, w, h, {
