@@ -25,11 +25,13 @@ interface HoverText {
             this.hover[index] = lore
         }
 
+
         @VViewMaker
         operator fun get(index: Int): String = hover[index]
     }
 
     @JvmDefault
+    @VViewMaker
     fun hover(init: Holder.() -> Unit) {
         val ho = Holder(hover)
         ho.init()

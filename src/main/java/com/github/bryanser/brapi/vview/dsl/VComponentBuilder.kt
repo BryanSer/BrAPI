@@ -235,7 +235,6 @@ open class VComponentBuilder<VC : VViewContext>(
         components += sl
     }
 
-
     @VViewMaker
     inner class Slot(
             var id: Int = 0,
@@ -265,8 +264,13 @@ open class VComponentBuilder<VC : VViewContext>(
         }
 
         @VViewMaker
-        fun click(type: VexSlotClickEvent.ClickType, func: VC.() -> Unit) {
+        private fun click(type: VexSlotClickEvent.ClickType, func: VC.() -> Unit) {
             click[type] = func
+        }
+
+        @VViewMaker
+        fun click(type:ClickType,func:VC.()->Unit){
+            click[type.type] = func
         }
 
         override fun createComponents(context: VC): VexSlot {

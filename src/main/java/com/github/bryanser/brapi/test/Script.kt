@@ -82,38 +82,38 @@ class Script(config: ConfigurationSection) {
         }
         val binding = engine.createBindings()
         val manager = object : ScriptListenerRegister {
-                    override fun getPlugin(): Main {
-                        return ScriptManager.getPlugin()
-                    }
+            override fun getPlugin(): Main {
+                return ScriptManager.getPlugin()
+            }
 
-                    override fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
-                        return ScriptManager.registerListener(listener, event)?.let {
-                            listeners += it
-                            it
-                        }
-                    }
-
-                    override fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener? {
-                        return ScriptManager.registerListener(listener, event, priority)?.let {
-                            listeners += it
-                            it
-                        }
-                    }
-
-                    override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener? {
-                        return ScriptManager.registerListener(listener, event, ignoreCancel)?.let {
-                            listeners += it
-                            it
-                        }
-                    }
-
-                    override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener? {
-                        return ScriptManager.registerListener(listener, event, ignoreCancel, priority)?.let {
-                            listeners += it
-                            it
-                        }
-                    }
+            override fun registerListener(listener: ScriptObjectMirror, event: String): Listener? {
+                return ScriptManager.registerListener(listener, event)?.let {
+                    listeners += it
+                    it
                 }
+            }
+
+            override fun registerListener(listener: ScriptObjectMirror, event: String, priority: EventPriority): Listener? {
+                return ScriptManager.registerListener(listener, event, priority)?.let {
+                    listeners += it
+                    it
+                }
+            }
+
+            override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean): Listener? {
+                return ScriptManager.registerListener(listener, event, ignoreCancel)?.let {
+                    listeners += it
+                    it
+                }
+            }
+
+            override fun registerListener(listener: ScriptObjectMirror, event: String, ignoreCancel: Boolean, priority: EventPriority): Listener? {
+                return ScriptManager.registerListener(listener, event, ignoreCancel, priority)?.let {
+                    listeners += it
+                    it
+                }
+            }
+        }
         binding["getManager"] = java.util.function.Supplier<ScriptListenerRegister> {
             manager
         }
@@ -126,8 +126,9 @@ class Script(config: ConfigurationSection) {
         engine.setBindings(binding, ScriptContext.ENGINE_SCOPE)
         engine.eval(script)
         try {
-            engine.invokeMethod(engine, "init")
+            engine.invokeFunction("init")
         } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 
