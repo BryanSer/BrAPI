@@ -123,6 +123,7 @@ class Script(config: ConfigurationSection) {
                 binding[key] = cs.get(key)
             }
         }
+        binding["Config"] = cs
         engine.setBindings(binding, ScriptContext.ENGINE_SCOPE)
         engine.eval(script)
         try {
