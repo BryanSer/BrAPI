@@ -44,4 +44,12 @@ class Parabola(loc1: Location, loc2: Location, loc3: Location) {
         a = t.z / t.x
         b = -a * dx
     }
+
+    val projection: (x: Double, y: Double) -> Location by lazy {
+        { tx: Double, ty: Double ->
+            center.add(x.multiply(tx)).add(y.multiply(ty))
+        }
+    }
+
+
 }

@@ -260,6 +260,7 @@ object Utils {
      * @return
      */
     @JvmStatic
+    @JvmOverloads
     fun getLookAtEntity(
             e: LivingEntity,
             maxlength: Double,
@@ -272,7 +273,7 @@ object Utils {
                 maxlength,
                 ρ,
                 exit
-        ).first { it is LivingEntity } as? LivingEntity?
+        ).filter { it !== e }.firstOrNull { it is LivingEntity } as? LivingEntity?
     }
 
     /**
@@ -286,6 +287,7 @@ object Utils {
      * @return
      */
     @JvmStatic
+    @JvmOverloads
     fun getLineEntitys(
             loc: Location,
             vector: Vector? = null,
