@@ -16,9 +16,10 @@ class Parabola(loc1: Location, loc2: Location, loc3: Location) {
     val b: Double
     val x_length: Double
 
-    inline fun draw(p: Double = 0.05, consumer: (Location) -> Unit) {
-        var tx = 0.0
-        while (tx <= x_length) {
+    @JvmOverloads
+    inline fun draw(from_x: Double = 0.0, to_x: Double = x_length, p: Double = 0.05, consumer: (Location) -> Unit) {
+        var tx = from_x
+        while (tx <= to_x) {
             val ty = a * tx * tx + b * tx
             val loc = center.add(x.multiply(tx)).add(y.multiply(ty))
             consumer(loc)

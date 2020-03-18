@@ -438,7 +438,7 @@ public abstract class Utils {
             if (data.toLowerCase().contains("name:")) {
                 data = data.substring(data.indexOf(":") + 1);
                 data = ChatColor.translateAlternateColorCodes('&', data);
-                data = data.replaceAll("_", " ");
+                data = data.replaceAll("(?<!\\\\)_", " ").replace("\\_","_");
                 ItemMeta im = item.getItemMeta();
                 im.setDisplayName(data);
                 item.setItemMeta(im);
@@ -446,10 +446,10 @@ public abstract class Utils {
             }
             if (data.toLowerCase().contains("lore:")) {
                 data = data.substring(data.indexOf(":") + 1);
-                String lores[] = data.split("\\|");
+                String lores[] = data.split("(?<!\\\\)\\|");
                 List<String> LoreList = new ArrayList<>();
                 for (int o = 0; o < lores.length; o++) {
-                    lores[o] = lores[o].replaceAll("_", " ");
+                    lores[o] = lores[o].replaceAll("(?<!\\\\)_", " ").replace("\\_","_");
                     lores[o] = ChatColor.translateAlternateColorCodes('&', lores[o]);
                 }
                 LoreList.addAll(Arrays.asList(lores));
