@@ -1,13 +1,11 @@
 import com.github.bryanser.brapi.util.KConfigurationSerializable
+import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.configuration.serialization.ConfigurationSerialization
 import org.junit.Assert
 import org.junit.Test
+import java.io.StringReader
 
-open class A {
-    var s: String = "super"
-
-}
-
-class BSerializable : A, KConfigurationSerializable {
+class BSerializable : KConfigurationSerializable {
     @Transient
     var test: Int = 1
 
@@ -19,13 +17,19 @@ class BSerializable : A, KConfigurationSerializable {
 
     private var privateInt: Int = 1
     val valInt: Int = 1
-    @Transient
-    var transientInt:Int = 1
 
-    constructor() : super() {
+    @Transient
+    var transientInt: Int = 1
+
+    lateinit var map: MutableMap<String, Int>
+    lateinit var emptyMap: MutableMap<String,String>
+
+    constructor() {
+        map = mutableMapOf("test" to 1, "data" to 2)
+        emptyMap = mutableMapOf()
     }
 
-    constructor(map: Map<String, Any?>) : super() {
+    constructor(map: Map<String, Any?>)  {
         map.deserialize()
     }
 
@@ -34,13 +38,21 @@ class BSerializable : A, KConfigurationSerializable {
         if (other !is BSerializable) return false
 
         if (test != other.test) return false
-        if (s != other.s) return false
+        if (privateInt != other.privateInt) return false
+        if (valInt != other.valInt) return false
+        if (transientInt != other.transientInt) return false
+        if (map != other.map) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return test xor s.hashCode()
+        var result = test
+        result = 31 * result + privateInt
+        result = 31 * result + valInt
+        result = 31 * result + transientInt
+        result = 31 * result + map.hashCode()
+        return result
     }
 
 
@@ -49,10 +61,12 @@ class BSerializable : A, KConfigurationSerializable {
 class TestSerializable {
     @Test
     fun onSerializable() {
+        ConfigurationSerialization.registerClass(BSerializable::class.java)
         val b = BSerializable()
-        val map = b.serialize()
-        Assert.assertEquals("{privateInt=1, proxy=1, s=super}", map.toString())
-        val n = BSerializable(map)
-        Assert.assertEquals(b, n)
+        val yaml = YamlConfiguration()
+        yaml.set("Test", b)
+        val str = yaml.saveToString()
+        val t = YamlConfiguration.loadConfiguration(StringReader(str))
+        Assert.assertEquals(b, t["Test"])
     }
 }
