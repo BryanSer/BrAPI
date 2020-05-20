@@ -8,7 +8,19 @@ open class A {
 }
 
 class BSerializable : A, KConfigurationSerializable {
+    @Transient
     var test: Int = 1
+
+    var proxy: Int
+        get() = test
+        set(value) {
+            test = value
+        }
+
+    private var privateInt: Int = 1
+    val valInt: Int = 1
+    @Transient
+    var transientInt:Int = 1
 
     constructor() : super() {
     }
@@ -39,7 +51,7 @@ class TestSerializable {
     fun onSerializable() {
         val b = BSerializable()
         val map = b.serialize()
-        Assert.assertEquals("{test=1, s=super}", map.toString())
+        Assert.assertEquals("{privateInt=1, proxy=1, s=super}", map.toString())
         val n = BSerializable(map)
         Assert.assertEquals(b, n)
     }

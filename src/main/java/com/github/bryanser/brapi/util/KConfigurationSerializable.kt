@@ -4,9 +4,10 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable
 import java.lang.reflect.Modifier
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaField
 
-interface KConfigurationSerializable : ConfigurationSerializable {
+interface  KConfigurationSerializable : ConfigurationSerializable {
 
     override fun serialize(): MutableMap<String, Any?> {
         val map = mutableMapOf<String, Any?>()
@@ -25,12 +26,14 @@ interface KConfigurationSerializable : ConfigurationSerializable {
     companion object {
         private fun KConfigurationSerializable.getAllProperty(): List<KMutableProperty1<KConfigurationSerializable, Any?>> {
             val list = mutableListOf<KMutableProperty1<KConfigurationSerializable, Any?>>()
-            for (member in this::class.memberProperties) {
-                val f = member.javaField ?: continue
-                if (Modifier.isTransient(f.modifiers)) {
+            for (callable in this::class.members) {
+                val member = callable as? KMutableProperty1<KConfigurationSerializable, Any?> ?: continue
+                val f = member.javaField
+                if (f != null && Modifier.isTransient(f.modifiers)) {
                     continue
                 }
-                list.add(member as? KMutableProperty1<KConfigurationSerializable, Any?> ?: continue)
+                member.isAccessible = true
+                list.add(member)
             }
             return list
         }
