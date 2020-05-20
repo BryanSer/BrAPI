@@ -1,5 +1,6 @@
 package com.github.bryanser.brapi.data
 
+import com.github.bryanser.brapi.util.loadConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
 import java.io.File
@@ -17,7 +18,7 @@ open class NamingSpace(
     lateinit var config: YamlConfiguration
 
     open fun reload() {
-        config = YamlConfiguration.loadConfiguration(file)
+        config = loadConfiguration(file)
         for ((_, vcp) in proxy) {
             vcp.load()
         }

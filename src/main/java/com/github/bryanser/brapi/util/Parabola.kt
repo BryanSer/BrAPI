@@ -14,10 +14,10 @@ class Parabola(loc1: Location, loc2: Location, loc3: Location) {
         get() = field.clone()
     val a: Double
     val b: Double
-    val x_length: Double
+    val xLength: Double
 
     @JvmOverloads
-    inline fun draw(from_x: Double = 0.0, to_x: Double = x_length, p: Double = 0.05, consumer: (Location) -> Unit) {
+    inline fun draw(from_x: Double = 0.0, to_x: Double = xLength, p: Double = 0.05, consumer: (Location) -> Unit) {
         var tx = from_x
         while (tx <= to_x) {
             val ty = a * tx * tx + b * tx
@@ -36,7 +36,7 @@ class Parabola(loc1: Location, loc2: Location, loc3: Location) {
         val ux = topl * cos(topa)
         val uy = topl * sin(topa)
         val dx = loc3.toVector().subtract(loc1.toVector()).length()
-        x_length = dx
+        xLength = dx
         val u = Vector(ux * ux, ux, uy)
         val d = Vector(dx * dx, dx, 0.0)
         u.multiply(dx)

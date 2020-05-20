@@ -1,20 +1,18 @@
 package com.github.bryanser.brapi
 
 import Br.API.EventListener
-import org.bukkit.configuration.serialization.ConfigurationSerialization
-import org.bukkit.plugin.java.JavaPlugin
-import java.io.File
-import org.bukkit.Bukkit
-import org.bukkit.command.Command
-import org.bukkit.command.CommandSender
-import org.bukkit.event.HandlerList
-import Br.API.Main.PluginsAmount
-import Br.API.Main.Plugins
-import Br.API.Main.RegisterMetrics
+import Br.API.Main.*
 import com.github.bryanser.brapi.kview.KViewHandler
 import com.github.bryanser.brapi.test.TestManager
 import com.github.bryanser.brapi.vview.VViewHandler
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
+import org.bukkit.configuration.serialization.ConfigurationSerialization
+import org.bukkit.event.HandlerList
+import org.bukkit.plugin.java.JavaPlugin
+import java.io.File
 
 
 /**
@@ -64,12 +62,12 @@ class Main : JavaPlugin() {
                     ChatColor.translateAlternateColorCodes('&', "&b&l---------------------------------------------------------------")))
             return true
         }
-        if(args[0].equals("script",true) && sender.isOp){
-            if(args.size < 2){
+        if (args[0].equals("script", true) && sender.isOp) {
+            if (args.size < 2) {
                 sender.sendMessage("§6/$label script reload >> 重载所有脚本")
                 return true
             }
-            if(args[1].equals("reload", true)){
+            if (args[1].equals("reload", true)) {
                 ScriptManager.loadScript()
                 sender.sendMessage("§6重载成功")
                 return true
@@ -106,24 +104,24 @@ class Main : JavaPlugin() {
     }
 
     private fun compOld() {
-        Br.API.PluginData.plugin = this
-        val folder = dataFolder
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-        val data = File(folder, "Datas")
-        if (!data.exists()) {
-            data.mkdirs()
-        }
-        Br.API.Data.DataManager.LoadAll(true)
-        ConfigurationSerialization.registerClass(Br.API.NBT.AttributeModifiers::class.java)
-        ConfigurationSerialization.registerClass(Br.API.Data.Zone::class.java)
-        Br.API.Item.ItemManager.loadConfig()
-        Bukkit.getPluginManager().registerEvents(Br.API.EventListener(), this)
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, Br.API.Commands.CommandChannel.CHANNEL_IN, Br.API.Commands.CommandChannel())
-        Bukkit.getMessenger().registerOutgoingPluginChannel(this, Br.API.Commands.CommandChannel.CHANNEL_OUT)
-
         try {
+            Br.API.PluginData.plugin = this
+            val folder = dataFolder
+            if (!folder.exists()) {
+                folder.mkdirs()
+            }
+            val data = File(folder, "Datas")
+            if (!data.exists()) {
+                data.mkdirs()
+            }
+            Br.API.Data.DataManager.LoadAll(true)
+            ConfigurationSerialization.registerClass(Br.API.NBT.AttributeModifiers::class.java)
+            ConfigurationSerialization.registerClass(Br.API.Data.Zone::class.java)
+            Br.API.Item.ItemManager.loadConfig()
+            Bukkit.getPluginManager().registerEvents(Br.API.EventListener(), this)
+            Bukkit.getMessenger().registerIncomingPluginChannel(this, Br.API.Commands.CommandChannel.CHANNEL_IN, Br.API.Commands.CommandChannel())
+            Bukkit.getMessenger().registerOutgoingPluginChannel(this, Br.API.Commands.CommandChannel.CHANNEL_OUT)
+
             val econ = Br.API.Utils::class.java.getDeclaredField("econ")
             econ.isAccessible = true
             econ.set(null, Utils.economy)

@@ -3,6 +3,8 @@ package com.github.bryanser.brapi.test
 import com.github.bryanser.brapi.Main
 import com.github.bryanser.brapi.ScriptListenerRegister
 import com.github.bryanser.brapi.ScriptManager
+import com.github.bryanser.brapi.util.loadConfiguration
+import com.github.bryanser.brapi.util.loadConfigurationCharset
 import jdk.nashorn.api.scripting.ScriptObjectMirror
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
@@ -56,10 +58,7 @@ class Script(config: ConfigurationSection) {
     }
 
 
-    constructor(f: File) : this(YamlConfiguration.loadConfiguration(f.let {
-        val fin = FileInputStream(it)
-        InputStreamReader(fin, "UTF-8")
-    }))
+    constructor(f: File) : this(loadConfigurationCharset(f))
 
     fun disable() {
         for (l in listeners) {
@@ -75,10 +74,18 @@ class Script(config: ConfigurationSection) {
     val listeners = mutableListOf<Listener>()
 
     init {
-        val sign = config.getString("sign") ?: throw SecurityException("发现未经开发者签名的脚本${name} 拒绝加载")
-        val cap = RSACheck.decryptByPublic(sign)
-        if (cap != this.hash()) {
-            throw SecurityException("${name}开发者签名检验失败 拒绝加载")
+        val allow = File(Main.PLGUIN.dataFolder, "ALLOW_SCRIPT.yml")
+        if (!allow.exists()) {
+            Main.PLGUIN.saveResource("ALLOW_SCRIPT.yml", false)
+        }
+        val ac = loadConfiguration(allow)
+        if (!ac.getBoolean("ALLOW", false)) {
+            val sign = config.getString("sign")
+                    ?: throw SecurityException("发现未经开发者签名的脚本${name} 拒绝加载 如果仍然需要加载 请修改${allow.absolutePath}")
+            val cap = RSACheck.decryptByPublic(sign)
+            if (cap != this.hash()) {
+                throw SecurityException("${name}开发者签名检验失败 拒绝加载 如果仍然需要加载 请修改${allow.absolutePath}")
+            }
         }
         val binding = engine.createBindings()
         val manager = object : ScriptListenerRegister {

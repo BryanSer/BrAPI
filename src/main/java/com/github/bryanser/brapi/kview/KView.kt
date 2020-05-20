@@ -2,6 +2,7 @@
 
 package com.github.bryanser.brapi.kview
 
+import com.github.bryanser.brapi.Main
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
@@ -22,14 +23,17 @@ abstract class KView<C : KViewContext>(
      * 指阻止玩家对自己背包按Shift
      */
     open var allowShift: Boolean = false
+
     /*
      * 指阻止玩家对自己背包按数字键
      */
     open var allowNumber: Boolean = false
+
     /*
      * 指阻止玩家对自己背包按Q
      */
     open var allowDrop: Boolean = false
+
     /*
      * 是否允许在UI上拖拽;
      * *警告 这个选项非常危险 除非你知道你在做什么 否则不要设为true*
@@ -71,24 +75,13 @@ abstract class KView<C : KViewContext>(
             inv.setItem(i, item?.update(context))
         }
     }
-//
-//    val contents: Array<KIcon<C>?> = arrayOfNulls(rows * 9)
-//
-//    open fun getIcon(index: Int, holder: C): KIcon<C>? {
-//        return contents[index]
-//    }
-//
-//    open fun createInventory(p: Player): Inventory {
-//        val holder = holderFactory(this, p)
-//        val inv = Bukkit.createInventory(holder, rows * 9, displayName)
-//        for (i in 0 until (rows * 9)) {
-//            try {
-//                val item = getIcon(i, holder) ?: continue
-//                inv.setItem(i, item.initDisplay(holder))
-//            } catch (e: Throwable) {
-//                Bukkit.getLogger().log(Level.INFO, "KUI系统创建${this.name}时发生错误 ", e)
-//            }
-//        }
-//        return inv
-//    }
+
+    open fun openView(p: Player) {
+        Bukkit.getScheduler().runTask(Main.getPlugin()) {
+            p.closeInventory()
+            val inv = this.createInventory(p)
+            KViewHandler.clickLimit -= p.name
+            p.openInventory(inv)
+        }
+    }
 }
