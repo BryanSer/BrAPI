@@ -21,6 +21,24 @@ import java.io.File
  */
 class Main : JavaPlugin() {
 
+    override fun onLoad() {
+        try {
+            val loader = this.pluginLoader
+            val field = loader::class.java.getDeclaredField("loaders")
+            field.isAccessible = true
+            val list = field.get(loader) as MutableList<ClassLoader>
+            val selfloader = this::class.java.classLoader
+            list.remove(selfloader)
+            list.add(0, selfloader)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        Class.forName("kotlin.jvm.internal.Reflection")
+        if (!KotlinVersion.CURRENT.isAtLeast(1, 3)) {
+            Bukkit.getLogger().warning("§6服务器内存在其他插件安装着旧版本kotlin运行库")
+        }
+    }
+
     override fun onEnable() {
         PLGUIN = this
         compOld()

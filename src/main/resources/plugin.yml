@@ -6,7 +6,6 @@ description: '开发者QQ:390807154'
 softdepend: [Vault,OpenInv,VexView]
 version: ${project.version}
 depend: [ProtocolLib]
-
 commands:
     BrAPI:
         aliases: [bra]
