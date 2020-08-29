@@ -387,5 +387,6 @@ object KViewHandler : Listener {
         } catch (e: Throwable) {
             Bukkit.getLogger().log(Level.INFO, "KView系统初始化出现异常 无法监听点击数据包 与数字键有关功能失效", e)
         }
+
     }
 }

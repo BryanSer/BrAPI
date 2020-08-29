@@ -1,9 +1,7 @@
 package com.github.bryanser.brapi.util
-
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import java.lang.reflect.Modifier
 import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaField
 
