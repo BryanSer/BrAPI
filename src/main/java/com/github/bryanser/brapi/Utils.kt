@@ -212,8 +212,28 @@ object Utils {
     }
 
     /**
+     * 创建一个3D→3D的投影器
+     *
+     * @param loc 3D坐标原点
+     * @param n 法向量
+     * @return 投影器
+     */
+    @JvmStatic
+    fun create3DProjector(loc: Location, n: Vector): (x: Double, y: Double, z: Double) -> Location {
+        val t = n.clone()
+        t.y = t.y + 1
+        val n1 = n.clone().crossProduct(t).normalize()
+        val n2 = n1.clone().crossProduct(n).normalize()
+        val n3 = n.clone().normalize()
+        return { x, y, z ->
+            val r = n1.clone().multiply(x).add(n2.clone().multiply(z)).add(n3.clone().multiply(y))
+            loc.clone().add(r)
+        }
+    }
+
+    /**
      * 获得一个向量的水平朝右的向量
-     * *若向量为垂直与xoz平面的向量 将无法正确返回*
+     * *若向量为垂直于xoz平面的向量 将无法正确返回*
      *
      * @param look 向量
      * @return 朝右的向量

@@ -789,6 +789,14 @@ public abstract class Utils {
             };
         }
 
+
+        /**
+         * 获得一个向量的水平朝右的向量
+         * *若向量为垂直于xoz平面的向量 将无法正确返回*
+         *
+         * @param look 向量
+         * @return 朝右的向量
+         */
         public static Vector getLeft(Vector look) {
             look = look.clone();
             Vector left = look.crossProduct(new Vector(0, 1, 0));
