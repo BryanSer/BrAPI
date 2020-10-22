@@ -1,5 +1,8 @@
 package com.github.bryanser.brapi
 
+import com.comphenix.protocol.utility.MinecraftReflection
+import net.md_5.bungee.api.chat.HoverEvent
+import net.md_5.bungee.api.chat.TextComponent
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -17,6 +20,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.reflect.Method
 import java.util.*
+import java.util.logging.Level
 
 
 typealias Projector = (Double, Double) -> Location
@@ -38,7 +42,35 @@ object Utils {
         }
     }
 
+    @JvmStatic
+    fun createItemHoverEvent(item: ItemStack): HoverEvent {
+        return HoverEvent(HoverEvent.Action.SHOW_ITEM, arrayOf(TextComponent(convertItemStackToJson(item))))
+    }
+
+    fun convertItemStackToJson(itemStack: ItemStack): String {
+        val craftItemStackClazz = MinecraftReflection.getCraftItemStackClass()
+        val asNMSCopyMethod = craftItemStackClazz.getMethod("asNMSCopy", ItemStack::class.java)
+        val nmsItemStackClazz = MinecraftReflection.getMinecraftClass("ItemStack")
+        val nbtTagCompoundClazz = MinecraftReflection.getMinecraftClass("NBTTagCompound")
+        val saveNmsItemStackMethod = nmsItemStackClazz.getMethod("save", nbtTagCompoundClazz)
+        val nmsNbtTagCompoundObj: Any
+        val nmsItemStackObj: Any
+        val itemAsJsonObject: Any
+
+        try {
+            nmsNbtTagCompoundObj = nbtTagCompoundClazz.newInstance()
+            nmsItemStackObj = asNMSCopyMethod.invoke(null, itemStack)
+            itemAsJsonObject = saveNmsItemStackMethod.invoke(nmsItemStackObj, nmsNbtTagCompoundObj)
+        } catch (t: Throwable) {
+            Bukkit.getLogger().log(Level.SEVERE, "failed to serialize itemstack to nms item", t)
+            return "{}"
+        }
+        return itemAsJsonObject.toString()
+
+    }
+
     private var getOnlinePlayers_onlinePlayerMethod: Method? = null
+
     /**
      * 合理的获取在线玩家~
      *
