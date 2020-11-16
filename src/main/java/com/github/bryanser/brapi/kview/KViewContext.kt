@@ -5,7 +5,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 
 abstract class KViewContext(
-        val title: String
+        var title: String
 ) : InventoryHolder {
 
 
