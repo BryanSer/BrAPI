@@ -6,7 +6,7 @@
 
     <groupId>com.github.bryanser</groupId>
     <artifactId>BrAPI</artifactId>
-    <version>Kt-1.0.72</version>
+    <version>Kt-1.0.81</version>
     <packaging>jar</packaging>
     <description>A bukkit/spigot plugin for develop faster with kotlin.</description>
     <url>https://github.com/BryanSer/BrAPI</url>
@@ -252,7 +252,7 @@
     </pluginRepositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.4.10</kotlin.version>
+        <kotlin.version>1.4.21</kotlin.version>
         <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
         <lib.path>${project.basedir}/libs</lib.path>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -280,6 +280,10 @@
         <repository>
             <id>essx-repo</id>
             <url>https://ci.ender.zone/plugin/repository/everything/</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
     </repositories>
 
@@ -316,6 +320,12 @@
             <groupId>lk.vexview</groupId>
             <artifactId>VexView</artifactId>
             <version>2.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.9</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

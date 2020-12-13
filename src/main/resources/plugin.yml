@@ -3,7 +3,8 @@ author: Bryan_lzh
 authors: ['Bryan_lzh','DarkBlade12']
 main: com.github.bryanser.brapi.Main
 description: '开发者QQ:390807154'
-softdepend: [Vault,OpenInv,VexView]
+softdepend: [Vault,VexView,PlaceholderAPI]
+loadbefore: [OpenInv]
 version: ${project.version}
 depend: [ProtocolLib]
 commands:
