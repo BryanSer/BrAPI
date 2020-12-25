@@ -6,7 +6,7 @@
 
     <groupId>com.github.bryanser</groupId>
     <artifactId>BrAPI</artifactId>
-    <version>Kt-1.0.81</version>
+    <version>Kt-1.0.82</version>
     <packaging>jar</packaging>
     <description>A bukkit/spigot plugin for develop faster with kotlin.</description>
     <url>https://github.com/BryanSer/BrAPI</url>

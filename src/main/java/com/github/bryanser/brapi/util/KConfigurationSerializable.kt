@@ -21,6 +21,18 @@ interface  KConfigurationSerializable : ConfigurationSerializable {
         }
     }
 
+    /**
+     * 若部分字段原序列化中不存在的 则不会触发调用
+     *
+     */
+    fun Map<String, Any?>.deserializeExist() {
+        for (member in getAllProperty()) {
+            if(containsKey(member.name)) {
+                member.set(this@KConfigurationSerializable, this[member.name])
+            }
+        }
+    }
+
     companion object {
         private fun KConfigurationSerializable.getAllProperty(): List<KMutableProperty1<KConfigurationSerializable, Any?>> {
             val list = mutableListOf<KMutableProperty1<KConfigurationSerializable, Any?>>()
