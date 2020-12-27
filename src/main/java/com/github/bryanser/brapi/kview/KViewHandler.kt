@@ -378,9 +378,20 @@ object KViewHandler : Listener {
                     .listenerPriority(ListenerPriority.LOWEST)
                     .gamePhase(GamePhase.PLAYING)
                     .types(PacketType.Play.Client.WINDOW_CLICK)) {
+                var firstErr = true
                 override fun onPacketReceiving(e: PacketEvent) {
-                    val btn = e.packet.integers.read(2) and 0b1111
-                    numberKey[e.player.name] = btn
+                    if(e.packetType != PacketType.Play.Client.WINDOW_CLICK){
+                        return
+                    }
+                    try{
+                        val btn = e.packet.integers.read(2) and 0b1111
+                        numberKey[e.player.name] = btn
+                    }catch (e:Throwable){
+                        if(firstErr){
+                            firstErr = false
+                            e.printStackTrace()
+                        }
+                    }
                 }
             })
             enableNumberKey = true
